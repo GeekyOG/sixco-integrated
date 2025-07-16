@@ -37,6 +37,22 @@ export const authApi = createApi({
       }),
     }),
 
+    verifyEmail: builder.mutation({
+      query: (body) => ({
+        body,
+        url: `/auth/verify-email`,
+        method: "POST",
+      }),
+    }),
+
+    resendVerification: builder.mutation({
+      query: (body) => ({
+        body,
+        url: `/auth/resend-verification`,
+        method: "POST",
+      }),
+    }),
+
     refreshToken: builder.mutation({
       query: (body) => ({
         body,
@@ -51,6 +67,33 @@ export const authApi = createApi({
         method: "POST",
       }),
     }),
+
+    getAllUsers: builder.query({
+      query: () => ({
+        url: "auth/users",
+      }),
+    }),
+
+    getUser: builder.query({
+      query: (id) => ({
+        url: `auth.users/${id}`,
+      }),
+    }),
+
+    updateUser: builder.mutation({
+      query: ({ body, id }) => ({
+        url: `auth/users/${id}`,
+        method: "PUT",
+        body: body,
+      }),
+    }),
+
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `auth/user/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -61,4 +104,10 @@ export const {
   useRegisterUserMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useGetAllUsersQuery,
+  useLazyGetAllUsersQuery,
+  useDeleteUserMutation,
+  useGetUserQuery,
+  useLazyGetUserQuery,
+  useUpdateUserMutation,
 } = authApi;

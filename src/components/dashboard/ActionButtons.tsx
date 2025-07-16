@@ -7,6 +7,7 @@ import { useDeletePortfolioMutation } from "../../api/portfolio";
 import { useDeleteLeaveMutation } from "../../api/leaveApi";
 import AddUser from "../../modules/users/AddUser";
 import { useDeleteClientsMutation } from "../../api/clientApi";
+import { useNavigate } from "react-router-dom";
 // import EditCategory from "../../modules/products/EditCategory";
 interface ActionButtonsProps {
   id: string;
@@ -21,6 +22,8 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
   const [dialogContent, setDialogContent] = useState("");
   const [dialogBtnText, setDialogBtnText] = useState("");
   const [openAddCustomers, setOpenAddCustomers] = useState(false);
+
+  const navigate = useNavigate();
 
   const [deletePortfolio, { isLoading: deletePortfolioLoading }] =
     useDeletePortfolioMutation();
@@ -91,6 +94,18 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
   const [deleteClient, { isLoading: deleteClientLoading }] =
     useDeleteClientsMutation();
 
+  const handleDeleteClient = () => {
+    deleteClient(id)
+      .then(() => {
+        toast.success("Action Successful");
+        callBackAction && callBackAction();
+        setShowDialog(true);
+      })
+      .catch(() => {
+        toast.error("Action Failed");
+      });
+  };
+
   const handleDeleteClientDialog = () => {
     setShowDialog(true);
     setDialogTitle("Delete Client Permanently");
@@ -102,9 +117,12 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
 
   return (
     <>
-      {type === "Featured" && (
+      {type === "teams" && (
         <>
           <TableActionButtons
+            setShow={() => {
+              navigate(`/dashboard/teams/${id}`);
+            }}
             handleEdit={() => {
               setDrawerOpen(true);
             }}
@@ -116,6 +134,9 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
       {type === "Portfolio" && (
         <>
           <TableActionButtons
+            setShow={() => {
+              navigate(`/dashboard/projects/${id}`);
+            }}
             handleEdit={() => {
               setDrawerOpen(true);
             }}
@@ -168,7 +189,8 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
           action={
             (dialogTitle == "Delete Work Portfolio Item" &&
               handleDeletePortfolio) ||
-            (dialogTitle == "Delete Work Image Item" && handleDeleteImage) ||
+            (dialogTitle == "Delete Client Permanently" &&
+              handleDeleteClient) ||
             function (): void {
               throw new Error("Function not implemented.");
             }

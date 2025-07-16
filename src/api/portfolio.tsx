@@ -13,7 +13,7 @@ export const portfolioApi = createApi({
 
     addPortfolio: builder.mutation({
       query: (body) => ({
-        url: "projects",
+        url: "projects/create",
         body: body,
         method: "POST",
       }),
@@ -29,6 +29,26 @@ export const portfolioApi = createApi({
       query: ({ body, id }) => ({
         url: `projects/${id}`,
         method: "PUT",
+        body: body,
+      }),
+    }),
+
+    assignTeam: builder.mutation({
+      query: ({ body, id }) => ({
+        url: `projects/assign`,
+        method: "POST",
+        body: body,
+      }),
+    }),
+    getProjectMembers: builder.query({
+      query: (id) => ({
+        url: `projects/${id}/members`,
+      }),
+    }),
+    addClientToProject: builder.mutation({
+      query: ({ body, id }) => ({
+        url: `projects/clients`,
+        method: "POST",
         body: body,
       }),
     }),
@@ -50,4 +70,7 @@ export const {
   useLazyGetAllPortfolioQuery,
   useLazyGetPortfolioQuery,
   useUpdatePortfolioMutation,
+  useAddClientToProjectMutation,
+  useAssignTeamMutation,
+  useGetProjectMembersQuery,
 } = portfolioApi;

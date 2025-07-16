@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Drawer } from "antd";
 import AddPortfolioForm from "../forms/PortfolioForm";
 import AddImageForm from "../forms/ImageForm";
+import AddTeamForm from "../forms/TeamForm";
 
 interface DashboardDrawerProps {
   id?: string;
@@ -37,6 +38,7 @@ const DashboardDrawer: React.FC<DashboardDrawerProps> = ({
         onClose={onClose}
         open={open}
       >
+        {whatForm == "teams" && <AddTeamForm reset={open} id={id} />}
         {whatForm == "Portfolio" && (
           <AddPortfolioForm
             reset={open}

@@ -1,0 +1,53 @@
+import { createApi } from "@reduxjs/toolkit/query/react";
+import baseQuery from ".";
+
+export const teamsApi = createApi({
+  baseQuery,
+  reducerPath: "teamsApi",
+  endpoints: (builder) => ({
+    addTeam: builder.mutation({
+      query: (body) => ({
+        body,
+        url: "teams",
+        method: "POST",
+      }),
+    }),
+
+    getAllTeam: builder.query({
+      query: () => ({
+        url: "teams",
+      }),
+    }),
+
+    getTeam: builder.query({
+      query: (id) => ({
+        url: `teams/${id}`,
+      }),
+    }),
+
+    updateTeam: builder.mutation({
+      query: ({ body, id }) => ({
+        url: `teams/${id}`,
+        method: "PUT",
+        body: body,
+      }),
+    }),
+
+    deleteTeam: builder.mutation({
+      query: (id) => ({
+        url: `teams/${id}`,
+        method: "DELETE",
+      }),
+    }),
+  }),
+});
+
+export const {
+  useAddTeamMutation,
+  useDeleteTeamMutation,
+  useGetAllTeamQuery,
+  useGetTeamQuery,
+  useLazyGetAllTeamQuery,
+  useLazyGetTeamQuery,
+  useUpdateTeamMutation,
+} = teamsApi;

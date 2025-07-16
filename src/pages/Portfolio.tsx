@@ -6,6 +6,7 @@ import { columns } from "../modules/portfolio/columns";
 import DashboardDrawer from "../components/dashboard/Drawer";
 import Button from "../ui/Button";
 import { useLazyGetAllPortfolioQuery } from "../api/portfolio";
+import BreadCrumb from "../ui/BreadCrumb";
 
 function Portfolio() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -28,11 +29,14 @@ function Portfolio() {
 
   return (
     <Container className="pb-[200px]">
+      <BreadCrumb data={["Dashboard", "Manage Projects"]} />
       <div>
         <div className="flex items-center justify-between">
           <div className="flex">
             <div className="border-[1px] px-[15px] py-[8px]">
-              <p className="font-[600]">All PROJECTS</p>
+              <p className="font-[600]">
+                All PROJECTS ({data?.pagination.totalItems ?? 0})
+              </p>
             </div>
           </div>
 
@@ -66,7 +70,7 @@ function Portfolio() {
       <div>
         <DashboardTable
           columns={columns}
-          data={data || []}
+          data={data?.projects || []}
           isFetching={isFetching}
           type="Portfolio"
           callBackAction={handleGetPortfolio}

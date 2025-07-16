@@ -5,17 +5,21 @@ import Button from "../ui/Button";
 import AddUser from "../modules/users/AddUser";
 import { Search } from "lucide-react";
 import { useGetAllClientsQuery } from "../api/clientApi";
-import { clientsColumns } from "../modules/clients/columns";
 import BreadCrumb from "../ui/BreadCrumb";
+import { useGetAllUsersQuery } from "../api/authApi";
+import AddStaff from "../modules/users/AddStaff";
+import { useGetAllTeamQuery } from "../api/teamsApi";
+import DashboardDrawer from "../components/dashboard/Drawer";
+import { columns } from "../modules/teams/columns";
 
-function Users() {
+function Teams() {
   const [open, setOpen] = useState(false);
 
   const showDrawer = () => {
     setOpen(!open);
   };
 
-  const { data: clientsData, isFetching } = useGetAllClientsQuery("");
+  const { data: teamsData, isFetching } = useGetAllTeamQuery("");
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -23,12 +27,12 @@ function Users() {
     <div>
       <div>
         <Container>
-          <BreadCrumb data={["Dashboard", "Clients"]} />
+          <BreadCrumb data={["Dashboard", "Teams"]} />
           <div className="flex items-center justify-between">
             <div className="flex">
-              <div className="border-[1px] px-[15px] py-[8px]">
+              <div className="border-[1px] px-[15px] py-[8px] flex gap-2">
                 <p className="font-[600]">
-                  All CLIENTS ({clientsData?.pagination.totalItems ?? 0})
+                  All Teams ({teamsData?.pagination.totalItems ?? 0})
                 </p>
               </div>
             </div>
@@ -46,7 +50,7 @@ function Users() {
                 onClick={showDrawer}
                 className="flex h-[36px] items-center"
               >
-                Add Client
+                Add Team
               </Button>
             </div>
           </div>
@@ -63,15 +67,20 @@ function Users() {
       </div>
       <Container>
         <DashboardTable
-          columns={clientsColumns}
-          data={clientsData?.clients ?? []}
-          type="client"
+          columns={columns}
+          data={teamsData?.teams ?? []}
+          type="teams"
           isFetching={isFetching}
         />
-        <AddUser open={open} setShowDrawer={setOpen} />
+        <DashboardDrawer
+          callBackAction={() => {}}
+          open={open}
+          setOpen={setOpen}
+          whatForm={"teams"}
+        />
       </Container>
     </div>
   );
 }
 
-export default Users;
+export default Teams;

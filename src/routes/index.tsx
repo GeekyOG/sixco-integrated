@@ -11,6 +11,9 @@ import Applayout from "../layout/Applayout";
 import Users from "../pages/Users";
 import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
+import Staffs from "../pages/Staffs";
+import Teams from "../pages/Teams";
+import TeamDetails from "../pages/TeamDetails";
 
 const router = createBrowserRouter([
   {
@@ -53,7 +56,18 @@ const router = createBrowserRouter([
         path: "/dashboard/users",
         element: <Users />,
       },
-
+      {
+        path: "/dashboard/staffs",
+        element: <Staffs />,
+      },
+      {
+        path: "/dashboard/teams",
+        element: <Teams />,
+      },
+      {
+        path: "/dashboard/teams/:id",
+        element: <TeamDetails />,
+      },
       {
         path: "/dashboard/settings",
         element: <Settings />,

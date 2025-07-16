@@ -5,6 +5,46 @@ export const clientApi = createApi({
   baseQuery,
   reducerPath: "clientApi",
   endpoints: (builder) => ({
+    loginUser: builder.mutation({
+      query: (body) => ({
+        body,
+        url: "clients/login",
+        method: "POST",
+      }),
+    }),
+
+    forgotPassword: builder.mutation({
+      query: (body) => ({
+        body,
+        url: "/clients/forgot-password",
+        method: "POST",
+      }),
+    }),
+
+    resetPassword: builder.mutation({
+      query: (body) => ({
+        body,
+        url: `/clients/reset-password/${body.token}`,
+        method: "POST",
+      }),
+    }),
+
+    verifyEmail: builder.mutation({
+      query: (body) => ({
+        body,
+        url: `/clients/verify-email`,
+        method: "POST",
+      }),
+    }),
+
+    resendVerification: builder.mutation({
+      query: (body) => ({
+        body,
+        url: `/clients/resend-verification`,
+        method: "POST",
+      }),
+    }),
+
     addClient: builder.mutation({
       query: (body) => ({
         body,
@@ -50,4 +90,9 @@ export const {
   useLazyGetAllClientsQuery,
   useLazyGetClientsQuery,
   useUpdateClientsMutation,
+  useForgotPasswordMutation,
+  useLoginUserMutation,
+  useResendVerificationMutation,
+  useResetPasswordMutation,
+  useVerifyEmailMutation,
 } = clientApi;

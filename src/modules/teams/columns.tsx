@@ -4,24 +4,27 @@ import StatusPill from "../../ui/StatusPill";
 import { format } from "date-fns";
 // import React from "react";
 
-export const clientsColumns: ColumnsType = [
+export const columns: ColumnsType = [
   {
-    title: "Full Name",
-    dataIndex: "firstName",
-    key: "firstName",
+    title: "Team Name",
+    dataIndex: "name",
+    key: "name",
     render(_, value) {
-      return (
-        <p>
-          {value.firstName} {value.lastName}
-        </p>
-      );
+      return <p>{value.name}</p>;
     },
   },
   {
-    title: "Email",
-    dataIndex: "email",
-    key: "email",
+    title: "Description",
+    dataIndex: "description",
+    key: "description",
     render: (value) => <p className="text-[0.75rem]">{value ?? "--"}</p>,
+  },
+
+  {
+    title: "Team Members",
+    dataIndex: "Users",
+    key: "Users",
+    render: (value) => <p className="text-[0.75rem]">{"--"}</p>,
   },
 
   {

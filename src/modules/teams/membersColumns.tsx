@@ -4,7 +4,7 @@ import StatusPill from "../../ui/StatusPill";
 import { format } from "date-fns";
 // import React from "react";
 
-export const clientsColumns: ColumnsType = [
+export const membersColumns: ColumnsType = [
   {
     title: "Full Name",
     dataIndex: "firstName",
@@ -22,18 +22,5 @@ export const clientsColumns: ColumnsType = [
     dataIndex: "email",
     key: "email",
     render: (value) => <p className="text-[0.75rem]">{value ?? "--"}</p>,
-  },
-
-  {
-    title: "Date added",
-    dataIndex: "createdAt",
-    key: "createdAt",
-    render: (item) => {
-      return (
-        <div className="capitalize">
-          {format(item, "yyyy/MM/dd").toLocaleString()}
-        </div>
-      );
-    },
   },
 ];

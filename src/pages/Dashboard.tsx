@@ -27,12 +27,8 @@ function Dashboard() {
   const [getOverview, { isFetching: overviewLoading, data: overviewData }] =
     useLazyGetOverviewQuery();
 
-  const {
-    data: clientsData,
-    isLoading,
-    isError,
-    error,
-  } = useGetAllClientsQuery("");
+  const { data: clientsData, isFetching: clientsFetching } =
+    useGetAllClientsQuery("");
 
   const [getAllPortfolio, { data: portfolioData, isFetching }] =
     useLazyGetAllPortfolioQuery();
@@ -52,24 +48,14 @@ function Dashboard() {
     getAllPortfolio("");
   };
 
-  const handleAddBrand = () => {
-    setDrawerOpen(true);
-    setWhatForm("Brand");
-  };
-
   const handleAddPortfolio = () => {
     setDrawerOpen(true);
     setWhatForm("Portfolio");
   };
 
-  const handleAddFeatured = () => {
-    setDrawerOpen(true);
-    setWhatForm("Featured");
-  };
-
   return (
-    <Container className="pb-[200px]">
-      <h1 className="font-[600] text-[1.25rem]">Welcome Oghomena</h1>
+    <div className="pb-[200px]">
+      <h1 className="font-[600] text-[1.25rem]">Welcome Oghomena!</h1>
       <div className="flex gap-3 mt-5 flex-col md:flex-row">
         <DashboardBox
           title={"Total Projects"}
@@ -118,10 +104,7 @@ function Dashboard() {
           </p>
 
           <div className="flex cursor-pointer items-center mt-3">
-            <Link
-              to="/dashboard/projects"
-              className="font-[300] text-[#3b761e]"
-            >
+            <Link to="/dashboard/users" className="font-[300] text-[#3b761e]">
               View all
             </Link>
             <ArrowRight size={16} className="text-[#488e25]" />
@@ -131,7 +114,7 @@ function Dashboard() {
         <DashboardTable
           columns={clientsColumns}
           data={clientsData?.clients ?? []}
-          isFetching={isFetching}
+          isFetching={clientsFetching}
           type="client"
           callBackAction={handleGetOverview}
         />
@@ -144,7 +127,7 @@ function Dashboard() {
       />
 
       <AddUser open={openAddCustomers} setShowDrawer={setOpenAddCustomers} />
-    </Container>
+    </div>
   );
 }
 

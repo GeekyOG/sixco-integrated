@@ -12,13 +12,13 @@ import {
   useUpdateClientsMutation,
 } from "../../api/clientApi";
 
-interface AddUserProps {
+interface AddStaffProps {
   id?: string;
   open: boolean;
   setShowDrawer: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function AddUser({ open, setShowDrawer, id }: AddUserProps) {
+function AddStaff({ open, setShowDrawer, id }: AddStaffProps) {
   const onClose = () => {
     setShowDrawer(false);
   };
@@ -39,8 +39,6 @@ function AddUser({ open, setShowDrawer, id }: AddUserProps) {
   const handleTofuChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsClient(e.target.checked);
   };
-
-  console.log(id, isClient);
 
   return (
     <Drawer title="Add User" onClose={onClose} open={open}>
@@ -66,33 +64,25 @@ function AddUser({ open, setShowDrawer, id }: AddUserProps) {
                 },
               });
             } else {
-              if (isClient) {
-                addClient(values)
-                  .unwrap()
-                  .then((res) => {
-                    toast.success("User added successfully!");
-                    setShowDrawer(false);
-                  })
-                  .catch((err) => {
-                    toast.error(err.data?.message || "Failed to add user");
-                  });
-              } else {
-                registerUser(values)
-                  .unwrap()
-                  .then((res) => {
-                    toast.success("User added successfully!");
-                    setShowDrawer(false);
-                  })
-                  .catch((err) => {
-                    toast.error(err.data?.message || "Failed to add user");
-                  });
-              }
+              registerUser(values)
+                .unwrap()
+                .then((res) => {
+                  toast.success("User added successfully!");
+                  setShowDrawer(false);
+                })
+                .catch((err) => {
+                  toast.error(err.data?.message || "Failed to add user");
+                });
             }
           }}
         >
           {({ errors, touched }) => (
             <Form className="flex flex-col gap-[15px]">
-              <div className="flex items-center gap-[10px]"></div>
+              <div className="flex items-center gap-[10px]">
+                <Switch checked={true} />
+
+                <span>Is Staff</span>
+              </div>
               <Input
                 title="First Name"
                 name="firstName"
@@ -139,4 +129,4 @@ function AddUser({ open, setShowDrawer, id }: AddUserProps) {
   );
 }
 
-export default AddUser;
+export default AddStaff;

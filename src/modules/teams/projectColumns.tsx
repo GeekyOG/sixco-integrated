@@ -4,7 +4,7 @@ import StatusPill from "../../ui/StatusPill";
 import { format } from "date-fns";
 // import React from "react";
 
-export const columns: ColumnsType = [
+export const projectColumns: ColumnsType = [
   {
     title: "Name",
     dataIndex: "",
@@ -32,31 +32,5 @@ export const columns: ColumnsType = [
     dataIndex: "title",
     key: "title",
     render: (value) => <StatusPill status="pending" />,
-  },
-
-  {
-    title: "Start Date",
-    dataIndex: "startDate",
-    key: "startDate",
-    render: (item) => {
-      return (
-        <div className="capitalize">
-          {format(item, "yyyy/MM/dd").toLocaleString()}
-        </div>
-      );
-    },
-  },
-
-  {
-    title: "End Date",
-    dataIndex: "endDate",
-    key: "endDate",
-    render: (item) => {
-      return (
-        <div className="capitalize">
-          {format(item, "yyyy/MM/dd").toLocaleString()}
-        </div>
-      );
-    },
   },
 ];

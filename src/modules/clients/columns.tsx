@@ -21,7 +21,13 @@ export const clientsColumns: ColumnsType = [
     title: "Email",
     dataIndex: "email",
     key: "email",
-    render: (value) => <p className="text-[0.75rem]">{value ?? ""}</p>,
+    render: (value) => <p className="text-[0.75rem]">{value ?? "--"}</p>,
+  },
+  {
+    title: "Phone Number",
+    dataIndex: "phoneNumber",
+    key: "phoneNumber",
+    render: (value) => <p className="text-[0.75rem]">{value ?? "--"}</p>,
   },
 
   {

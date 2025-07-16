@@ -5,6 +5,9 @@ import { overviewApi } from "../api/overviewApi";
 import { portfolioApi } from "../api/portfolio";
 import { leaveApi } from "../api/leaveApi";
 import { clientApi } from "../api/clientApi";
+import { reportsApi } from "../api/reportsApi";
+import { tasksApi } from "../api/tasksApi";
+import { teamsApi } from "../api/teamsApi";
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +16,9 @@ export const store = configureStore({
     [portfolioApi.reducerPath]: portfolioApi.reducer,
     [leaveApi.reducerPath]: leaveApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
+    [reportsApi.reducerPath]: reportsApi.reducer,
+    [tasksApi.reducerPath]: tasksApi.reducer,
+    [teamsApi.reducerPath]: teamsApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -21,7 +27,10 @@ export const store = configureStore({
       clientApi.middleware,
       overviewApi.middleware,
       portfolioApi.middleware,
-      leaveApi.middleware
+      leaveApi.middleware,
+      reportsApi.middleware,
+      tasksApi.middleware,
+      teamsApi.middleware
     ),
 });
 

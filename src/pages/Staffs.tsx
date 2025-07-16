@@ -7,15 +7,17 @@ import { Search } from "lucide-react";
 import { useGetAllClientsQuery } from "../api/clientApi";
 import { clientsColumns } from "../modules/clients/columns";
 import BreadCrumb from "../ui/BreadCrumb";
+import { useGetAllUsersQuery } from "../api/authApi";
+import AddStaff from "../modules/users/AddStaff";
 
-function Users() {
+function Staffs() {
   const [open, setOpen] = useState(false);
 
   const showDrawer = () => {
     setOpen(!open);
   };
 
-  const { data: clientsData, isFetching } = useGetAllClientsQuery("");
+  const { data: clientsData, isFetching } = useGetAllUsersQuery("");
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -23,12 +25,12 @@ function Users() {
     <div>
       <div>
         <Container>
-          <BreadCrumb data={["Dashboard", "Clients"]} />
+          <BreadCrumb data={["Dashboard", "Staffs"]} />
           <div className="flex items-center justify-between">
             <div className="flex">
-              <div className="border-[1px] px-[15px] py-[8px]">
+              <div className="border-[1px] px-[15px] py-[8px] flex gap-2">
                 <p className="font-[600]">
-                  All CLIENTS ({clientsData?.pagination.totalItems ?? 0})
+                  All Staffs ({clientsData?.pagination.totalItems ?? 0})
                 </p>
               </div>
             </div>
@@ -46,7 +48,7 @@ function Users() {
                 onClick={showDrawer}
                 className="flex h-[36px] items-center"
               >
-                Add Client
+                Add Staff
               </Button>
             </div>
           </div>
@@ -64,14 +66,14 @@ function Users() {
       <Container>
         <DashboardTable
           columns={clientsColumns}
-          data={clientsData?.clients ?? []}
+          data={clientsData?.users ?? []}
           type="client"
           isFetching={isFetching}
         />
-        <AddUser open={open} setShowDrawer={setOpen} />
+        <AddStaff open={open} setShowDrawer={setOpen} />
       </Container>
     </div>
   );
 }
 
-export default Users;
+export default Staffs;

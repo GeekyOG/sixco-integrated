@@ -8,6 +8,7 @@ import SidebarTab from "./SidebarTab";
 import {
   ArrowLeftRight,
   CalendarRange,
+  ChevronLeft,
   File,
   LayoutGrid,
   LogOutIcon,
@@ -30,12 +31,12 @@ export const mainMenuOptions = [
 
   {
     text: "Manage Staffs",
-    url: "/dashboard/users",
+    url: "/dashboard/staffs",
     icon: <Users size={16} />,
   },
   {
     text: "Manage Teams",
-    url: "/dashboard/users",
+    url: "/dashboard/teams",
     icon: <FcCollaboration size={16} />,
   },
   {
@@ -52,14 +53,27 @@ export const mainMenuOptions = [
   ,
 ];
 
-function Sidebar() {
+interface SidebarProps {
+  setHideSideBar: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function Sidebar({ setHideSideBar }: SidebarProps) {
   const location = useLocation();
   const { pathname } = location;
 
   return (
-    <div className=" hidden h-[100vh] w-[280px]  flex-none border-r-[1px] lg:block">
+    <div className=" hidden h-[100vh] w-[200px]  flex-none border-r-[1px] lg:block relative z-[1000] ">
       <div className="fixed bottom-0 top-0 w-[280px] bg-[#090909]">
-        <div className="border-b-[1px] px-[28px] pb-[20px] pt-[24px]"></div>
+        <div
+          onClick={() => {
+            setHideSideBar((prev) => !prev);
+          }}
+          className="absolute right-4 top-5"
+        >
+          <ChevronLeft color="#fff" size={32} />
+        </div>
+
+        <div className="border-b-[1px] px-[28px] pb-[20px] pt-[44px]"></div>
 
         <div className="border-b-[1px] px-[20px] py-[17px]">
           <div className="flex h-[76px] w-[100%] items-center gap-[8px] rounded-[12px] px-[12px]">

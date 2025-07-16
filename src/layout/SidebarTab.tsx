@@ -21,14 +21,14 @@ const SidebarTab: FunctionComponent<SidebarTabProps> = ({
       <div
         className={clsx(
           "px-[28px]",
-          activeOption == url ? "border-r-[6px] border-[#65CC33]" : ""
+          activeOption == url ? "border-r-[6px] border-[#37691e]" : ""
         )}
       >
         <div
           className={clsx(
             "flex h-[56px] items-center gap-[10px] px-[14px]",
             activeOption == url
-              ? "rounded-[8px] bg-[#fff] font-[600] text-[#65CC33]"
+              ? "rounded-[8px] bg-[#fff] font-[500] text-[#37691e]"
               : "font-[400]"
           )}
         >
