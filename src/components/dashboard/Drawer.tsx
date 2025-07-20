@@ -3,6 +3,8 @@ import { Button, Drawer } from "antd";
 import AddPortfolioForm from "../forms/PortfolioForm";
 import AddImageForm from "../forms/ImageForm";
 import AddTeamForm from "../forms/TeamForm";
+import TaskForm from "../forms/TaskForm";
+import AddLeaveForm from "../forms/LeaveForm";
 
 interface DashboardDrawerProps {
   id?: string;
@@ -31,14 +33,14 @@ const DashboardDrawer: React.FC<DashboardDrawerProps> = ({
     <>
       <Drawer
         title={
-          (whatForm == "Brand" && "Add Brand") ||
-          (whatForm == "Portfolio" && "Add Portfolio") ||
-          (whatForm == "Featured" && "Add Featured")
+          (whatForm == "Portfolio" && "Manage Project") ||
+          (whatForm == "tasks" && "Mange Task")
         }
         onClose={onClose}
         open={open}
       >
         {whatForm == "teams" && <AddTeamForm reset={open} id={id} />}
+        {whatForm == "tasks" && <TaskForm reset={open} id={id} />}
         {whatForm == "Portfolio" && (
           <AddPortfolioForm
             reset={open}
@@ -46,10 +48,7 @@ const DashboardDrawer: React.FC<DashboardDrawerProps> = ({
             callBackAction={callBackAction}
           />
         )}
-
-        {whatForm == "image" && (
-          <AddImageForm reset={open} id={id} callBackAction={callBackAction} />
-        )}
+        {whatForm == "Leave" && <AddLeaveForm reset={open} id={id} />}
       </Drawer>
     </>
   );

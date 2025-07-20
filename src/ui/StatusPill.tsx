@@ -7,12 +7,16 @@ export type StatusTypes =
   | "lapsed"
   | "expired"
   | "cancelled"
-  | "completed";
+  | "completed"
+  | "To Do"
+  | "In Progress";
 
 const StatusPill = ({ status }: { status: StatusTypes }) => {
   const statusColorMap: Record<StatusTypes, string> = {
     draft: "#BABBBB",
     pending: "#FDB022",
+    "To Do": "#FDB022",
+    "In Progress": "#FDB022",
     completed: "#3FA047",
     cancelled: "#D92D20",
     lapsed: "#D92D20",

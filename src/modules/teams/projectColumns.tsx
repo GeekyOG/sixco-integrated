@@ -10,27 +10,7 @@ export const projectColumns: ColumnsType = [
     dataIndex: "",
     key: "",
     render(_, value) {
-      console.log(value);
-
       return <p>{value.name}</p>;
     },
-  },
-
-  {
-    title: "Description",
-    dataIndex: "image",
-    key: "image",
-    render(_, value) {
-      console.log(value);
-
-      return <p>{value.description}</p>;
-    },
-  },
-
-  {
-    title: "Status",
-    dataIndex: "title",
-    key: "title",
-    render: (value) => <StatusPill status="pending" />,
   },
 ];

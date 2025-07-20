@@ -34,7 +34,7 @@ export const portfolioApi = createApi({
     }),
 
     assignTeam: builder.mutation({
-      query: ({ body, id }) => ({
+      query: (body) => ({
         url: `projects/assign`,
         method: "POST",
         body: body,

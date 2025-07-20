@@ -8,7 +8,7 @@ function BreadCrumb({ data }: BreadCrumbProps) {
   return (
     <div className="flex py-5">
       {data?.map((item, i) => (
-        <div className="flex text-[0.865rem] items-center ">
+        <div className="flex text-[0.75rem] items-center ">
           <p>{item.toUpperCase()}</p>{" "}
           {i + 1 !== data.length && (
             <ChevronRight

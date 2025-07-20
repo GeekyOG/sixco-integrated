@@ -8,6 +8,7 @@ import { useDeleteLeaveMutation } from "../../api/leaveApi";
 import AddUser from "../../modules/users/AddUser";
 import { useDeleteClientsMutation } from "../../api/clientApi";
 import { useNavigate } from "react-router-dom";
+import AddStaff from "../../modules/users/AddStaff";
 // import EditCategory from "../../modules/products/EditCategory";
 interface ActionButtonsProps {
   id: string;
@@ -22,6 +23,7 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
   const [dialogContent, setDialogContent] = useState("");
   const [dialogBtnText, setDialogBtnText] = useState("");
   const [openAddCustomers, setOpenAddCustomers] = useState(false);
+  const [openAddStaff, setOpenAddStaff] = useState(false);
 
   const navigate = useNavigate();
 
@@ -30,15 +32,6 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
 
   const [deleteLeave, { isLoading: deleteLeaveLoading }] =
     useDeleteLeaveMutation();
-
-  const handleDeleteBrandDialog = () => {
-    setShowDialog(true);
-    setDialogTitle("Delete Brand Permanently");
-    setDialogContent(
-      "Deleting this brand shows this brand would would not longer be displayed on your website. Please note this action cannot be undone"
-    );
-    setDialogBtnText("Delete Brand");
-  };
 
   const handleDeleteFeaturedDialog = () => {
     setShowDialog(true);
@@ -60,27 +53,6 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
 
   const handleDeletePortfolio = () => {
     deletePortfolio(id)
-      .then(() => {
-        toast.success("Action Successful");
-        callBackAction && callBackAction();
-        setShowDialog(true);
-      })
-      .catch(() => {
-        toast.error("Action Failed");
-      });
-  };
-
-  const handleDeleteImageDialog = () => {
-    setShowDialog(true);
-    setDialogTitle("Delete Work Image Item");
-    setDialogContent(
-      "Deleting this Image item, this Image item would would not longer be displayed on your website. Please note this action cannot be undone"
-    );
-    setDialogBtnText("Delete Image Item");
-  };
-
-  const handleDeleteImage = () => {
-    deleteLeave(id)
       .then(() => {
         toast.success("Action Successful");
         callBackAction && callBackAction();
@@ -115,6 +87,27 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
     setDialogBtnText("Delete Client");
   };
 
+  const handleDeleteLeave = () => {
+    deleteLeave(id)
+      .then(() => {
+        toast.success("Action Successful");
+        callBackAction && callBackAction();
+        setShowDialog(true);
+      })
+      .catch(() => {
+        toast.error("Action Failed");
+      });
+  };
+
+  const handleDeleteLeaveDialog = () => {
+    setShowDialog(true);
+    setDialogTitle("Delete Request Permanently");
+    setDialogContent(
+      "Deleting this Request shows this Request would would not longer be displayed on your website. Please note this action cannot be undone"
+    );
+    setDialogBtnText("Delete Request");
+  };
+
   return (
     <>
       {type === "teams" && (
@@ -141,6 +134,28 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
               setDrawerOpen(true);
             }}
             handleDelete={handleDeletePortfolioDialog}
+          />
+        </>
+      )}
+
+      {type === "staff" && (
+        <>
+          <TableActionButtons
+            handleEdit={() => {
+              setOpenAddStaff(true);
+            }}
+            handleDelete={handleDeleteClientDialog}
+          />
+        </>
+      )}
+
+      {type === "Leave" && (
+        <>
+          <TableActionButtons
+            handleEdit={() => {
+              setDrawerOpen(true);
+            }}
+            handleDelete={handleDeleteLeaveDialog}
           />
         </>
       )}
@@ -175,6 +190,10 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
         />
       )}
 
+      {openAddStaff && (
+        <AddStaff id={id} open={openAddStaff} setShowDrawer={setOpenAddStaff} />
+      )}
+
       {showDialog && (
         <DialogContainer
           setDialogOpen={setShowDialog}
@@ -182,7 +201,10 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
           btnText={dialogBtnText}
           description={dialogContent}
           isLoading={
-            deletePortfolioLoading || deleteLeaveLoading || deleteClientLoading
+            deletePortfolioLoading ||
+            deleteLeaveLoading ||
+            deleteClientLoading ||
+            deleteLeaveLoading
           }
           type={"delete"}
           image={"/delete.svg"}
@@ -191,6 +213,8 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
               handleDeletePortfolio) ||
             (dialogTitle == "Delete Client Permanently" &&
               handleDeleteClient) ||
+            (dialogTitle == "Delete Request Permanently" &&
+              handleDeleteLeave) ||
             function (): void {
               throw new Error("Function not implemented.");
             }

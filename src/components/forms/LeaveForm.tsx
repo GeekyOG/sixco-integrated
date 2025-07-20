@@ -1,42 +1,51 @@
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import Button from "../../ui/Button";
+import Dropzone from "react-dropzone";
 import { cn } from "../../utils/cn";
+import { Image } from "lucide-react";
 import Input from "../input/Input";
 import { toast } from "react-toastify";
-
+import DatePicker from "react-datepicker";
 import {
-  useAddTeamMutation,
-  useLazyGetTeamQuery,
-  useUpdateTeamMutation,
-} from "../../api/teamsApi";
+  useAddPortfolioMutation,
+  useLazyGetPortfolioQuery,
+  useUpdatePortfolioMutation,
+} from "../../api/portfolio";
+import {
+  useAddLeaveMutation,
+  useLazyGetAllLeaveQuery,
+  useLazyGetLeaveQuery,
+  useUpdateLeaveMutation,
+} from "../../api/leaveApi";
 
-interface AddTeamFormProps {
+interface AddLeaveFormProps {
   reset: boolean;
   callBackAction?: () => void;
   id?: string;
 }
 
-const AddTeamForm: React.FC<AddTeamFormProps> = ({
+const AddLeaveForm: React.FC<AddLeaveFormProps> = ({
   reset,
   callBackAction,
   id,
 }) => {
   const [description, setDescription] = useState("");
 
-  const [addTeam, { isLoading }] = useAddTeamMutation();
+  const [addLeave, { isLoading }] = useAddLeaveMutation();
 
-  const [getTeam, { data, isLoading: featuredLoading }] = useLazyGetTeamQuery();
+  const [getLeaves] = useLazyGetAllLeaveQuery();
 
-  const [updateTeam, { isLoading: updateLoading }] = useUpdateTeamMutation();
+  const [getLeave, { data, isLoading: featuredLoading }] =
+    useLazyGetLeaveQuery();
+
+  const [updateLeave, { isLoading: updateLoading }] = useUpdateLeaveMutation();
 
   useEffect(() => {
     if (id) {
-      getTeam(id)
+      getLeave(id)
         .unwrap()
-        .then(() => {
-          setDescription(data.description);
-        });
+        .then(() => {});
     }
   }, [id, featuredLoading, reset, data]);
 
@@ -52,19 +61,19 @@ const AddTeamForm: React.FC<AddTeamFormProps> = ({
       {!featuredLoading && (
         <Formik
           initialValues={{
-            name: data?.name || "",
-            description: data?.description || "",
+            reason: data?.reason || "",
+            startDate: data?.startDate || "",
+            endDate: data?.startDate || "",
           }}
           onSubmit={(values, { resetForm }) => {
             if (id) {
-              updateTeam({ body: values, id })
+              updateLeave({ body: values, id })
                 .unwrap()
                 .then(() => {
-                  getTeam(id);
                   resetForm();
-
+                  getLeaves("");
+                  setDescription("");
                   toast.success("Action successful");
-
                   if (callBackAction) {
                     callBackAction();
                   }
@@ -75,11 +84,11 @@ const AddTeamForm: React.FC<AddTeamFormProps> = ({
             }
 
             if (!id) {
-              addTeam(values)
+              addLeave(values)
                 .unwrap()
                 .then(() => {
                   resetForm();
-
+                  getLeaves("");
                   setDescription("");
                   toast.success("Action successful");
                   if (callBackAction) {
@@ -93,38 +102,50 @@ const AddTeamForm: React.FC<AddTeamFormProps> = ({
           }}
         >
           {({ errors, touched, values }) => {
-            useEffect(() => {
-              values.name = data?.name;
-            }, [data]);
             return (
               <Form
                 encType="multipart/form-data"
                 className="flex flex-col gap-3"
               >
-                <Input
-                  title="Team Name"
-                  name="name"
-                  touched={touched.name}
-                  errors={errors.name}
-                  placeholder="Enter title"
-                  width="h-[36px] w-[100%] rounded-[5px]"
-                />
-
                 <div>
-                  <p className="text-[0.865rem] font-[500]">Team Description</p>
+                  <p className="text-[0.865rem] font-[500]">Reason</p>
                   <textarea
                     className="h-[200px] w-[100%] rounded-[5px] p-[5px] border-[1px]"
-                    name="description"
-                    placeholder="Description"
+                    name="reason"
+                    placeholder="Enter Reason.."
                     onChange={(e) => {
-                      values.description = e.target.value;
+                      values.reason = e.target.value;
                       setDescription(e.target.value);
                     }}
                     value={description}
                   ></textarea>
                 </div>
 
-                <Button isLoading={isLoading || updateLoading}>Add Team</Button>
+                <div className="flex justify-center items-center gap-4">
+                  <Input
+                    title="Start Date"
+                    name="startDate"
+                    type="date"
+                    touched={touched.startDate}
+                    errors={errors.startDate}
+                    placeholder="Enter title"
+                    width="h-[36px] w-[100%] rounded-[5px]"
+                  />
+
+                  <Input
+                    title="Start Date"
+                    name="endDate"
+                    type="date"
+                    touched={touched.endDate}
+                    errors={errors.endDate}
+                    placeholder="Enter title"
+                    width="h-[36px] w-[100%] rounded-[5px]"
+                  />
+                </div>
+
+                <Button isLoading={isLoading || updateLoading}>
+                  Add Leave
+                </Button>
               </Form>
             );
           }}
@@ -134,4 +155,4 @@ const AddTeamForm: React.FC<AddTeamFormProps> = ({
   );
 };
 
-export default AddTeamForm;
+export default AddLeaveForm;

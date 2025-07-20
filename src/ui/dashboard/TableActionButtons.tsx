@@ -71,41 +71,43 @@ const TableActionButtons: FunctionComponent<ITableActionButtonsProps> = ({
   }, []);
 
   return (
-    <div className="relative">
-      <BiDotsHorizontal
-        className="cursor-pointer"
+    <div className="relative  z-[100]">
+      <div
+        className="bg-neutral-450 cursor-pointer p-[10px] rounded max-w-[40px]"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-      />
+      >
+        <BiDotsHorizontal className="text-neutral-50 mx-auto" />
+      </div>
 
       {(showActions || isRowHovered) && (
         <div
           className={clsx(
-            "absolute bg-[#fff] w-[full] h-[24px] -top-[3px]  flex border-[1px] justify-evenly rounded-[4px] overflow-hidden"
+            "absolute bg-[#fff] w-[full] h-[40px] left-0 -top-[3px]  flex border-[1px] justify-evenly items-center rounded-[4px] overflow-hidden"
           )}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           {setShow && hasViewPermission && (
-            <div className="px-[12px] flex-none border-r-[1px]">
-              <Eye
-                className="w-[10px] cursor-pointer"
-                onClick={setShow || (() => {})}
-              />
+            <div
+              className="px-[20px] flex-none border-r-[1px] "
+              onClick={setShow || (() => {})}
+            >
+              <Eye className="w-[10px] cursor-pointer" />
             </div>
           )}
           {handleEdit && hasEditPermission && (
-            <div className="px-[12px] flex-none border-r-[1px]">
-              <Pen
-                className="w-[10px] cursor-pointer"
-                onClick={handleEdit || (() => {})}
-              />
+            <div
+              className="px-[20px] flex-none border-r-[1px]"
+              onClick={handleEdit || (() => {})}
+            >
+              <Pen className="w-[10px] cursor-pointer" />
             </div>
           )}
           {handleClear &&
             hasClearPermission &&
             clearanceStatus !== "CLEARED" && (
-              <div className="px-[12px] flex-none border-r-[1px]">
+              <div className="px-[20px] flex-none border-r-[1px]">
                 <PlaneTakeoff
                   className="w-[10px] cursor-pointer"
                   onClick={handleClear || (() => {})}
@@ -114,7 +116,7 @@ const TableActionButtons: FunctionComponent<ITableActionButtonsProps> = ({
             )}
 
           {handleSave && (
-            <div className="px-[12px] flex-none border-r-[1px]">
+            <div className="px-[20px] flex-none border-r-[1px]">
               <CloudDownload
                 className="w-[10px] cursor-pointer"
                 onClick={handleSave || (() => {})}
@@ -123,7 +125,7 @@ const TableActionButtons: FunctionComponent<ITableActionButtonsProps> = ({
           )}
 
           {handleSend && (
-            <div className="px-[12px] flex-none border-r-[1px]">
+            <div className="px-[20px] flex-none border-r-[1px]">
               <Mail
                 className="w-[10px] cursor-pointer"
                 onClick={handleSend || (() => {})}
@@ -132,7 +134,7 @@ const TableActionButtons: FunctionComponent<ITableActionButtonsProps> = ({
           )}
 
           {handleConfirm && status !== "SUCCESS" && (
-            <div className="px-[12px] flex-none border-r-[1px]">
+            <div className="px-[20px] flex-none border-r-[1px]">
               <CircleCheck
                 className="w-[10px] cursor-pointer "
                 onClick={handleConfirm || (() => {})}
@@ -141,11 +143,11 @@ const TableActionButtons: FunctionComponent<ITableActionButtonsProps> = ({
           )}
 
           {handleDelete && hasDeletePermission && (
-            <div className="px-[12px] flex-none bg-[#EEEEF0] w-[100%]">
-              <Trash2
-                className="w-[10px] cursor-pointer "
-                onClick={handleDelete || (() => {})}
-              />
+            <div
+              onClick={handleDelete || (() => {})}
+              className="px-[20px] flex-none  "
+            >
+              <Trash2 className="w-[10px] cursor-pointer " />
             </div>
           )}
         </div>

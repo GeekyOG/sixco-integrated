@@ -16,9 +16,11 @@ import DashboardBox from "../ui/dashboard/DashboardBox";
 import { BiTask } from "react-icons/bi";
 import ProjectModal from "../modules/teams/ProjectModal";
 import MemberModal from "../modules/teams/MemberModal";
-import { taskColumns } from "../modules/teams/taskColumns";
+import { useGetPortfolioQuery } from "../api/portfolio";
 
-function TeamDetails() {
+const { Option } = Select;
+
+function ProjectDetails() {
   const [open, setOpen] = useState(false);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const [taskModalOpen, setTaskModalOpen] = useState(false);
@@ -26,15 +28,8 @@ function TeamDetails() {
   const [memberModalOpen, setMemberModalOpen] = useState(false);
 
   const { id } = useParams();
-  const { data: teamsData, isFetching } = useGetTeamQuery(id);
+  const { data: teamsData, isFetching } = useGetPortfolioQuery(id);
   const [searchTerm, setSearchTerm] = useState("");
-  const tasksWithProjectNames =
-    teamsData?.projects?.flatMap((item) =>
-      item.tasks.map((task) => ({
-        name: item.name,
-        ...task,
-      }))
-    ) || [];
 
   return (
     <div>
@@ -43,7 +38,7 @@ function TeamDetails() {
         <div className="mt-[32px] flex justify-between ">
           <div>
             <p className="text-[1.5rem] font-[700] text-neutral-450">
-              {teamsData?.teamName ?? "--"}
+              {teamsData?.name ?? "--"}
             </p>
             <p className="max-w-[450px]">{teamsData?.description ?? "--"}</p>
           </div>
@@ -72,7 +67,7 @@ function TeamDetails() {
         <Card className="w-[50%]">
           <div className="flex justify-between items-center">
             <p className="py-4 font-[700] text-neutral-450">
-              Team Members ({teamsData?.users.length ?? 0})
+              Team Members ({teamsData?.Users.length ?? 0})
             </p>
             <Button
               className="bg-transparent border text-neutral-550 flex rounded-md gap-3 items-center"
@@ -92,7 +87,7 @@ function TeamDetails() {
           </div>
           <DashboardTable
             columns={membersColumns}
-            data={teamsData?.users ?? []}
+            data={teamsData?.Users ?? []}
             type="teams"
             isFetching={false}
           />
@@ -121,7 +116,7 @@ function TeamDetails() {
           </div>
           <DashboardTable
             columns={projectColumns}
-            data={teamsData?.projects ?? []}
+            data={teamsData?.Projects ?? []}
             type="teams"
             isFetching={false}
           />
@@ -151,9 +146,9 @@ function TeamDetails() {
             />
           </div>
           <DashboardTable
-            columns={taskColumns}
-            data={tasksWithProjectNames || []}
-            type="task"
+            columns={projectColumns}
+            data={[]}
+            type="teams"
             isFetching={false}
           />
         </Card>
@@ -189,4 +184,4 @@ function TeamDetails() {
   );
 }
 
-export default TeamDetails;
+export default ProjectDetails;

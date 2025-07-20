@@ -5,7 +5,11 @@ import Input from "../../components/input/Input";
 import Button from "../../ui/Button";
 import Toggle from "react-toggle";
 import { toast } from "react-toastify";
-import { useRegisterUserMutation } from "../../api/authApi";
+import {
+  useLazyGetUserQuery,
+  useRegisterUserMutation,
+  useUpdateUserMutation,
+} from "../../api/authApi";
 import {
   useAddClientMutation,
   useLazyGetClientsQuery,
@@ -23,11 +27,10 @@ function AddStaff({ open, setShowDrawer, id }: AddStaffProps) {
     setShowDrawer(false);
   };
 
-  const [registerUser, { isLoading }] = useRegisterUserMutation();
-  const [addClient, { isLoading: clientLoading }] = useAddClientMutation();
+  const [addClient, { isLoading: clientLoading }] = useRegisterUserMutation();
   const [updateClients, { isLoading: updateClientLoading }] =
-    useUpdateClientsMutation();
-  const [getClient, { data }] = useLazyGetClientsQuery();
+    useUpdateUserMutation();
+  const [getClient, { data }] = useLazyGetUserQuery();
 
   useEffect(() => {
     if (id) {
@@ -41,7 +44,7 @@ function AddStaff({ open, setShowDrawer, id }: AddStaffProps) {
   };
 
   return (
-    <Drawer title="Add User" onClose={onClose} open={open}>
+    <Drawer title="Add Staff" onClose={onClose} open={open}>
       <div>
         <Formik
           initialValues={{
@@ -61,10 +64,11 @@ function AddStaff({ open, setShowDrawer, id }: AddStaffProps) {
                   firstName: data?.firstName ?? "",
                   lastName: data?.lastName ?? "",
                   email: data?.email ?? "",
+                  role: "admin",
                 },
               });
             } else {
-              registerUser(values)
+              addClient(values)
                 .unwrap()
                 .then((res) => {
                   toast.success("User added successfully!");
@@ -114,12 +118,10 @@ function AddStaff({ open, setShowDrawer, id }: AddStaffProps) {
               />
 
               <Button
-                isLoading={isLoading || clientLoading || updateClientLoading}
+                isLoading={clientLoading || updateClientLoading}
                 className="h-[56px]"
               >
-                {isLoading || clientLoading || updateClientLoading
-                  ? "Loading.."
-                  : "Submit"}
+                {clientLoading || updateClientLoading ? "Loading.." : "Submit"}
               </Button>
             </Form>
           )}

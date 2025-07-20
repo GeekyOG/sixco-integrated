@@ -14,6 +14,9 @@ import ResetPassword from "../pages/ResetPassword";
 import Staffs from "../pages/Staffs";
 import Teams from "../pages/Teams";
 import TeamDetails from "../pages/TeamDetails";
+import ProjectDetails from "../pages/ProjectDetails";
+import Reports from "../pages/Reports";
+import Leaves from "../pages/Leaves";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +56,10 @@ const router = createBrowserRouter([
         element: <Portfolio />,
       },
       {
+        path: "/dashboard/projects/:id",
+        element: <ProjectDetails />,
+      },
+      {
         path: "/dashboard/users",
         element: <Users />,
       },
@@ -67,6 +74,16 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/teams/:id",
         element: <TeamDetails />,
+      },
+
+      {
+        path: "/dashboard/reports",
+        element: <Reports />,
+      },
+
+      {
+        path: "/dashboard/leaves",
+        element: <Leaves />,
       },
       {
         path: "/dashboard/settings",

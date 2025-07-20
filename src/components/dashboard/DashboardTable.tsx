@@ -4,6 +4,7 @@ import React from "react";
 // import TableActionButtons from "../../ui/dashboard/TableActionButtons";
 import ActionButtons from "./ActionButtons";
 import MobileTable from "./MobileTable";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface DashboardTableProps {
   columns: ColumnsType;
@@ -66,6 +67,28 @@ function DashboardTable({
         loading={isFetching}
         rowKey="id"
         rowClassName={() => "custom-table-row"}
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: false,
+          itemRender: (page, type, originalElement) => {
+            if (type === "prev") {
+              return (
+                <a className="custom-prev">
+                  <ChevronLeft />
+                </a>
+              );
+            }
+            if (type === "next") {
+              return (
+                <a className="custom-next">
+                  <ChevronRight />
+                </a>
+              );
+            }
+            return originalElement;
+          },
+          className: "custom-pagination",
+        }}
       />
     </div>
   );

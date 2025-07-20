@@ -8,6 +8,7 @@ export default {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+
       colors: {
         primary: {
           DEFAULT: "#07b6b0",
@@ -111,7 +112,7 @@ export default {
         md: "768px",
         lg: "976px",
         xl: "1440px",
-        xxl: "1600px"
+        xxl: "1600px",
       },
 
       letterSpacing: {

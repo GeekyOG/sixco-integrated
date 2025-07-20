@@ -76,7 +76,7 @@ export const authApi = createApi({
 
     getUser: builder.query({
       query: (id) => ({
-        url: `auth.users/${id}`,
+        url: `auth/users/${id}`,
       }),
     }),
 

@@ -6,24 +6,23 @@ import { format } from "date-fns";
 
 export const columns: ColumnsType = [
   {
-    title: "Name",
-    dataIndex: "",
-    key: "",
+    title: "Request By",
+    dataIndex: "name",
+    key: "name",
     render(_, value) {
-      console.log(value);
-
-      return <p>{value.name}</p>;
-    },
-  },
-
-  {
-    title: "Description",
-    dataIndex: "image",
-    key: "image",
-    render(_, value) {
-      console.log(value);
-
-      return <p>{value.description}</p>;
+      return (
+        <div className="font-[400] text-neutral-400">
+          <p>
+            <span className="font-[600] text-neutral-700">Name</span> :
+            {value.User.firstName} {value.User.lastName}{" "}
+          </p>
+          <p>
+            {" "}
+            <span className="font-[600] text-neutral-700">Reason</span> :
+            {value.reason}{" "}
+          </p>
+        </div>
+      );
     },
   },
 

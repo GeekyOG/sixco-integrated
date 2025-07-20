@@ -2,15 +2,16 @@ import { ColumnsType } from "antd/es/table";
 import React from "react";
 import StatusPill from "../../ui/StatusPill";
 import { format } from "date-fns";
+import { Avatar } from "antd";
 // import React from "react";
 
 export const columns: ColumnsType = [
   {
     title: "Team Name",
-    dataIndex: "name",
-    key: "name",
+    dataIndex: "teamName",
+    key: "teamName",
     render(_, value) {
-      return <p>{value.name}</p>;
+      return <p>{value.teamName}</p>;
     },
   },
   {
@@ -22,11 +23,21 @@ export const columns: ColumnsType = [
 
   {
     title: "Team Members",
-    dataIndex: "Users",
-    key: "Users",
-    render: (value) => <p className="text-[0.75rem]">{"--"}</p>,
-  },
+    dataIndex: "users",
+    key: "users",
+    render: (users: { firstName: string }[]) => {
+      return (
+        <div>
+          {users?.length == 0 && "--"}
+          {users?.slice(0, 5).map((user, i) => (
+            <Avatar icon={user.firstName[0]} />
+          ))}
 
+          {users.length > 5 && `+ ${users.length - 5}`}
+        </div>
+      );
+    },
+  },
   {
     title: "Date added",
     dataIndex: "createdAt",

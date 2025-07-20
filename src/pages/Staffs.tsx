@@ -67,7 +67,7 @@ function Staffs() {
         <DashboardTable
           columns={clientsColumns}
           data={clientsData?.users ?? []}
-          type="client"
+          type="staff"
           isFetching={isFetching}
         />
         <AddStaff open={open} setShowDrawer={setOpen} />

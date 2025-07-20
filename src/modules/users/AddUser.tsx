@@ -5,7 +5,10 @@ import Input from "../../components/input/Input";
 import Button from "../../ui/Button";
 import Toggle from "react-toggle";
 import { toast } from "react-toastify";
-import { useRegisterUserMutation } from "../../api/authApi";
+import {
+  useRegisterUserMutation,
+  useUpdateUserMutation,
+} from "../../api/authApi";
 import {
   useAddClientMutation,
   useLazyGetClientsQuery,
@@ -23,10 +26,10 @@ function AddUser({ open, setShowDrawer, id }: AddUserProps) {
     setShowDrawer(false);
   };
 
-  const [registerUser, { isLoading }] = useRegisterUserMutation();
+  const [getClients] = useLazyGetClientsQuery();
   const [addClient, { isLoading: clientLoading }] = useAddClientMutation();
   const [updateClients, { isLoading: updateClientLoading }] =
-    useUpdateClientsMutation();
+    useUpdateUserMutation();
   const [getClient, { data }] = useLazyGetClientsQuery();
 
   useEffect(() => {
@@ -43,7 +46,7 @@ function AddUser({ open, setShowDrawer, id }: AddUserProps) {
   console.log(id, isClient);
 
   return (
-    <Drawer title="Add User" onClose={onClose} open={open}>
+    <Drawer title="Add Client" onClose={onClose} open={open}>
       <div>
         <Formik
           initialValues={{
@@ -63,30 +66,20 @@ function AddUser({ open, setShowDrawer, id }: AddUserProps) {
                   firstName: data?.firstName ?? "",
                   lastName: data?.lastName ?? "",
                   email: data?.email ?? "",
+                  phoneNumber: data?.phoneNumber ?? "",
                 },
               });
             } else {
-              if (isClient) {
-                addClient(values)
-                  .unwrap()
-                  .then((res) => {
-                    toast.success("User added successfully!");
-                    setShowDrawer(false);
-                  })
-                  .catch((err) => {
-                    toast.error(err.data?.message || "Failed to add user");
-                  });
-              } else {
-                registerUser(values)
-                  .unwrap()
-                  .then((res) => {
-                    toast.success("User added successfully!");
-                    setShowDrawer(false);
-                  })
-                  .catch((err) => {
-                    toast.error(err.data?.message || "Failed to add user");
-                  });
-              }
+              addClient(values)
+                .unwrap()
+                .then((res) => {
+                  getClients("");
+                  toast.success("User added successfully!");
+                  setShowDrawer(false);
+                })
+                .catch((err) => {
+                  toast.error(err.data?.message || "Failed to add user");
+                });
             }
           }}
         >
@@ -124,12 +117,10 @@ function AddUser({ open, setShowDrawer, id }: AddUserProps) {
               />
 
               <Button
-                isLoading={isLoading || clientLoading || updateClientLoading}
+                isLoading={clientLoading || updateClientLoading}
                 className="h-[56px]"
               >
-                {isLoading || clientLoading || updateClientLoading
-                  ? "Loading.."
-                  : "Submit"}
+                {clientLoading || updateClientLoading ? "Loading.." : "Submit"}
               </Button>
             </Form>
           )}

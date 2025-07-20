@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { useLocation } from "react-router-dom";
-import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
-import { DecodedData } from "../types/DecodedDataType";
+
 import SidebarTab from "./SidebarTab";
 import {
   ArrowLeftRight,
-  CalendarRange,
   ChevronLeft,
   File,
   LayoutGrid,
@@ -20,6 +17,8 @@ import {
 } from "lucide-react";
 import Button from "../ui/Button";
 import { FcCollaboration } from "react-icons/fc";
+import { BsPeople } from "react-icons/bs";
+import { GoReport } from "react-icons/go";
 
 export const mainMenuOptions = [
   { text: "Overview", url: "/dashboard", icon: <LayoutGrid size={16} /> },
@@ -37,11 +36,23 @@ export const mainMenuOptions = [
   {
     text: "Manage Teams",
     url: "/dashboard/teams",
-    icon: <FcCollaboration size={16} />,
+    icon: <BsPeople size={16} />,
   },
   {
     text: "Manage Projects",
     url: "/dashboard/projects",
+    icon: <File size={16} />,
+  },
+
+  {
+    text: "Manage Reports",
+    url: "/dashboard/reports",
+    icon: <GoReport size={16} />,
+  },
+
+  {
+    text: "Leave Requests",
+    url: "/dashboard/leaves",
     icon: <ArrowLeftRight size={16} />,
   },
 
