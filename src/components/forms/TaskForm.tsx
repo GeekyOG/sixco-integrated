@@ -8,7 +8,7 @@ import { Select } from "antd";
 
 const { Option } = Select;
 
-import { useGetTeamQuery } from "../../api/teamsApi";
+import { useGetTeamQuery, useLazyGetTeamQuery } from "../../api/teamsApi";
 import {
   useAddTaskMutation,
   useLazyGetTaskQuery,
@@ -27,6 +27,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ reset, callBackAction, id }) => {
   const { id: teamId } = useParams();
   const [addTask, { isLoading }] = useAddTaskMutation();
   const [getTask, { data, isLoading: featuredLoading }] = useLazyGetTaskQuery();
+  const [getTeam, {}] = useLazyGetTeamQuery();
+
   const [updateTask, { isLoading: updateLoading }] = useUpdateTaskMutation();
   const { data: teamsData, isFetching } = useGetTeamQuery(teamId);
 
@@ -39,6 +41,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ reset, callBackAction, id }) => {
         });
     }
   }, [id, featuredLoading, reset, data]);
+
+  console.log(teamsData?.users);
 
   return (
     <div>
@@ -66,6 +70,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ reset, callBackAction, id }) => {
                 .unwrap()
                 .then(() => {
                   getTask(id);
+                  getTeam(teamId);
                   resetForm();
 
                   toast.success("Action successful");
@@ -84,7 +89,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ reset, callBackAction, id }) => {
                 .unwrap()
                 .then(() => {
                   resetForm();
-
+                  getTeam(teamId);
                   setDescription("");
                   toast.success("Action successful");
                   if (callBackAction) {
@@ -125,7 +130,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ reset, callBackAction, id }) => {
                     }
                   >
                     {teamsData?.users?.map((user) => (
-                      <Option key={user.id} value={user.id}>
+                      <Option key={user.userId} value={user.userId}>
                         {user.firstName} {user.lastName}
                       </Option>
                     ))}

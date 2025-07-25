@@ -38,6 +38,8 @@ function LoginForm() {
               secure: true,
             });
 
+            localStorage.setItem("userData", JSON.stringify(response.user));
+
             Cookies.set("refreshToken", refreshToken, {
               sameSite: "Strict",
               secure: true,

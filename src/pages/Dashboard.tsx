@@ -41,9 +41,13 @@ function Dashboard() {
     setWhatForm("Portfolio");
   };
 
+  const userData = JSON.parse(localStorage.getItem("userData") ?? "");
+
   return (
     <div className="pb-[200px]">
-      <h1 className="font-[600] text-[1.25rem]">Welcome !</h1>
+      <h1 className="font-[600] text-[1.25rem]">
+        Welcome {userData.firstName}!
+      </h1>
       <p>Get Started Managing projects.</p>
       <div className="flex gap-3 mt-5 flex-col md:flex-row">
         <DashboardBox

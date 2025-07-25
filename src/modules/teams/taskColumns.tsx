@@ -37,7 +37,7 @@ export const taskColumns: ColumnsType = [
     key: "dueDate",
     render: (value) => (
       <p className="text-[0.75rem]">
-        {formatDate(new Date(value), "MM-dd-yyyy") ?? "--"}
+        {format(value, "MMMM d, yyyy").toLocaleString()}
       </p>
     ),
   },
