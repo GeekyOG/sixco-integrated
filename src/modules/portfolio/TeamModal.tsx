@@ -4,67 +4,64 @@ import { Formik, Form, Field } from "formik";
 import {
   useAssignTeamMutation,
   useGetAllPortfolioQuery,
+  useLazyGetPortfolioQuery,
 } from "../../api/portfolio";
 import { useParams } from "react-router-dom";
 import Button from "../../ui/Button";
-import { useLazyGetTeamQuery } from "../../api/teamsApi";
+import { useGetAllTeamQuery, useLazyGetTeamQuery } from "../../api/teamsApi";
 import { toast } from "react-toastify";
 
 const { Option } = Select;
 
-interface ProjectModalProps {
-  projectModalOpen: boolean;
-  setProjectModalOpen: (value: React.SetStateAction<boolean>) => void;
+interface TeamModalProps {
+  teamModalOpen: boolean;
+  setTeamModalOpen: (value: React.SetStateAction<boolean>) => void;
 }
 
-function ProjectModal({
-  projectModalOpen,
-  setProjectModalOpen,
-}: ProjectModalProps) {
+function TeamModal({ teamModalOpen, setTeamModalOpen }: TeamModalProps) {
   const { id } = useParams();
-  const { data: projectOptions } = useGetAllPortfolioQuery("");
-  const [getTeam] = useLazyGetTeamQuery();
+  const { data: teamOptions } = useGetAllTeamQuery("");
+  const [getProject] = useLazyGetPortfolioQuery();
   const [assignTeam, { isLoading }] = useAssignTeamMutation();
 
   // Parse id safely
-  const teamId = id ? parseInt(id) : null;
+  const projectId = id ? parseInt(id) : null;
 
   // Only render if teamId is valid
-  if (!teamId) return null;
+  if (!projectId) return null;
 
   return (
     <Modal
       title={null}
-      open={projectModalOpen}
+      open={teamModalOpen}
       onCancel={() => {
         console.log("Modal closed");
-        setProjectModalOpen(false);
+        setTeamModalOpen(false);
       }}
       footer={null}
       destroyOnClose
     >
       <Formik
         initialValues={{
-          teamId: teamId,
+          teamId: "",
           projectId: "",
-          role: "",
           note: "",
         }}
         onSubmit={(values, { setSubmitting }) => {
           assignTeam({
-            teamId: id ?? "",
-            projectId: values.projectId,
-            role: values.role,
+            teamId: values.teamId,
+            projectId: id,
+
             note: values.note,
           })
             .unwrap()
             .then(() => {
-              getTeam(id);
-              toast.success("Project added successfully!");
-              setTimeout(() => setProjectModalOpen(false), 100); // Safe modal close
+              getProject(id);
+              toast.success("Team added successfully!");
+              setTimeout(() => setTeamModalOpen(false), 100); // Safe modal close
             })
             .catch((err) => {
-              toast.error(err?.data?.message || "Failed to assign project");
+              toast.error(err?.data?.message || "Failed to assign Team");
             })
             .finally(() => setSubmitting(false));
         }}
@@ -72,7 +69,7 @@ function ProjectModal({
         {({ setFieldValue }) => (
           <Form className="space-y-4">
             <p className="text-[1.25rem] font-[600] text-neutral-400">
-              Assign Project to Team
+              Assign Team to Project
             </p>
 
             <Card>
@@ -82,17 +79,17 @@ function ProjectModal({
                   <Select
                     showSearch
                     className="w-full"
-                    placeholder="Select a project"
-                    onChange={(value) => setFieldValue("projectId", value)}
+                    placeholder="Select a Team"
+                    onChange={(value) => setFieldValue("teamId", value)}
                     filterOption={(input, option: any) =>
                       option?.children
                         ?.toLowerCase()
                         .includes(input.toLowerCase())
                     }
                   >
-                    {projectOptions?.projects?.map((project) => (
-                      <Option key={project.id} value={project.id}>
-                        {project.name}
+                    {teamOptions?.teams?.map((team) => (
+                      <Option key={team.teamId} value={team.teamId}>
+                        {team.teamName}
                       </Option>
                     ))}
                   </Select>
@@ -122,4 +119,4 @@ function ProjectModal({
   );
 }
 
-export default ProjectModal;
+export default TeamModal;

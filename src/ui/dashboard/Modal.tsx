@@ -25,7 +25,7 @@ function DialogContainer({
   isLoading,
 }: DialogContainerProps) {
   return (
-    <div className="z-[100] fixed top-0 right-0 left-0 bottom-0 bg-[#0000005f] flex justify-center items-center">
+    <div className="z-[1000] fixed top-0 right-0 left-0 bottom-0 bg-[#0000005f] flex justify-center items-center">
       <div className="md:w-[480px] w-[90%] overflow-hidden p-0 bg-[#fff] rounded-[10px]">
         <div>
           <div

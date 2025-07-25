@@ -53,6 +53,19 @@ export const portfolioApi = createApi({
       }),
     }),
 
+    getClientProject: builder.query({
+      query: (id) => ({
+        url: `projects/clients/${id}`,
+      }),
+    }),
+
+    removeProject: builder.mutation({
+      query: ({ projectId, id }) => ({
+        url: `projects/${projectId}/clients/${id}`,
+        method: "DELETE",
+      }),
+    }),
+
     deletePortfolio: builder.mutation({
       query: (id) => ({
         url: `projects/${id}`,
@@ -73,4 +86,8 @@ export const {
   useAddClientToProjectMutation,
   useAssignTeamMutation,
   useGetProjectMembersQuery,
+  useGetClientProjectQuery,
+  useLazyGetClientProjectQuery,
+  useLazyGetProjectMembersQuery,
+  useRemoveProjectMutation,
 } = portfolioApi;

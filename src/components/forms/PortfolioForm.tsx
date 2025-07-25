@@ -57,6 +57,7 @@ const AddPortfolioForm: React.FC<AddPortfolioFormProps> = ({
       )}
       {!featuredLoading && (
         <Formik
+          enableReinitialize={true}
           initialValues={{
             name: data?.name || "",
             description: data?.description || "",

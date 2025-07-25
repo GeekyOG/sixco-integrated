@@ -51,8 +51,9 @@ const AddTeamForm: React.FC<AddTeamFormProps> = ({
       )}
       {!featuredLoading && (
         <Formik
+          enableReinitialize={true}
           initialValues={{
-            name: data?.name || "",
+            name: data?.teamName || "",
             description: data?.description || "",
           }}
           onSubmit={(values, { resetForm }) => {

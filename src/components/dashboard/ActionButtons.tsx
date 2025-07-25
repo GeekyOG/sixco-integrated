@@ -3,7 +3,10 @@ import TableActionButtons from "../../ui/dashboard/TableActionButtons";
 import DashboardDrawer from "./Drawer";
 import DialogContainer from "../../ui/dashboard/Modal";
 import { toast } from "react-toastify";
-import { useDeletePortfolioMutation } from "../../api/portfolio";
+import {
+  useDeletePortfolioMutation,
+  useRemoveProjectMutation,
+} from "../../api/portfolio";
 import { useDeleteLeaveMutation } from "../../api/leaveApi";
 import AddUser from "../../modules/users/AddUser";
 import { useDeleteClientsMutation } from "../../api/clientApi";
@@ -14,9 +17,19 @@ interface ActionButtonsProps {
   id: string;
   type: string;
   callBackAction?: () => void;
+  remove?: boolean;
+  removeAction?: string;
+  targetId?: string;
 }
 
-function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
+function ActionButtons({
+  id,
+  type,
+  callBackAction,
+  remove,
+  removeAction,
+  targetId,
+}: ActionButtonsProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
@@ -108,6 +121,17 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
     setDialogBtnText("Delete Request");
   };
 
+  const [showRemoveDialog, setShowRemoveDialog] = useState(false);
+
+  const [removeProject, { isLoading }] = useRemoveProjectMutation();
+
+  const handleProjectRemove = () => {
+    removeProject({
+      projectId: targetId,
+      id,
+    });
+  };
+
   return (
     <>
       {type === "teams" && (
@@ -119,7 +143,11 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
             handleEdit={() => {
               setDrawerOpen(true);
             }}
-            handleDelete={handleDeleteFeaturedDialog}
+            handleDelete={
+              remove
+                ? () => setShowRemoveDialog((prev) => !prev)
+                : handleDeleteFeaturedDialog
+            }
           />
         </>
       )}
@@ -133,7 +161,11 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
             handleEdit={() => {
               setDrawerOpen(true);
             }}
-            handleDelete={handleDeletePortfolioDialog}
+            handleDelete={
+              remove
+                ? () => setShowRemoveDialog((prev) => !prev)
+                : handleDeleteFeaturedDialog
+            }
           />
         </>
       )}
@@ -141,10 +173,17 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
       {type === "staff" && (
         <>
           <TableActionButtons
+            setShow={() => {
+              navigate(`/dashboard/staffs/${id}`);
+            }}
             handleEdit={() => {
               setOpenAddStaff(true);
             }}
-            handleDelete={handleDeleteClientDialog}
+            handleDelete={
+              remove
+                ? () => setShowRemoveDialog((prev) => !prev)
+                : handleDeleteFeaturedDialog
+            }
           />
         </>
       )}
@@ -155,7 +194,11 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
             handleEdit={() => {
               setDrawerOpen(true);
             }}
-            handleDelete={handleDeleteLeaveDialog}
+            handleDelete={
+              remove
+                ? () => setShowRemoveDialog((prev) => !prev)
+                : handleDeleteFeaturedDialog
+            }
           />
         </>
       )}
@@ -163,10 +206,17 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
       {type === "client" && (
         <>
           <TableActionButtons
+            setShow={() => {
+              navigate(`/dashboard/users/${id}`);
+            }}
             handleEdit={() => {
               setOpenAddCustomers(true);
             }}
-            handleDelete={handleDeleteClientDialog}
+            handleDelete={
+              remove
+                ? () => setShowRemoveDialog((prev) => !prev)
+                : handleDeleteFeaturedDialog
+            }
           />
         </>
       )}
@@ -215,6 +265,24 @@ function ActionButtons({ id, type, callBackAction }: ActionButtonsProps) {
               handleDeleteClient) ||
             (dialogTitle == "Delete Request Permanently" &&
               handleDeleteLeave) ||
+            function (): void {
+              throw new Error("Function not implemented.");
+            }
+          }
+        />
+      )}
+
+      {showRemoveDialog && (
+        <DialogContainer
+          setDialogOpen={setShowRemoveDialog}
+          title={"Remove Project from client"}
+          btnText={"remove"}
+          description={"This project would no longer appear under this client"}
+          isLoading={isLoading}
+          type={"delete"}
+          image={"/delete.svg"}
+          action={
+            (removeAction == "project" && handleProjectRemove) ||
             function (): void {
               throw new Error("Function not implemented.");
             }

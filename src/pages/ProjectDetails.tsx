@@ -17,6 +17,11 @@ import { BiTask } from "react-icons/bi";
 import ProjectModal from "../modules/teams/ProjectModal";
 import MemberModal from "../modules/teams/MemberModal";
 import { useGetPortfolioQuery } from "../api/portfolio";
+import { teamColumns } from "../modules/portfolio/teamsColumms";
+import { clientsColumns } from "../modules/portfolio/clientsColumns";
+import { taskColumns } from "../modules/teams/taskColumns";
+import TeamModal from "../modules/portfolio/TeamModal";
+import ClientModal from "../modules/portfolio/ClientModal";
 
 const { Option } = Select;
 
@@ -25,10 +30,10 @@ function ProjectDetails() {
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const [taskModalOpen, setTaskModalOpen] = useState(false);
 
-  const [memberModalOpen, setMemberModalOpen] = useState(false);
+  const [teamModalOpen, setTeamModalOpen] = useState(false);
 
   const { id } = useParams();
-  const { data: teamsData, isFetching } = useGetPortfolioQuery(id);
+  const { data: projectData, isFetching } = useGetPortfolioQuery(id);
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
@@ -38,26 +43,20 @@ function ProjectDetails() {
         <div className="mt-[32px] flex justify-between ">
           <div>
             <p className="text-[1.5rem] font-[700] text-neutral-450">
-              {teamsData?.name ?? "--"}
+              {projectData?.project?.name ?? "--"}
             </p>
-            <p className="max-w-[450px]">{teamsData?.description ?? "--"}</p>
+            <p className="max-w-[450px]">
+              {projectData?.project?.description ?? "--"}
+            </p>
           </div>
 
           <div className="flex gap-[16px]">
             <Button
-              className="bg-transparent border text-neutral-550 flex rounded-md gap-3 items-center py-0"
+              className="bg-transparent text-[0.865rem] border text-neutral-550 flex rounded-md gap-3 items-center py-[2px]"
               onClick={() => setOpen(!open)}
             >
               <Pencil size={14} />
-              <p>Edit Team Details</p>
-            </Button>
-
-            <Button
-              className="border flex rounded-md gap-3 items-center py-0"
-              onClick={() => setTaskModalOpen(!taskModalOpen)}
-            >
-              <BiTask size={14} />
-              <p>Assign Task</p>
+              <p>Edit Project Details</p>
             </Button>
           </div>
         </div>
@@ -66,15 +65,13 @@ function ProjectDetails() {
       <Container className="flex gap-6 mt-[16px]">
         <Card className="w-[50%]">
           <div className="flex justify-between items-center">
-            <p className="py-4 font-[700] text-neutral-450">
-              Team Members ({teamsData?.Users.length ?? 0})
-            </p>
+            <p className="py-4 font-[700] text-neutral-450">Teams</p>
             <Button
-              className="bg-transparent border text-neutral-550 flex rounded-md gap-3 items-center"
-              onClick={() => setMemberModalOpen(true)}
+              className="bg-transparent border text-neutral-550 flex rounded-md gap-3 items-center py-2 px-2"
+              onClick={() => setTeamModalOpen(true)}
             >
               <Plus size={14} />
-              <p>Add Team Member</p>
+              <p>Assign Team</p>
             </Button>
           </div>
           <div className="px-4 py-2 rounded-sm w-full mt-4 border flex items-center gap-2">
@@ -86,8 +83,8 @@ function ProjectDetails() {
             />
           </div>
           <DashboardTable
-            columns={membersColumns}
-            data={teamsData?.Users ?? []}
+            columns={teamColumns}
+            data={projectData?.Users ?? []}
             type="teams"
             isFetching={false}
           />
@@ -96,14 +93,14 @@ function ProjectDetails() {
         <Card className="w-[50%]">
           <div className="flex justify-between items-center">
             <p className="py-4 font-[700] text-neutral-450 max-w-[300px]">
-              Projects Assigned
+              Clients
             </p>
             <Button
               className="bg-transparent border text-neutral-550 flex rounded-md gap-3 items-center"
               onClick={() => setProjectModalOpen(true)}
             >
               <Plus size={14} />
-              <p>Add Project</p>
+              <p>Add Client</p>
             </Button>
           </div>
           <div className="px-4 py-2 rounded-sm w-full mt-4 border flex items-center gap-2">
@@ -115,9 +112,9 @@ function ProjectDetails() {
             />
           </div>
           <DashboardTable
-            columns={projectColumns}
-            data={teamsData?.Projects ?? []}
-            type="teams"
+            columns={clientsColumns}
+            data={projectData?.project.clients || []}
+            type="client"
             isFetching={false}
           />
         </Card>
@@ -127,7 +124,7 @@ function ProjectDetails() {
         <Card className="w-[100%]">
           <div className="flex justify-between items-center">
             <p className="py-4 font-[700] text-neutral-450 max-w-[300px]">
-              Team Tasks
+              Project Tasks
             </p>
             <Button
               className="bg-transparent border text-neutral-550 flex rounded-md gap-3 items-center "
@@ -146,9 +143,9 @@ function ProjectDetails() {
             />
           </div>
           <DashboardTable
-            columns={projectColumns}
+            columns={taskColumns}
             data={[]}
-            type="teams"
+            type="tasks"
             isFetching={false}
           />
         </Card>
@@ -158,7 +155,7 @@ function ProjectDetails() {
         callBackAction={() => {}}
         open={open}
         setOpen={setOpen}
-        whatForm={"teams"}
+        whatForm={"Portfolio"}
         id={id}
       />
 
@@ -170,15 +167,15 @@ function ProjectDetails() {
       />
 
       {/* Project Modal */}
-      <ProjectModal
-        projectModalOpen={projectModalOpen}
-        setProjectModalOpen={setProjectModalOpen}
+      <ClientModal
+        clientModalOpen={projectModalOpen}
+        setClientModalOpen={setProjectModalOpen}
       />
 
       {/* Add Members Modal */}
-      <MemberModal
-        memberModalOpen={memberModalOpen}
-        setMemberModalOpen={setMemberModalOpen}
+      <TeamModal
+        teamModalOpen={teamModalOpen}
+        setTeamModalOpen={setTeamModalOpen}
       />
     </div>
   );

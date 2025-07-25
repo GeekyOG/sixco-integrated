@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Container from "../ui/Container";
-import { ArrowRight, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import DashboardTable from "../components/dashboard/DashboardTable";
 import { columns } from "../modules/portfolio/columns";
 import DashboardDrawer from "../components/dashboard/Drawer";
 import Button from "../ui/Button";
-import { useLazyGetAllPortfolioQuery } from "../api/portfolio";
 import BreadCrumb from "../ui/BreadCrumb";
 import { useLazyGetAllReportQuery } from "../api/reportsApi";
 

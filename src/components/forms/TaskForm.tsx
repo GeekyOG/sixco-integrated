@@ -51,6 +51,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ reset, callBackAction, id }) => {
       )}
       {!featuredLoading && (
         <Formik
+          enableReinitialize={true}
           initialValues={{
             title: "",
             description: "",

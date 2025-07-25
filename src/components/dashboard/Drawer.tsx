@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Button, Drawer } from "antd";
+import React from "react";
+import { Drawer } from "antd";
 import AddPortfolioForm from "../forms/PortfolioForm";
-import AddImageForm from "../forms/ImageForm";
 import AddTeamForm from "../forms/TeamForm";
 import TaskForm from "../forms/TaskForm";
 import AddLeaveForm from "../forms/LeaveForm";
+import EditPortfolioFormForm from "../forms/EditPortfolioForm";
 
 interface DashboardDrawerProps {
   id?: string;
@@ -21,10 +21,6 @@ const DashboardDrawer: React.FC<DashboardDrawerProps> = ({
   callBackAction,
   id,
 }) => {
-  const showDrawer = () => {
-    setOpen(true);
-  };
-
   const onClose = () => {
     setOpen(false);
   };
@@ -33,6 +29,7 @@ const DashboardDrawer: React.FC<DashboardDrawerProps> = ({
     <>
       <Drawer
         title={
+          (whatForm == "Portfolio" && id && "Edit Project") ||
           (whatForm == "Portfolio" && "Manage Project") ||
           (whatForm == "tasks" && "Mange Task")
         }
@@ -41,11 +38,14 @@ const DashboardDrawer: React.FC<DashboardDrawerProps> = ({
       >
         {whatForm == "teams" && <AddTeamForm reset={open} id={id} />}
         {whatForm == "tasks" && <TaskForm reset={open} id={id} />}
-        {whatForm == "Portfolio" && (
-          <AddPortfolioForm
+        {whatForm == "Portfolio" && !id && (
+          <AddPortfolioForm reset={open} callBackAction={callBackAction} />
+        )}
+        {whatForm == "Portfolio" && id && (
+          <EditPortfolioFormForm
             reset={open}
-            id={id}
             callBackAction={callBackAction}
+            id={id}
           />
         )}
         {whatForm == "Leave" && <AddLeaveForm reset={open} id={id} />}

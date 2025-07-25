@@ -6,7 +6,7 @@ import { Avatar } from "antd";
 import { cn } from "../../utils/cn";
 // import React from "react";
 
-export const columns: ColumnsType = [
+export const teamColumns: ColumnsType = [
   {
     title: "Team Name",
     dataIndex: "teamName",
@@ -14,12 +14,6 @@ export const columns: ColumnsType = [
     render(_, value) {
       return <p>{value.teamName}</p>;
     },
-  },
-  {
-    title: "Description",
-    dataIndex: "description",
-    key: "description",
-    render: (value) => <p className="text-[0.75rem]">{value ?? "--"}</p>,
   },
 
   {
@@ -41,18 +35,6 @@ export const columns: ColumnsType = [
           ))}
 
           {users.length > 5 && `+ ${users.length - 5}`}
-        </div>
-      );
-    },
-  },
-  {
-    title: "Date added",
-    dataIndex: "createdAt",
-    key: "createdAt",
-    render: (item) => {
-      return (
-        <div className="capitalize">
-          {format(item, "MMMM d, yyyy").toLocaleString()}
         </div>
       );
     },

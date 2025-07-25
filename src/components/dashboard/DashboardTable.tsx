@@ -13,6 +13,9 @@ interface DashboardTableProps {
   isError?: boolean;
   type: string;
   callBackAction?: () => void;
+  remove?: boolean;
+  removeAction?: string;
+  targetId?: string;
 }
 
 function DashboardTable({
@@ -21,6 +24,9 @@ function DashboardTable({
   isFetching,
   type,
   callBackAction,
+  remove,
+  removeAction,
+  targetId,
 }: DashboardTableProps) {
   const columnWithAction = [
     ...columns,
@@ -31,8 +37,11 @@ function DashboardTable({
         return (
           <ActionButtons
             callBackAction={callBackAction}
+            remove={remove}
+            targetId={targetId}
+            removeAction={removeAction}
             type={type}
-            id={record.id}
+            id={record.id || record.teamId}
           />
         );
       },

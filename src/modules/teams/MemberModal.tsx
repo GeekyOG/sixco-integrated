@@ -105,6 +105,19 @@ function MemberModal({
                               onChange={(value) =>
                                 setFieldValue(`users[${index}].id`, value)
                               }
+                              filterOption={(input, option) => {
+                                const children = option?.children;
+                                const label =
+                                  typeof children === "string"
+                                    ? children
+                                    : Array.isArray(children)
+                                    ? children.join(" ")
+                                    : "";
+
+                                return label
+                                  .toLowerCase()
+                                  .includes(input.toLowerCase());
+                              }}
                             >
                               {userOptions?.users?.map((user) => (
                                 <Option key={user.id} value={user.id}>

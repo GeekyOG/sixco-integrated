@@ -1,34 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardBox from "../ui/dashboard/DashboardBox";
-import Container from "../ui/Container";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import DashboardTable from "../components/dashboard/DashboardTable";
 import { columns } from "../modules/portfolio/columns";
-import Cookies from "js-cookie";
-
-import {
-  useGetOverviewQuery,
-  useLazyGetOverviewQuery,
-} from "../api/overviewApi";
-import {
-  useGetAllPortfolioQuery,
-  useLazyGetAllPortfolioQuery,
-} from "../api/portfolio";
+import { useLazyGetAllPortfolioQuery } from "../api/portfolio";
 import DashboardDrawer from "../components/dashboard/Drawer";
-import { jwtDecode } from "jwt-decode";
 import AddUser from "../modules/users/AddUser";
-import { useGetAllClientsQuery } from "../api/clientApi";
+import { useLazyGetAllClientsQuery } from "../api/clientApi";
 import { clientsColumns } from "../modules/clients/columns";
 
 function Dashboard() {
-  const navigate = useNavigate();
-
-  const [getOverview, { isFetching: overviewLoading, data: overviewData }] =
-    useLazyGetOverviewQuery();
-
-  const { data: clientsData, isFetching: clientsFetching } =
-    useGetAllClientsQuery("");
+  const [getClients, { data: clientsData, isFetching: clientsFetching }] =
+    useLazyGetAllClientsQuery();
 
   const [getAllPortfolio, { data: portfolioData, isFetching }] =
     useLazyGetAllPortfolioQuery();
@@ -39,23 +23,28 @@ function Dashboard() {
 
   useEffect(() => {
     getAllPortfolio("");
-    getOverview("");
+    getClients("");
   }, []);
 
   const handleGetOverview = () => {
     setDrawerOpen(false);
-    getOverview("");
     getAllPortfolio("");
   };
 
+  const handleGetClients = () => {
+    setDrawerOpen(false);
+    getClients("");
+  };
+
   const handleAddPortfolio = () => {
-    setDrawerOpen(true);
+    setOpenAddCustomers(true);
     setWhatForm("Portfolio");
   };
 
   return (
     <div className="pb-[200px]">
-      <h1 className="font-[600] text-[1.25rem]">Welcome Oghomena!</h1>
+      <h1 className="font-[600] text-[1.25rem]">Welcome !</h1>
+      <p>Get Started Managing projects.</p>
       <div className="flex gap-3 mt-5 flex-col md:flex-row">
         <DashboardBox
           title={"Total Projects"}
@@ -64,7 +53,7 @@ function Dashboard() {
         />
         <DashboardBox
           title={"Total Completed Projects"}
-          value={overviewData?.portfolios ?? 0}
+          value={0}
           handleClick={handleAddPortfolio}
         />
         <DashboardBox
@@ -116,7 +105,7 @@ function Dashboard() {
           data={clientsData?.clients ?? []}
           isFetching={clientsFetching}
           type="client"
-          callBackAction={handleGetOverview}
+          callBackAction={handleGetClients}
         />
       </div>
       <DashboardDrawer

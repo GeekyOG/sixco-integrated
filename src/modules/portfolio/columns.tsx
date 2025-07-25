@@ -39,11 +39,7 @@ export const columns: ColumnsType = [
     dataIndex: "startDate",
     key: "startDate",
     render: (item) => {
-      return (
-        <div className="capitalize">
-          {format(item, "yyyy/MM/dd").toLocaleString()}
-        </div>
-      );
+      return <div className="capitalize">{format(item, "MMMM d, yyyy")}</div>;
     },
   },
 
@@ -52,11 +48,7 @@ export const columns: ColumnsType = [
     dataIndex: "endDate",
     key: "endDate",
     render: (item) => {
-      return (
-        <div className="capitalize">
-          {format(item, "yyyy/MM/dd").toLocaleString()}
-        </div>
-      );
+      return <div className="capitalize">{format(item, "MMMM d, yyyy")}</div>;
     },
   },
 ];

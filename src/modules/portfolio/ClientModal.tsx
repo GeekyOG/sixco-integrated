@@ -2,66 +2,70 @@ import React from "react";
 import { Card, Modal, Select, Input as AntInput } from "antd";
 import { Formik, Form, Field } from "formik";
 import {
+  useAddClientToProjectMutation,
   useAssignTeamMutation,
-  useGetAllPortfolioQuery,
+  useLazyGetPortfolioQuery,
 } from "../../api/portfolio";
 import { useParams } from "react-router-dom";
 import Button from "../../ui/Button";
 import { useLazyGetTeamQuery } from "../../api/teamsApi";
 import { toast } from "react-toastify";
+import {
+  useAddClientMutation,
+  useGetAllClientsQuery,
+} from "../../api/clientApi";
 
 const { Option } = Select;
 
-interface ProjectModalProps {
-  projectModalOpen: boolean;
-  setProjectModalOpen: (value: React.SetStateAction<boolean>) => void;
+interface ClientModalProps {
+  clientModalOpen: boolean;
+  setClientModalOpen: (value: React.SetStateAction<boolean>) => void;
 }
 
-function ProjectModal({
-  projectModalOpen,
-  setProjectModalOpen,
-}: ProjectModalProps) {
+function ClientModal({
+  clientModalOpen,
+  setClientModalOpen,
+}: ClientModalProps) {
   const { id } = useParams();
-  const { data: projectOptions } = useGetAllPortfolioQuery("");
-  const [getTeam] = useLazyGetTeamQuery();
-  const [assignTeam, { isLoading }] = useAssignTeamMutation();
+  const { data: clientOptions } = useGetAllClientsQuery("");
+  const [getProject] = useLazyGetPortfolioQuery();
+  const [assignTeam, { isLoading }] = useAddClientToProjectMutation();
 
   // Parse id safely
-  const teamId = id ? parseInt(id) : null;
+  const projectId = id ? parseInt(id) : null;
 
-  // Only render if teamId is valid
-  if (!teamId) return null;
+  // Only render if projectId is valid
+  if (!projectId) return null;
 
   return (
     <Modal
       title={null}
-      open={projectModalOpen}
+      open={clientModalOpen}
       onCancel={() => {
         console.log("Modal closed");
-        setProjectModalOpen(false);
+        setClientModalOpen(false);
       }}
       footer={null}
       destroyOnClose
     >
       <Formik
         initialValues={{
-          teamId: teamId,
-          projectId: "",
+          clientId: "",
+          projectId: projectId,
           role: "",
           note: "",
         }}
         onSubmit={(values, { setSubmitting }) => {
           assignTeam({
-            teamId: id ?? "",
+            clientId: id ?? "",
             projectId: values.projectId,
-            role: values.role,
             note: values.note,
           })
             .unwrap()
             .then(() => {
-              getTeam(id);
-              toast.success("Project added successfully!");
-              setTimeout(() => setProjectModalOpen(false), 100); // Safe modal close
+              getProject(id);
+              toast.success("Client added successfully!");
+              setTimeout(() => setClientModalOpen(false), 100); // Safe modal close
             })
             .catch((err) => {
               toast.error(err?.data?.message || "Failed to assign project");
@@ -69,30 +73,37 @@ function ProjectModal({
             .finally(() => setSubmitting(false));
         }}
       >
-        {({ setFieldValue }) => (
+        {({ values, setFieldValue }) => (
           <Form className="space-y-4">
             <p className="text-[1.25rem] font-[600] text-neutral-400">
-              Assign Project to Team
+              Assign Project to Client/Partner
             </p>
 
             <Card>
               <div className="flex flex-col gap-2">
                 <div>
-                  <label className="block mb-1 font-semibold">Project</label>
+                  <label className="block mb-1 font-semibold">Partner</label>
                   <Select
                     showSearch
                     className="w-full"
-                    placeholder="Select a project"
-                    onChange={(value) => setFieldValue("projectId", value)}
-                    filterOption={(input, option: any) =>
-                      option?.children
-                        ?.toLowerCase()
-                        .includes(input.toLowerCase())
-                    }
+                    placeholder="Select a Client/Partner"
+                    value={values.clientId}
+                    onChange={(value) => setFieldValue("clientId", value)}
+                    filterOption={(input, option) => {
+                      const children = option?.children;
+                      const label =
+                        typeof children === "string"
+                          ? children
+                          : Array.isArray(children)
+                          ? children.join(" ")
+                          : "";
+
+                      return label.toLowerCase().includes(input.toLowerCase());
+                    }}
                   >
-                    {projectOptions?.projects?.map((project) => (
-                      <Option key={project.id} value={project.id}>
-                        {project.name}
+                    {clientOptions?.clients?.map((client) => (
+                      <Option key={client.id} value={client.id}>
+                        {client.firstName} {client.lastName}
                       </Option>
                     ))}
                   </Select>
@@ -122,4 +133,4 @@ function ProjectModal({
   );
 }
 
-export default ProjectModal;
+export default ClientModal;

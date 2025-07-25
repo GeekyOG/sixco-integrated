@@ -37,7 +37,7 @@ export const clientsColumns: ColumnsType = [
     render: (item) => {
       return (
         <div className="capitalize">
-          {format(item, "yyyy/MM/dd").toLocaleString()}
+          {format(item, "MMMM d, yyyy").toLocaleString()}
         </div>
       );
     },

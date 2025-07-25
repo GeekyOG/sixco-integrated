@@ -17,6 +17,9 @@ import TeamDetails from "../pages/TeamDetails";
 import ProjectDetails from "../pages/ProjectDetails";
 import Reports from "../pages/Reports";
 import Leaves from "../pages/Leaves";
+import ClientDetails from "../pages/ClientDeatials";
+import Register from "../pages/RegisterPage";
+import StaffDetails from "../pages/StaffDetails";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +31,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "", element: <Login /> },
+      { path: "/register", element: <Register /> },
       {
         path: "/forgot-password",
         element: <ForgotPassword />,
@@ -64,8 +68,16 @@ const router = createBrowserRouter([
         element: <Users />,
       },
       {
+        path: "/dashboard/users/:id",
+        element: <ClientDetails />,
+      },
+      {
         path: "/dashboard/staffs",
         element: <Staffs />,
+      },
+      {
+        path: "/dashboard/staffs/:id",
+        element: <StaffDetails />,
       },
       {
         path: "/dashboard/teams",
