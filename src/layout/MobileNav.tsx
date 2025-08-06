@@ -142,7 +142,7 @@ function MobileNav() {
                 <div
                   key={index}
                   className={clsx(
-                    "text-[#fff] font-[400] py-[16px] px-[28px]",
+                    "text-[#fff] font-[400] py-[16px] px-[28px] text-[0.865rem]",
                     option?.url == location.pathname &&
                       "text-secondary_dark bg-[#65CC33] border-r-[8px] border-primary_dark"
                   )}
