@@ -1,34 +1,61 @@
 import clsx from "clsx";
 import {
   ArrowLeftRight,
+  File,
   LayoutGrid,
   MenuIcon,
   Settings,
   Users,
 } from "lucide-react";
 import React, { ReactNode, useState } from "react";
+import { BsPeople } from "react-icons/bs";
+import { GoReport } from "react-icons/go";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const NavOptions: { text: string; url: string; icon: ReactNode }[] = [
   { text: "Overview", url: "/dashboard", icon: <LayoutGrid size={16} /> },
   {
-    text: "Manage Projects",
-    url: "/dashboard/projects",
-    icon: <ArrowLeftRight size={16} />,
-  },
-
-  {
     text: "Manage Clients & Partners",
     url: "/dashboard/users",
     icon: <Users size={16} />,
   },
+
+  {
+    text: "Manage Staffs",
+    url: "/dashboard/staffs",
+    icon: <Users size={16} />,
+  },
+  {
+    text: "Manage Teams",
+    url: "/dashboard/teams",
+    icon: <BsPeople size={16} />,
+  },
+  {
+    text: "Manage Projects",
+    url: "/dashboard/projects",
+    icon: <File size={16} />,
+  },
+
+  {
+    text: "Manage Reports",
+    url: "/dashboard/reports",
+    icon: <GoReport size={16} />,
+  },
+
+  {
+    text: "Leave Requests",
+    url: "/dashboard/leaves",
+    icon: <ArrowLeftRight size={16} />,
+  },
+
   {
     text: "Settings",
     url: "/dashboard/settings",
     icon: <Settings size={16} />,
   },
 ];
+
 function MobileNav() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 

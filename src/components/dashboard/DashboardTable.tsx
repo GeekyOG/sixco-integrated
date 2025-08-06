@@ -53,21 +53,9 @@ function DashboardTable({
       <MobileTable
         type={type}
         columns={columnWithAction}
-        dataSource={[
-          {
-            coverageType: "Third-party",
-            riskDetailCode: "code",
-          },
-          {
-            coverageType: "Third-party",
-            riskDetailCode: "code",
-          },
-          {
-            coverageType: "Third-party",
-            riskDetailCode: "code",
-          },
-        ]}
+        dataSource={data}
         loading={false}
+        callBackAction={callBackAction}
       />
       <Table
         columns={columnWithAction}

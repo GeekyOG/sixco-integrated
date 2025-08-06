@@ -70,13 +70,13 @@ export const authApi = createApi({
 
     getAllUsers: builder.query({
       query: () => ({
-        url: "auth/users",
+        url: "users",
       }),
     }),
 
     getUser: builder.query({
       query: (id) => ({
-        url: `auth/users/${id}`,
+        url: `users/${id}`,
       }),
     }),
 

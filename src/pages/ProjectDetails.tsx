@@ -40,7 +40,7 @@ function ProjectDetails() {
     <div>
       <Container>
         <BreadCrumb data={["Dashboard", "Teams", "Team details"]} />
-        <div className="mt-[32px] flex justify-between ">
+        <div className="mt-[32px] lg:flex justify-between ">
           <div>
             <p className="text-[1.5rem] font-[700] text-neutral-450">
               {projectData?.project?.name ?? "--"}
@@ -50,7 +50,7 @@ function ProjectDetails() {
             </p>
           </div>
 
-          <div className="flex gap-[16px]">
+          <div className="flex gap-[16px] mt-2">
             <Button
               className="bg-transparent text-[0.865rem] border text-neutral-550 flex rounded-md gap-3 items-center py-[2px]"
               onClick={() => setOpen(!open)}
@@ -62,8 +62,8 @@ function ProjectDetails() {
         </div>
       </Container>
 
-      <Container className="flex gap-6 mt-[16px]">
-        <Card className="w-[50%]">
+      <Container className="lg:flex gap-6 mt-[16px]">
+        <Card className="lg:w-[50%]">
           <div className="flex justify-between items-center">
             <p className="py-4 font-[700] text-neutral-450">Teams</p>
             <Button
@@ -90,7 +90,7 @@ function ProjectDetails() {
           />
         </Card>
 
-        <Card className="w-[50%]">
+        <Card className="lg:w-[50%]">
           <div className="flex justify-between items-center">
             <p className="py-4 font-[700] text-neutral-450 max-w-[300px]">
               Clients

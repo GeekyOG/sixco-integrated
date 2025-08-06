@@ -38,7 +38,7 @@ function TeamDetails() {
     <div>
       <Container>
         <BreadCrumb data={["Dashboard", "Teams", "Team details"]} />
-        <div className="mt-[32px] flex justify-between ">
+        <div className="mt-[32px] lg:flex justify-between ">
           <div>
             <p className="text-[1.5rem] font-[700] text-neutral-450">
               {teamsData?.teamName ?? "--"}
@@ -48,7 +48,7 @@ function TeamDetails() {
 
           <div className="flex gap-[16px]">
             <Button
-              className="bg-transparent border text-neutral-550 flex rounded-md gap-3 items-center py-0"
+              className="bg-transparent border text-neutral-550 flex rounded-md px-2 lg:gap-3 items-center py-2"
               onClick={() => setOpen(!open)}
             >
               <Pencil size={14} />
@@ -56,7 +56,7 @@ function TeamDetails() {
             </Button>
 
             <Button
-              className="border flex rounded-md gap-3 items-center py-0"
+              className="border flex rounded-md lg:gap-3 items-center py-2 px-2"
               onClick={() => setTaskModalOpen(!taskModalOpen)}
             >
               <BiTask size={14} />
@@ -66,14 +66,14 @@ function TeamDetails() {
         </div>
       </Container>
 
-      <Container className="flex gap-6 mt-[16px]">
-        <Card className="w-[50%]">
+      <Container className="lg:flex gap-6 mt-[16px] ">
+        <Card className="lg:w-[50%]">
           <div className="flex justify-between items-center">
             <p className="py-4 font-[700] text-neutral-450">
               Team Members ({teamsData?.users.length ?? 0})
             </p>
             <Button
-              className="bg-transparent border text-neutral-550 flex rounded-md gap-3 items-center"
+              className="bg-transparent border text-neutral-550 flex rounded-md lg:gap-3 items-center px-2"
               onClick={() => setMemberModalOpen(true)}
             >
               <Plus size={14} />
@@ -91,12 +91,12 @@ function TeamDetails() {
           <DashboardTable
             columns={membersColumns}
             data={teamsData?.users ?? []}
-            type="teams"
+            type="staff"
             isFetching={false}
           />
         </Card>
 
-        <Card className="w-[50%]">
+        <Card className="lg:w-[50%]">
           <div className="flex justify-between items-center">
             <p className="py-4 font-[700] text-neutral-450 max-w-[300px]">
               Projects Assigned
@@ -120,7 +120,7 @@ function TeamDetails() {
           <DashboardTable
             columns={projectColumns}
             data={teamsData?.projects ?? []}
-            type="teams"
+            type="project"
             isFetching={false}
           />
         </Card>
