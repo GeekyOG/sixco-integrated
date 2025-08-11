@@ -9,6 +9,7 @@ import DashboardDrawer from "../components/dashboard/Drawer";
 import AddUser from "../modules/users/AddUser";
 import { useLazyGetAllClientsQuery } from "../api/clientApi";
 import { clientsColumns } from "../modules/clients/columns";
+import { format } from "date-fns";
 
 function Dashboard() {
   const [getClients, { data: clientsData, isFetching: clientsFetching }] =
@@ -41,15 +42,33 @@ function Dashboard() {
     setWhatForm("Portfolio");
   };
 
+  const formattedDate = format(new Date(), "EEEE, MMMM do");
+
   const userData = JSON.parse(localStorage.getItem("userData") ?? "");
+
+  function getGreeting() {
+    const now = new Date();
+    const hour = now.getHours();
+
+    if (hour < 12) {
+      return "Good Morning";
+    } else if (hour < 18) {
+      return "Good Afternoon";
+    } else {
+      return "Good Evening";
+    }
+  }
 
   return (
     <div className="pb-[200px]">
-      <h1 className="font-[600] text-[1.25rem]">
-        Welcome {userData.firstName}!
-      </h1>
-      <p>Get Started Managing projects.</p>
-      <div className="flex gap-3 mt-5 flex-col md:flex-row">
+      <div className="mt-[8px] flex flex-col gap-[8px] border-b pb-[32px]">
+        <p className="text-[0.813rem] text-dark-green-500">{formattedDate}</p>
+        <p className="text-[1.5rem] font-[700]">
+          {getGreeting()},{" "}
+          <span className="capitalize">{userData?.firstName || "User"}</span>
+        </p>
+      </div>
+      <div className="flex gap-3 mt-5 flex-col md:flex-row pt-[32px]">
         <DashboardBox
           title={"Total Projects"}
           value={portfolioData?.pagination?.totalItems ?? 0}

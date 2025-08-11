@@ -24,7 +24,7 @@ const StatusPill = ({ status }: { status: StatusTypes }) => {
   };
 
   return (
-    <div className="flex items-center gap-2 rounded-full border border-black-100 px-3 py-1">
+    <div className="flex items-center gap-[5px] rounded-full border border-black-100 px-3 py-1 max-w-[150px]">
       <Dot size={30} color={statusColorMap[status]} />
       <span className="capitalize">{status}</span>
     </div>

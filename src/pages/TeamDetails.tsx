@@ -121,6 +121,8 @@ function TeamDetails() {
             columns={projectColumns}
             data={teamsData?.projects ?? []}
             type="project"
+            targetId={id}
+            removeAction="project"
             isFetching={false}
           />
         </Card>
@@ -151,7 +153,7 @@ function TeamDetails() {
           <DashboardTable
             columns={taskColumns}
             data={tasksWithProjectNames || []}
-            type="task"
+            type="tasks"
             isFetching={false}
           />
         </Card>

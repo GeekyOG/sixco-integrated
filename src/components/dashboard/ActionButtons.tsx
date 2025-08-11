@@ -6,12 +6,14 @@ import { toast } from "react-toastify";
 import {
   useDeletePortfolioMutation,
   useRemoveProjectMutation,
+  useRemoveTeamMutation,
 } from "../../api/portfolio";
 import { useDeleteLeaveMutation } from "../../api/leaveApi";
 import AddUser from "../../modules/users/AddUser";
 import { useDeleteClientsMutation } from "../../api/clientApi";
 import { useNavigate } from "react-router-dom";
 import AddStaff from "../../modules/users/AddStaff";
+import { useDeleteTaskMutation } from "../../api/tasksApi";
 // import EditCategory from "../../modules/products/EditCategory";
 interface ActionButtonsProps {
   id: string;
@@ -46,22 +48,46 @@ function ActionButtons({
   const [deleteLeave, { isLoading: deleteLeaveLoading }] =
     useDeleteLeaveMutation();
 
-  const handleDeleteFeaturedDialog = () => {
+  const handleDeleteProjectDialog = () => {
     setShowDialog(true);
-    setDialogTitle("Delete Featured Work Permanently");
+    setDialogTitle("Delete Project Permanently");
     setDialogContent(
-      "Deleting this featured work, this featured work would would not longer be displayed on your website. Please note this action cannot be undone"
+      "Deleting this Project, this Project would would not longer be displayed on your website. Please note this action cannot be undone"
+    );
+    setDialogBtnText("Delete Project");
+  };
+
+  const handleDeleteTeamDialog = () => {
+    setShowDialog(true);
+    setDialogTitle("Delete Team Permanently");
+    setDialogContent(
+      "Deleting this Team, this Team would would not longer be displayed on your website. Please note this action cannot be undone"
+    );
+    setDialogBtnText("Delete Team");
+  };
+  const handleDeleteStaffDialog = () => {
+    setShowDialog(true);
+    setDialogTitle("Delete Staff Permanently");
+    setDialogContent(
+      "Deleting this Staff, this Staff would would not longer be displayed on your website. Please note this action cannot be undone"
+    );
+    setDialogBtnText("Delete Staff");
+  };
+  const handleDeleteLeaveDialog = () => {
+    setShowDialog(true);
+    setDialogTitle("Delete Leave Permanently");
+    setDialogContent(
+      "Deleting this Leave, this Leave would would not longer be displayed on your website. Please note this action cannot be undone"
     );
     setDialogBtnText("Delete Featured Work");
   };
-
-  const handleDeletePortfolioDialog = () => {
+  const handleDeleteTaskDialog = () => {
     setShowDialog(true);
-    setDialogTitle("Delete Work Portfolio Item");
+    setDialogTitle("Delete task Permanently");
     setDialogContent(
-      "Deleting this portfolio item, this portfolio item would would not longer be displayed on your website. Please note this action cannot be undone"
+      "Deleting this task, this task would would not longer be displayed on your website. Please note this action cannot be undone"
     );
-    setDialogBtnText("Delete Portfolio Item");
+    setDialogBtnText("Delete task");
   };
 
   const handleDeletePortfolio = () => {
@@ -112,15 +138,6 @@ function ActionButtons({
       });
   };
 
-  const handleDeleteLeaveDialog = () => {
-    setShowDialog(true);
-    setDialogTitle("Delete Request Permanently");
-    setDialogContent(
-      "Deleting this Request shows this Request would would not longer be displayed on your website. Please note this action cannot be undone"
-    );
-    setDialogBtnText("Delete Request");
-  };
-
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
 
   const [removeProject, { isLoading }] = useRemoveProjectMutation();
@@ -130,6 +147,34 @@ function ActionButtons({
       projectId: targetId,
       id,
     });
+  };
+
+  const [removeTeam, { isLoading: isRemoveTeaMLoading }] =
+    useRemoveTeamMutation();
+
+  const handleTeamRemove = () => {
+    removeTeam({
+      projectId: targetId,
+      id,
+    });
+  };
+
+  const [removeTask, { isLoading: isTaskLoading }] = useDeleteTaskMutation();
+
+  const handleTaskDelete = () => {
+    removeTask(id)
+      .unwrap()
+      .then(() => {
+        setShowDialog(false);
+      });
+    callBackAction && callBackAction();
+  };
+
+  const handleRemoveTeamDialog = () => {
+    setShowDialog(true);
+    setDialogTitle("Remove Project");
+    setDialogContent("This Project will no longer be attached to this team.");
+    setDialogBtnText("Remove Project");
   };
 
   return (
@@ -146,7 +191,7 @@ function ActionButtons({
             handleDelete={
               remove
                 ? () => setShowRemoveDialog((prev) => !prev)
-                : handleDeleteFeaturedDialog
+                : handleDeleteTeamDialog
             }
           />
         </>
@@ -164,7 +209,40 @@ function ActionButtons({
             handleDelete={
               remove
                 ? () => setShowRemoveDialog((prev) => !prev)
-                : handleDeleteFeaturedDialog
+                : handleDeleteProjectDialog
+            }
+          />
+        </>
+      )}
+
+      {type === "project" && (
+        <>
+          <TableActionButtons
+            setShow={() => {
+              navigate(`/dashboard/projects/${id}`);
+            }}
+            handleDelete={
+              remove
+                ? () => setShowRemoveDialog((prev) => !prev)
+                : handleRemoveTeamDialog
+            }
+          />
+        </>
+      )}
+
+      {type === "tasks" && (
+        <>
+          <TableActionButtons
+            setShow={() => {
+              navigate(`/dashboard/projects/${id}`);
+            }}
+            handleEdit={() => {
+              setOpenAddStaff(true);
+            }}
+            handleDelete={
+              remove
+                ? () => setShowRemoveDialog((prev) => !prev)
+                : handleDeleteTaskDialog
             }
           />
         </>
@@ -182,7 +260,7 @@ function ActionButtons({
             handleDelete={
               remove
                 ? () => setShowRemoveDialog((prev) => !prev)
-                : handleDeleteFeaturedDialog
+                : handleDeleteStaffDialog
             }
           />
         </>
@@ -197,7 +275,7 @@ function ActionButtons({
             handleDelete={
               remove
                 ? () => setShowRemoveDialog((prev) => !prev)
-                : handleDeleteFeaturedDialog
+                : handleDeleteLeaveDialog
             }
           />
         </>
@@ -215,7 +293,7 @@ function ActionButtons({
             handleDelete={
               remove
                 ? () => setShowRemoveDialog((prev) => !prev)
-                : handleDeleteFeaturedDialog
+                : handleDeleteClientDialog
             }
           />
         </>
@@ -244,6 +322,10 @@ function ActionButtons({
         <AddStaff id={id} open={openAddStaff} setShowDrawer={setOpenAddStaff} />
       )}
 
+      {openAddStaff && (
+        <AddStaff id={id} open={openAddStaff} setShowDrawer={setOpenAddStaff} />
+      )}
+
       {showDialog && (
         <DialogContainer
           setDialogOpen={setShowDialog}
@@ -254,11 +336,15 @@ function ActionButtons({
             deletePortfolioLoading ||
             deleteLeaveLoading ||
             deleteClientLoading ||
-            deleteLeaveLoading
+            deleteLeaveLoading ||
+            isRemoveTeaMLoading ||
+            isTaskLoading
           }
           type={"delete"}
           image={"/delete.svg"}
           action={
+            (dialogTitle == "Delete task Permanently" && handleTaskDelete) ||
+            (dialogTitle == "Remove Project" && handleTeamRemove) ||
             (dialogTitle == "Delete Work Portfolio Item" &&
               handleDeletePortfolio) ||
             (dialogTitle == "Delete Client Permanently" &&

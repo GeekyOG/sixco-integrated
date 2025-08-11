@@ -16,6 +16,9 @@ interface DashboardTableProps {
   remove?: boolean;
   removeAction?: string;
   targetId?: string;
+  totalPages?: number;
+  page?: number;
+  setPage?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function DashboardTable({
@@ -27,7 +30,21 @@ function DashboardTable({
   remove,
   removeAction,
   targetId,
+  totalPages,
+  page,
+  setPage,
 }: DashboardTableProps) {
+  const handleNext = () => {
+    if (page && totalPages && page < totalPages && setPage) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (page && totalPages && setPage && page > 1) {
+      setPage((prev) => prev - 1);
+    }
+  };
   const columnWithAction = [
     ...columns,
     {
@@ -64,29 +81,54 @@ function DashboardTable({
         loading={isFetching}
         rowKey="id"
         rowClassName={() => "custom-table-row"}
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: false,
-          itemRender: (page, type, originalElement) => {
-            if (type === "prev") {
-              return (
-                <a className="custom-prev">
-                  <ChevronLeft />
-                </a>
-              );
-            }
-            if (type === "next") {
-              return (
-                <a className="custom-next">
-                  <ChevronRight />
-                </a>
-              );
-            }
-            return originalElement;
-          },
-          className: "custom-pagination",
-        }}
+        pagination={
+          !totalPages
+            ? {
+                pageSize: 10,
+                showSizeChanger: false,
+                itemRender: (page, type, originalElement) => {
+                  if (type === "prev") {
+                    return (
+                      <a className="custom-prev">
+                        <ChevronLeft />
+                      </a>
+                    );
+                  }
+                  if (type === "next") {
+                    return (
+                      <a className="custom-next">
+                        <ChevronRight />
+                      </a>
+                    );
+                  }
+                  return originalElement;
+                },
+                className: "custom-pagination",
+              }
+            : false
+        }
       />
+      {totalPages && page && setPage && (
+        <div className="mt-6 flex justify-between items-center max-w-[200px]">
+          <button
+            onClick={handlePrev}
+            disabled={page === 1}
+            className="px-2 py-2 bg-gray-200 rounded disabled:opacity-50"
+          >
+            <ChevronLeft />
+          </button>
+          <span className="text-sm text-gray-700">
+            Page {page} of {totalPages}
+          </span>
+          <button
+            onClick={handleNext}
+            disabled={page === totalPages}
+            className="px-2 py-2 bg-gray-200 rounded disabled:opacity-50"
+          >
+            <ChevronRight />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

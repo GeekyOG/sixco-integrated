@@ -14,6 +14,8 @@ function Reports() {
     setDrawerOpen(true);
   };
 
+  const [page, setPage] = useState(1);
+
   const [getALLReports, { isFetching, data }] = useLazyGetAllReportQuery();
 
   useEffect(() => {
@@ -74,6 +76,9 @@ function Reports() {
           isFetching={isFetching}
           type="reports"
           callBackAction={handleGetPortfolio}
+          page={page}
+          setPage={setPage}
+          totalPages={data?.pagination?.totalPages}
         />
       </div>
       <DashboardDrawer

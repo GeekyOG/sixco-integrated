@@ -14,8 +14,9 @@ export const teamsApi = createApi({
     }),
 
     getAllTeam: builder.query({
-      query: () => ({
+      query: ({ currentPage }) => ({
         url: "teams",
+        params: { currentPage },
       }),
     }),
 

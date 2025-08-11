@@ -4,20 +4,39 @@ import Container from "../ui/Container";
 import Button from "../ui/Button";
 import AddUser from "../modules/users/AddUser";
 import { Search } from "lucide-react";
-import { useGetAllClientsQuery } from "../api/clientApi";
+import {
+  useGetAllClientsQuery,
+  useLazyGetAllClientsQuery,
+} from "../api/clientApi";
 import { clientsColumns } from "../modules/clients/columns";
 import BreadCrumb from "../ui/BreadCrumb";
 
 function Users() {
   const [open, setOpen] = useState(false);
 
+  const [page, setPage] = useState(1);
+
   const showDrawer = () => {
     setOpen(!open);
   };
 
-  const { data: clientsData, isFetching } = useGetAllClientsQuery("");
+  const [getAllClients, { data: clientsData, isFetching }] =
+    useLazyGetAllClientsQuery();
 
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    getAllClients({
+      currentPage: page,
+    });
+  }, [page]);
+
+  const handleGetClients = () => {
+    getAllClients({
+      currentPage: page,
+    });
+    setOpen(false);
+  };
 
   return (
     <div>
@@ -67,6 +86,10 @@ function Users() {
           data={clientsData?.clients ?? []}
           type="client"
           isFetching={isFetching}
+          callBackAction={handleGetClients}
+          page={page}
+          setPage={setPage}
+          totalPages={clientsData?.pagination?.totalPages}
         />
         <AddUser open={open} setShowDrawer={setOpen} />
       </Container>

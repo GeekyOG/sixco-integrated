@@ -66,7 +66,7 @@ function ClientDetails() {
             <input
               onChange={(e) => setSearchTerm(e.target.value)}
               className=" py-[2px] text-[0.865rem]"
-              placeholder="Search by product name"
+              placeholder="Search by project name"
             />
           </div>
         </Container>
@@ -79,7 +79,7 @@ function ClientDetails() {
               <input
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className=" py-[2px] text-[0.865rem]"
-                placeholder="Search by product name"
+                placeholder="Search by project name"
               />
             </div>
           </div>

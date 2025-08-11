@@ -7,7 +7,7 @@ import { Search } from "lucide-react";
 import { useGetAllClientsQuery } from "../api/clientApi";
 import { clientsColumns } from "../modules/clients/columns";
 import BreadCrumb from "../ui/BreadCrumb";
-import { useGetAllUsersQuery } from "../api/authApi";
+import { useGetAllUsersQuery, useLazyGetAllUsersQuery } from "../api/authApi";
 import AddStaff from "../modules/users/AddStaff";
 
 function Staffs() {
@@ -17,7 +17,22 @@ function Staffs() {
     setOpen(!open);
   };
 
-  const { data: clientsData, isFetching } = useGetAllUsersQuery("");
+  const [getStaffs, { data: clientsData, isFetching }] =
+    useLazyGetAllUsersQuery();
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    getStaffs({
+      currentPage: page,
+    });
+  }, [page]);
+
+  const handleGetStaffs = () => {
+    getStaffs({
+      currentPage: page,
+    });
+    setOpen(false);
+  };
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -69,6 +84,9 @@ function Staffs() {
           data={clientsData?.users ?? []}
           type="staff"
           isFetching={isFetching}
+          page={page}
+          setPage={setPage}
+          totalPages={clientsData?.pagination?.totalPages}
         />
         <AddStaff open={open} setShowDrawer={setOpen} />
       </Container>

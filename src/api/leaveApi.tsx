@@ -14,8 +14,9 @@ export const leaveApi = createApi({
     }),
 
     getAllLeave: builder.query({
-      query: () => ({
+      query: ({ currentPage }) => ({
         url: "leaves",
+        params: { currentPage },
       }),
     }),
 

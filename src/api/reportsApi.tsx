@@ -14,8 +14,9 @@ export const reportsApi = createApi({
     }),
 
     getAllReport: builder.query({
-      query: () => ({
+      query: ({ currentPage }) => ({
         url: "reports",
+        params: { currentPage },
       }),
     }),
 

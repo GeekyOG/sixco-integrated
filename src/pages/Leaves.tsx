@@ -13,15 +13,20 @@ function Leaves() {
   const handleAddPortfolio = () => {
     setDrawerOpen(true);
   };
+  const [page, setPage] = useState(1);
 
-  const [getAllPortfolio, { isFetching, data }] = useLazyGetAllLeaveQuery();
+  const [getAllLeave, { isFetching, data }] = useLazyGetAllLeaveQuery();
 
   useEffect(() => {
-    getAllPortfolio("");
-  }, []);
+    getAllLeave({
+      currentPage: page,
+    });
+  }, [page]);
 
   const handleGetPortfolio = () => {
-    getAllPortfolio("");
+    getAllLeave({
+      currentPage: page,
+    });
     setDrawerOpen(false);
   };
 
@@ -74,6 +79,9 @@ function Leaves() {
           isFetching={isFetching}
           type="Leave"
           callBackAction={handleGetPortfolio}
+          page={page}
+          setPage={setPage}
+          totalPages={data?.pagination.totalPages}
         />
       </div>
       <DashboardDrawer

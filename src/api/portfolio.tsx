@@ -6,8 +6,9 @@ export const portfolioApi = createApi({
   reducerPath: "portfolioApi",
   endpoints: (builder) => ({
     getAllPortfolio: builder.query({
-      query: () => ({
+      query: ({ currentPage }) => ({
         url: "projects",
+        params: { currentPage },
       }),
     }),
 
@@ -59,6 +60,17 @@ export const portfolioApi = createApi({
       }),
     }),
 
+    removeTeam: builder.mutation({
+      query: ({ projectId, id }) => ({
+        url: `projects/remove-team`,
+        method: "POST",
+        body: {
+          projectId: projectId,
+          teamId: id,
+        },
+      }),
+    }),
+
     removeProject: builder.mutation({
       query: ({ projectId, id }) => ({
         url: `projects/${projectId}/clients/${id}`,
@@ -90,4 +102,5 @@ export const {
   useLazyGetClientProjectQuery,
   useLazyGetProjectMembersQuery,
   useRemoveProjectMutation,
+  useRemoveTeamMutation,
 } = portfolioApi;

@@ -54,8 +54,9 @@ export const clientApi = createApi({
     }),
 
     getAllClients: builder.query({
-      query: () => ({
+      query: ({ currentPage }) => ({
         url: "clients",
+        params: { currentPage },
       }),
     }),
 

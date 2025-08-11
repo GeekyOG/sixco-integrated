@@ -24,6 +24,7 @@ function Portfolio() {
     getAllPortfolio("");
     setDrawerOpen(false);
   };
+  const [page, setPage] = useState(1);
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -74,6 +75,9 @@ function Portfolio() {
           isFetching={isFetching}
           type="Portfolio"
           callBackAction={handleGetPortfolio}
+          page={page}
+          setPage={setPage}
+          totalPages={data?.pagination?.totalPages}
         />
       </div>
       <DashboardDrawer

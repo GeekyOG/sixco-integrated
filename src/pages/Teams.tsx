@@ -8,7 +8,7 @@ import { useGetAllClientsQuery } from "../api/clientApi";
 import BreadCrumb from "../ui/BreadCrumb";
 import { useGetAllUsersQuery } from "../api/authApi";
 import AddStaff from "../modules/users/AddStaff";
-import { useGetAllTeamQuery } from "../api/teamsApi";
+import { useGetAllTeamQuery, useLazyGetAllTeamQuery } from "../api/teamsApi";
 import DashboardDrawer from "../components/dashboard/Drawer";
 import { columns } from "../modules/teams/columns";
 
@@ -19,7 +19,23 @@ function Teams() {
     setOpen(!open);
   };
 
-  const { data: teamsData, isFetching } = useGetAllTeamQuery("");
+  const [page, setPage] = useState(1);
+
+  const [getAllTeams, { data: teamsData, isFetching }] =
+    useLazyGetAllTeamQuery();
+
+  useEffect(() => {
+    getAllTeams({
+      currentPage: page,
+    });
+  }, [page]);
+
+  const handleGetTeams = () => {
+    getAllTeams({
+      currentPage: page,
+    });
+    setOpen(false);
+  };
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -71,6 +87,10 @@ function Teams() {
           data={teamsData?.teams ?? []}
           type="teams"
           isFetching={isFetching}
+          page={page}
+          callBackAction={handleGetTeams}
+          setPage={setPage}
+          totalPages={teamsData?.pagination?.totalPages}
         />
         <DashboardDrawer
           callBackAction={() => {}}
