@@ -3,12 +3,12 @@ import LoginForm from "../components/forms/LoginForm";
 
 function Login() {
   return (
-    <div className="flex justify-center mx-auto">
+    <div className="flex justify-center mx-auto px-[14px]">
       <div className="mt-[50px]">
         <h1 className="text-[2.5rem] leading-[100%]">
           Continue from where you left off!
         </h1>
-        <p className="mt-[12px]">
+        <p className="mt-[12px] text-neutral-400">
           Few steps a away from your portfolio management.
         </p>
 
