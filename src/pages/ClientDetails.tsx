@@ -22,7 +22,7 @@ function ClientDetails() {
 
   return (
     <div>
-      <div className="">
+      <div className="border py-4 px-2 rounded-md">
         <Container>
           <h1 className="text-[1.45rem] font-[700] text-neutral-500">
             Client Details
@@ -55,23 +55,26 @@ function ClientDetails() {
             </div>
           </div>
         </Container>
-        <Container className="py-[20px]">
-          <h1 className="text-[1.35rem] font-[700] text-neutral-500">
-            Clients Projects
+
+        <Container className="lg:hidden mt-5">
+          <h1 className="lg:hidden text-[1.35rem] font-[700] text-neutral-500">
+            Tasks
           </h1>
-        </Container>
-        <Container>
+
           <div className="lg:hidden flex cursor-pointer items-center gap-[3px] border-b-[1px] px-[8px] py-[8px] ">
             <Search size={16} className="text-neutral-300" />
             <input
               onChange={(e) => setSearchTerm(e.target.value)}
               className=" py-[2px] text-[0.865rem]"
-              placeholder="Search by project name"
+              placeholder="Search by product name"
             />
           </div>
         </Container>
-        <Container className="flex items-center justify-between">
-          <div className="flex gap-[5px]"></div>
+
+        <Container className="hidden lg:flex items-center justify-between">
+          <h1 className="text-[1.2rem] font-[700] text-neutral-500">
+            Clients Projects
+          </h1>
 
           <div className="mb-[3px] flex items-center gap-[8px]">
             <div className="lg:flex hidden cursor-pointer items-center gap-[3px] border-b-[1px] px-[8px] py-[8px] ">
@@ -84,21 +87,22 @@ function ClientDetails() {
             </div>
           </div>
         </Container>
+
+        <Container>
+          <DashboardTable
+            columns={columns}
+            data={projectsData?.projects || []}
+            isFetching={false}
+            targetId={id}
+            remove
+            removeAction="project"
+            type={"Portfolio"}
+            callBackAction={() => {
+              getClient(id);
+            }}
+          />
+        </Container>
       </div>
-      <Container>
-        <DashboardTable
-          columns={columns}
-          data={projectsData?.projects || []}
-          isFetching={false}
-          targetId={id}
-          remove
-          removeAction="project"
-          type={"Portfolio"}
-          callBackAction={() => {
-            getClient(id);
-          }}
-        />
-      </Container>
     </div>
   );
 }

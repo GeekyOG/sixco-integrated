@@ -17,7 +17,7 @@ import TeamDetails from "../pages/TeamDetails";
 import ProjectDetails from "../pages/ProjectDetails";
 import Reports from "../pages/Reports";
 import Leaves from "../pages/Leaves";
-import ClientDetails from "../pages/ClientDeatials";
+import ClientDetails from "../pages/ClientDetails";
 import Register from "../pages/RegisterPage";
 import StaffDetails from "../pages/StaffDetails";
 
