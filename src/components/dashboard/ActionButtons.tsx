@@ -14,6 +14,7 @@ import { useDeleteClientsMutation } from "../../api/clientApi";
 import { useNavigate } from "react-router-dom";
 import AddStaff from "../../modules/users/AddStaff";
 import { useDeleteTaskMutation } from "../../api/tasksApi";
+import { useUnAssignMemberMutation } from "../../api/teamsApi";
 // import EditCategory from "../../modules/products/EditCategory";
 interface ActionButtonsProps {
   id: string;
@@ -154,8 +155,8 @@ function ActionButtons({
 
   const handleTeamRemove = () => {
     removeTeam({
-      projectId: targetId,
-      id,
+      projectId: id,
+      id: targetId,
     });
   };
 
@@ -166,8 +167,8 @@ function ActionButtons({
       .unwrap()
       .then(() => {
         setShowDialog(false);
+        callBackAction ? callBackAction() : null;
       });
-    callBackAction && callBackAction();
   };
 
   const handleRemoveTeamDialog = () => {
@@ -175,6 +176,27 @@ function ActionButtons({
     setDialogTitle("Remove Project");
     setDialogContent("This Project will no longer be attached to this team.");
     setDialogBtnText("Remove Project");
+  };
+
+  const [unassignUser, { isLoading: isUnassignLoading }] =
+    useUnAssignMemberMutation();
+
+  const handleUnassignMember = () => {
+    unassignUser({
+      teamId: targetId,
+      userIds: [id],
+    })
+      .unwrap()
+      .then(() => {
+        setShowDialog(false);
+        callBackAction ? callBackAction() : null;
+      });
+  };
+  const handleUnassignMemberDialog = () => {
+    setShowDialog(true);
+    setDialogTitle("Remove Team Member");
+    setDialogContent("This Staff will no longer be attached to this team.");
+    setDialogBtnText("Remove Member");
   };
 
   return (
@@ -234,10 +256,7 @@ function ActionButtons({
         <>
           <TableActionButtons
             setShow={() => {
-              navigate(`/dashboard/projects/${id}`);
-            }}
-            handleEdit={() => {
-              setOpenAddStaff(true);
+              setDrawerOpen(true);
             }}
             handleDelete={
               remove
@@ -262,6 +281,17 @@ function ActionButtons({
                 ? () => setShowRemoveDialog((prev) => !prev)
                 : handleDeleteStaffDialog
             }
+          />
+        </>
+      )}
+
+      {type == "team-members" && (
+        <>
+          <TableActionButtons
+            setShow={() => {
+              navigate(`/dashboard/staffs/${id}`);
+            }}
+            handleDelete={() => handleUnassignMemberDialog()}
           />
         </>
       )}
@@ -312,6 +342,7 @@ function ActionButtons({
 
       {openAddCustomers && (
         <AddUser
+          callBackAction={callBackAction ? callBackAction : () => {}}
           id={id}
           open={openAddCustomers}
           setShowDrawer={setOpenAddCustomers}
@@ -319,11 +350,12 @@ function ActionButtons({
       )}
 
       {openAddStaff && (
-        <AddStaff id={id} open={openAddStaff} setShowDrawer={setOpenAddStaff} />
-      )}
-
-      {openAddStaff && (
-        <AddStaff id={id} open={openAddStaff} setShowDrawer={setOpenAddStaff} />
+        <AddStaff
+          id={id}
+          open={openAddStaff}
+          setShowDrawer={setOpenAddStaff}
+          callBackAction={callBackAction ? callBackAction : () => {}}
+        />
       )}
 
       {showDialog && (
@@ -338,11 +370,13 @@ function ActionButtons({
             deleteClientLoading ||
             deleteLeaveLoading ||
             isRemoveTeaMLoading ||
-            isTaskLoading
+            isTaskLoading ||
+            isUnassignLoading
           }
           type={"delete"}
           image={"/delete.svg"}
           action={
+            (dialogTitle == "Remove Team Member" && handleUnassignMember) ||
             (dialogTitle == "Delete task Permanently" && handleTaskDelete) ||
             (dialogTitle == "Remove Project" && handleTeamRemove) ||
             (dialogTitle == "Delete Work Portfolio Item" &&

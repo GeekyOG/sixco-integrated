@@ -20,16 +20,17 @@ const { Option } = Select;
 interface ClientModalProps {
   clientModalOpen: boolean;
   setClientModalOpen: (value: React.SetStateAction<boolean>) => void;
+  callBackAction: () => void;
 }
 
 function ClientModal({
   clientModalOpen,
   setClientModalOpen,
+  callBackAction,
 }: ClientModalProps) {
   const { id } = useParams();
   const { data: clientOptions } = useGetAllClientsQuery("");
-  const [getProject] = useLazyGetPortfolioQuery();
-  const [assignTeam, { isLoading }] = useAddClientToProjectMutation();
+  const [assignClient, { isLoading }] = useAddClientToProjectMutation();
 
   // Parse id safely
   const projectId = id ? parseInt(id) : null;
@@ -52,18 +53,17 @@ function ClientModal({
         initialValues={{
           clientId: "",
           projectId: projectId,
-          role: "",
-          note: "",
         }}
         onSubmit={(values, { setSubmitting }) => {
-          assignTeam({
-            clientId: id ?? "",
-            projectId: values.projectId,
-            note: values.note,
+          console.log({ clientId: values.clientId ?? "", projectId: id ?? "" });
+
+          assignClient({
+            clientId: values.clientId ?? "",
+            projectId: id ?? "",
           })
             .unwrap()
             .then(() => {
-              getProject(id);
+              callBackAction();
               toast.success("Client added successfully!");
               setTimeout(() => setClientModalOpen(false), 100); // Safe modal close
             })
@@ -109,7 +109,7 @@ function ClientModal({
                   </Select>
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block mb-1 font-semibold">Note</label>
                   <Field
                     name="note"
@@ -117,12 +117,12 @@ function ClientModal({
                     placeholder="Optional note"
                     rows={4}
                   />
-                </div>
+                </div> */}
               </div>
             </Card>
 
             <div className="flex justify-end pt-4">
-              <Button type="submit" isLoading={isLoading}>
+              <Button className="w-full" type="submit" isLoading={isLoading}>
                 Submit
               </Button>
             </div>

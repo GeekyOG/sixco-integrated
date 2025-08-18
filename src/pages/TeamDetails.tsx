@@ -1,12 +1,12 @@
 // Required imports
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Container from "../ui/Container";
 import BreadCrumb from "../ui/BreadCrumb";
 import DashboardDrawer from "../components/dashboard/Drawer";
 import DashboardTable from "../components/dashboard/DashboardTable";
 import { Pencil, Plus, Search } from "lucide-react";
 import Button from "../ui/Button";
-import { useGetTeamQuery } from "../api/teamsApi";
+import { useGetTeamQuery, useLazyGetTeamQuery } from "../api/teamsApi";
 import { useParams } from "react-router-dom";
 import { Card } from "antd";
 import { projectColumns } from "../modules/teams/projectColumns";
@@ -24,7 +24,17 @@ function TeamDetails() {
   const [memberModalOpen, setMemberModalOpen] = useState(false);
 
   const { id } = useParams();
-  const { data: teamsData, isFetching } = useGetTeamQuery(id);
+
+  const [getTeam, { data: teamsData, isFetching }] = useLazyGetTeamQuery();
+  useEffect(() => {
+    getTeam(id);
+  }, [id]);
+
+  const handleCallBack = () => {
+    getTeam(id);
+    setOpen(false);
+    setTaskModalOpen(false);
+  };
   const [searchTerm, setSearchTerm] = useState("");
   const tasksWithProjectNames =
     teamsData?.projects?.flatMap((item) =>
@@ -38,7 +48,7 @@ function TeamDetails() {
     <div>
       <Container>
         <BreadCrumb data={["Dashboard", "Teams", "Team details"]} />
-        <div className="mt-[32px] lg:flex justify-between ">
+        <div className="mt-[32px] lg:flex justify-between  items-end">
           <div>
             <p className="text-[1.5rem] font-[700] text-neutral-450">
               {teamsData?.teamName ?? "--"}
@@ -48,7 +58,7 @@ function TeamDetails() {
 
           <div className="flex gap-[16px]">
             <Button
-              className="bg-transparent border text-neutral-550 flex rounded-md px-2 lg:gap-3 items-center py-2"
+              className="bg-transparent border text-neutral-550"
               onClick={() => setOpen(!open)}
             >
               <Pencil size={14} />
@@ -56,7 +66,7 @@ function TeamDetails() {
             </Button>
 
             <Button
-              className="border flex rounded-md lg:gap-3 items-center py-2 px-2"
+              className="border"
               onClick={() => setTaskModalOpen(!taskModalOpen)}
             >
               <BiTask size={14} />
@@ -89,9 +99,21 @@ function TeamDetails() {
             />
           </div>
           <DashboardTable
+            callBackAction={handleCallBack}
             columns={membersColumns}
-            data={teamsData?.users ?? []}
-            type="staff"
+            data={
+              teamsData?.users?.map((item) => {
+                return {
+                  email: item.email,
+                  firstName: item.firstName,
+                  lastName: item.lastName,
+                  note: item.note,
+                  id: item.userId,
+                };
+              }) ?? []
+            }
+            type="team-members"
+            targetId={id}
             isFetching={false}
           />
         </Card>
@@ -123,6 +145,7 @@ function TeamDetails() {
             type="project"
             targetId={id}
             removeAction="project"
+            callBackAction={handleCallBack}
             isFetching={false}
           />
         </Card>
@@ -153,6 +176,7 @@ function TeamDetails() {
           <DashboardTable
             columns={taskColumns}
             data={tasksWithProjectNames || []}
+            callBackAction={handleCallBack}
             type="tasks"
             isFetching={false}
           />
@@ -160,19 +184,21 @@ function TeamDetails() {
       </Container>
 
       <DashboardDrawer
-        callBackAction={() => {}}
+        callBackAction={handleCallBack}
         open={open}
         setOpen={setOpen}
         whatForm={"teams"}
         id={id}
       />
 
-      <DashboardDrawer
-        callBackAction={() => {}}
-        open={taskModalOpen}
-        setOpen={setTaskModalOpen}
-        whatForm={"tasks"}
-      />
+      {taskModalOpen && (
+        <DashboardDrawer
+          callBackAction={handleCallBack}
+          open={taskModalOpen}
+          setOpen={setTaskModalOpen}
+          whatForm={"tasks"}
+        />
+      )}
 
       {/* Project Modal */}
       <ProjectModal
@@ -182,6 +208,7 @@ function TeamDetails() {
 
       {/* Add Members Modal */}
       <MemberModal
+        callBackAction={handleCallBack}
         memberModalOpen={memberModalOpen}
         setMemberModalOpen={setMemberModalOpen}
       />

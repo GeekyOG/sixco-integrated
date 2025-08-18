@@ -47,8 +47,8 @@ export const portfolioApi = createApi({
       }),
     }),
     addClientToProject: builder.mutation({
-      query: ({ body, id }) => ({
-        url: `projects/clients`,
+      query: (body) => ({
+        url: `projects/add-client`,
         method: "POST",
         body: body,
       }),

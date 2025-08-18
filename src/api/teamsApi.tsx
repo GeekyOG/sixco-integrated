@@ -42,6 +42,14 @@ export const teamsApi = createApi({
       }),
     }),
 
+    unAssignMember: builder.mutation({
+      query: (body) => ({
+        url: `teams/unassign`,
+        method: "POST",
+        body: body,
+      }),
+    }),
+
     deleteTeam: builder.mutation({
       query: (id) => ({
         url: `teams/${id}`,
@@ -60,4 +68,5 @@ export const {
   useLazyGetTeamQuery,
   useUpdateTeamMutation,
   useAssignMemberMutation,
+  useUnAssignMemberMutation,
 } = teamsApi;

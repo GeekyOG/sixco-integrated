@@ -66,7 +66,7 @@ function DashboardTable({
   ];
 
   return (
-    <div>
+    <div className="w-[100%]">
       <MobileTable
         type={type}
         columns={columnWithAction}

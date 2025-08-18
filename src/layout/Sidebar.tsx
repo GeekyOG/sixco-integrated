@@ -23,7 +23,7 @@ import { GoReport } from "react-icons/go";
 export const mainMenuOptions = [
   { text: "Overview", url: "/dashboard", icon: <LayoutGrid size={16} /> },
   {
-    text: "Manage Clients & Partners",
+    text: "Manage Clients",
     url: "/dashboard/users",
     icon: <Users size={16} />,
   },

@@ -16,11 +16,13 @@ const { Option } = Select;
 interface MemberModalProps {
   memberModalOpen: boolean;
   setMemberModalOpen: (value: React.SetStateAction<boolean>) => void;
+  callBackAction: () => void;
 }
 
 function MemberModal({
   memberModalOpen,
   setMemberModalOpen,
+  callBackAction,
 }: MemberModalProps) {
   const { data: userOptions, isFetching } = useGetAllUsersQuery("");
   const { id } = useParams();
@@ -45,6 +47,7 @@ function MemberModal({
           })
             .unwrap()
             .then((res) => {
+              callBackAction();
               toast.success("User added successfully!");
               setMemberModalOpen(false);
             })
@@ -60,7 +63,7 @@ function MemberModal({
                 <>
                   <div className="flex mt-[32px] justify-between">
                     <p className="text-[1.25rem] font-[600] text-neutral-400">
-                      Add Team Members
+                      Add Team Member(s)
                     </p>
                     <Button
                       className="flex bg-[#3b781c] gap-2 rounded-md items-center"
@@ -152,7 +155,7 @@ function MemberModal({
             <div className="flex justify-end pt-4">
               <Button
                 isLoading={isLoading}
-                className="w-full bg-[#3b781c] rounded-md"
+                className="w-full bg-[#3b781c] text-center flex justify-center"
                 type="submit"
               >
                 Submit

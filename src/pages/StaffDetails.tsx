@@ -34,27 +34,25 @@ function StaffDetails() {
               <p className="text-neutral-400 font-[600] w-[120px]">
                 Full Name:
               </p>
-              <p>{data?.fullName}</p>
+              <p>{data?.user?.fullName}</p>
             </div>
 
             <div className="flex gap-[16px]">
               <p className="text-neutral-400 font-[600] w-[120px]">
                 Email Address:
               </p>
-              <p>{data?.email}</p>
+              <p>{data?.user?.email}</p>
             </div>
             <div className="flex gap-[16px]">
               <p className="text-neutral-400 font-[600] w-[120px]">
                 Phone Number:
               </p>
-              <p>{data?.phoneNumber}</p>
+              <p>{data?.user?.phoneNumber}</p>
             </div>
           </div>
         </Container>
         <Container className="py-[20px]">
-          <h1 className="text-[1.35rem] font-[700] text-neutral-500">
-            Clients Projects
-          </h1>
+          <h1 className="text-[1.35rem] font-[700] text-neutral-500">Tasks</h1>
         </Container>
         <Container>
           <div className="lg:hidden flex cursor-pointer items-center gap-[3px] border-b-[1px] px-[8px] py-[8px] ">

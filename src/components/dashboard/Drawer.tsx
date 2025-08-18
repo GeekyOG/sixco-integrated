@@ -36,8 +36,12 @@ const DashboardDrawer: React.FC<DashboardDrawerProps> = ({
         onClose={onClose}
         open={open}
       >
-        {whatForm == "teams" && <AddTeamForm reset={open} id={id} />}
-        {whatForm == "tasks" && <TaskForm reset={open} id={id} />}
+        {whatForm == "teams" && (
+          <AddTeamForm reset={open} id={id} callBackAction={callBackAction} />
+        )}
+        {whatForm == "tasks" && (
+          <TaskForm reset={open} id={id} callBackAction={callBackAction} />
+        )}
         {whatForm == "Portfolio" && !id && (
           <AddPortfolioForm reset={open} callBackAction={callBackAction} />
         )}
@@ -48,7 +52,9 @@ const DashboardDrawer: React.FC<DashboardDrawerProps> = ({
             id={id}
           />
         )}
-        {whatForm == "Leave" && <AddLeaveForm reset={open} id={id} />}
+        {whatForm == "Leave" && (
+          <AddLeaveForm reset={open} id={id} callBackAction={callBackAction} />
+        )}
       </Drawer>
     </>
   );

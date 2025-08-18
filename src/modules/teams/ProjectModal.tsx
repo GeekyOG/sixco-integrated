@@ -97,21 +97,14 @@ function ProjectModal({
                     ))}
                   </Select>
                 </div>
-
-                <div>
-                  <label className="block mb-1 font-semibold">Note</label>
-                  <Field
-                    name="note"
-                    as={AntInput.TextArea}
-                    placeholder="Optional note"
-                    rows={4}
-                  />
-                </div>
               </div>
             </Card>
-
             <div className="flex justify-end pt-4">
-              <Button type="submit" isLoading={isLoading}>
+              <Button
+                isLoading={isLoading}
+                className="w-full bg-[#3b781c] rounded-md text-center flex justify-center"
+                type="submit"
+              >
                 Submit
               </Button>
             </div>

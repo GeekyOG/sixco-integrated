@@ -88,7 +88,11 @@ function Staffs() {
           setPage={setPage}
           totalPages={clientsData?.pagination?.totalPages}
         />
-        <AddStaff open={open} setShowDrawer={setOpen} />
+        <AddStaff
+          open={open}
+          setShowDrawer={setOpen}
+          callBackAction={handleGetStaffs}
+        />
       </Container>
     </div>
   );

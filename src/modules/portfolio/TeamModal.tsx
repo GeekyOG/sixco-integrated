@@ -16,9 +16,14 @@ const { Option } = Select;
 interface TeamModalProps {
   teamModalOpen: boolean;
   setTeamModalOpen: (value: React.SetStateAction<boolean>) => void;
+  callBackAction: () => void;
 }
 
-function TeamModal({ teamModalOpen, setTeamModalOpen }: TeamModalProps) {
+function TeamModal({
+  teamModalOpen,
+  setTeamModalOpen,
+  callBackAction,
+}: TeamModalProps) {
   const { id } = useParams();
   const { data: teamOptions } = useGetAllTeamQuery("");
   const [getProject] = useLazyGetPortfolioQuery();
@@ -51,12 +56,11 @@ function TeamModal({ teamModalOpen, setTeamModalOpen }: TeamModalProps) {
           assignTeam({
             teamId: values.teamId,
             projectId: id,
-
             note: values.note,
           })
             .unwrap()
             .then(() => {
-              getProject(id);
+              callBackAction();
               toast.success("Team added successfully!");
               setTimeout(() => setTeamModalOpen(false), 100); // Safe modal close
             })
@@ -75,7 +79,7 @@ function TeamModal({ teamModalOpen, setTeamModalOpen }: TeamModalProps) {
             <Card>
               <div className="flex flex-col gap-2">
                 <div>
-                  <label className="block mb-1 font-semibold">Project</label>
+                  <label className="block mb-1 font-semibold">Team</label>
                   <Select
                     showSearch
                     className="w-full"
@@ -93,16 +97,6 @@ function TeamModal({ teamModalOpen, setTeamModalOpen }: TeamModalProps) {
                       </Option>
                     ))}
                   </Select>
-                </div>
-
-                <div>
-                  <label className="block mb-1 font-semibold">Note</label>
-                  <Field
-                    name="note"
-                    as={AntInput.TextArea}
-                    placeholder="Optional note"
-                    rows={4}
-                  />
                 </div>
               </div>
             </Card>

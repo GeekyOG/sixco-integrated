@@ -93,7 +93,7 @@ function Teams() {
           totalPages={teamsData?.pagination?.totalPages}
         />
         <DashboardDrawer
-          callBackAction={() => {}}
+          callBackAction={handleGetTeams}
           open={open}
           setOpen={setOpen}
           whatForm={"teams"}

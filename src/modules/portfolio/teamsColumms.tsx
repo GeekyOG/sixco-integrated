@@ -18,23 +18,23 @@ export const teamColumns: ColumnsType = [
 
   {
     title: "Team Members",
-    dataIndex: "users",
-    key: "users",
-    render: (users: { firstName: string }[]) => {
+    dataIndex: "members",
+    key: "members",
+    render: (members: { firstName: string }[]) => {
       return (
         <div>
-          {users?.length == 0 && "--"}
-          {users?.slice(0, 5).map((user, i) => (
+          {members?.length == 0 && "--"}
+          {members?.slice(0, 3).map((user, i) => (
             <Avatar
               icon={user.firstName[0]}
               className={cn(
-                i !== 1 && "-mr-3",
+                "-mr-3",
                 `z-[${i}] bg-neutral-450 border border-neutral-50`
               )}
             />
           ))}
 
-          {users.length > 5 && `+ ${users.length - 5}`}
+          {members.length > 3 && `+ ${members.length - 3}`}
         </div>
       );
     },

@@ -32,13 +32,18 @@ function Dashboard() {
     getAllPortfolio("");
   };
 
+  const handleGetPortfolio = () => {
+    getAllPortfolio("");
+    setDrawerOpen(false);
+  };
+
   const handleGetClients = () => {
     setDrawerOpen(false);
     getClients("");
   };
 
   const handleAddPortfolio = () => {
-    setOpenAddCustomers(true);
+    setDrawerOpen(true);
     setWhatForm("Portfolio");
   };
 
@@ -132,13 +137,17 @@ function Dashboard() {
         />
       </div>
       <DashboardDrawer
-        callBackAction={handleGetOverview}
+        callBackAction={handleGetPortfolio}
         open={drawerOpen}
         setOpen={setDrawerOpen}
         whatForm={whatForm}
       />
 
-      <AddUser open={openAddCustomers} setShowDrawer={setOpenAddCustomers} />
+      <AddUser
+        open={openAddCustomers}
+        setShowDrawer={setOpenAddCustomers}
+        callBackAction={handleGetClients}
+      />
     </div>
   );
 }

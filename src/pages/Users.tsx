@@ -91,7 +91,11 @@ function Users() {
           setPage={setPage}
           totalPages={clientsData?.pagination?.totalPages}
         />
-        <AddUser open={open} setShowDrawer={setOpen} />
+        <AddUser
+          open={open}
+          setShowDrawer={setOpen}
+          callBackAction={handleGetClients}
+        />
       </Container>
     </div>
   );

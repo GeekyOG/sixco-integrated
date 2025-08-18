@@ -34,7 +34,7 @@ export const columns: ColumnsType = [
             <Avatar
               icon={user.firstName[0]}
               className={cn(
-                i !== 1 && "-mr-3",
+                "-mr-3",
                 `z-[${i}] bg-neutral-450 border border-neutral-50`
               )}
             />

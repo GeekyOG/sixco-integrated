@@ -53,3 +53,15 @@ textarea {
 .custom-pagination .ant-pagination-item-active a {
   color: #000 !important;
 }
+
+table thead tr th:last-child {
+  text-align: right !important;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).ant-pagination
+  .ant-pagination-disabled,
+:where(.css-dev-only-do-not-override-1c0na6j).ant-pagination
+  .ant-pagination-disabled:hover {
+  cursor: not-allowed;
+  margin-top: 5px;
+}

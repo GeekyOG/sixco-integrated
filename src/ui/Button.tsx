@@ -25,7 +25,7 @@ const Button: FunctionComponent<ButtonProps> = ({
       onClick={onClick || (() => {})}
       type={type}
       className={cn(
-        "text-[#fff] rounded-md outline-none border-0 bg-[#3b781c] px-[20px] py-[10px]",
+        "text-[#fff] text-[0.865rem] rounded-md outline-none border-0 bg-[#3b781c] justify-center py-2 px-4 flex items-center gap-2 leading-0",
         className
       )}
       {...props}

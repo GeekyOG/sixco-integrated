@@ -19,17 +19,17 @@ interface AddUserProps {
   id?: string;
   open: boolean;
   setShowDrawer: React.Dispatch<React.SetStateAction<boolean>>;
+  callBackAction: () => void;
 }
 
-function AddUser({ open, setShowDrawer, id }: AddUserProps) {
+function AddUser({ open, setShowDrawer, id, callBackAction }: AddUserProps) {
   const onClose = () => {
     setShowDrawer(false);
   };
 
-  const [getClients] = useLazyGetClientsQuery();
   const [addClient, { isLoading: clientLoading }] = useAddClientMutation();
   const [updateClients, { isLoading: updateClientLoading }] =
-    useUpdateUserMutation();
+    useUpdateClientsMutation();
   const [getClient, { data }] = useLazyGetClientsQuery();
 
   useEffect(() => {
@@ -38,22 +38,15 @@ function AddUser({ open, setShowDrawer, id }: AddUserProps) {
     }
   }, [id]);
 
-  const [isClient, setIsClient] = React.useState(false);
-  const handleTofuChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsClient(e.target.checked);
-  };
-
-  console.log(id, isClient);
-
   return (
     <Drawer title="Add Client" onClose={onClose} open={open}>
       <div>
         <Formik
           initialValues={{
-            firstName: data?.firstName ?? "",
-            lastName: data?.lastName ?? "",
-            email: data?.email ?? "",
-            phoneNumber: "",
+            firstName: data?.client?.firstName ?? "",
+            lastName: data?.client?.lastName ?? "",
+            email: data?.client?.email ?? "",
+            phoneNumber: data?.client?.phoneNumber ?? "",
             password: "",
             id: "",
           }}
@@ -63,17 +56,23 @@ function AddUser({ open, setShowDrawer, id }: AddUserProps) {
               updateClients({
                 id: id,
                 body: {
-                  firstName: data?.firstName ?? "",
-                  lastName: data?.lastName ?? "",
-                  email: data?.email ?? "",
-                  phoneNumber: data?.phoneNumber ?? "",
+                  firstName: values?.firstName ?? "",
+                  lastName: values?.lastName ?? "",
+                  email: values?.email ?? "",
+                  phoneNumber: values?.phoneNumber ?? "",
                 },
-              });
+              })
+                .unwrap()
+                .then((res) => {
+                  callBackAction();
+                  toast.success("User added successfully!");
+                  setShowDrawer(false);
+                });
             } else {
               addClient(values)
                 .unwrap()
                 .then((res) => {
-                  getClients("");
+                  callBackAction();
                   toast.success("User added successfully!");
                   setShowDrawer(false);
                 })

@@ -42,8 +42,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ reset, callBackAction, id }) => {
     }
   }, [id, featuredLoading, reset, data]);
 
-  console.log(teamsData?.users);
-
   return (
     <div>
       {featuredLoading && id && (

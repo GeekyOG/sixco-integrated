@@ -20,9 +20,10 @@ interface AddStaffProps {
   id?: string;
   open: boolean;
   setShowDrawer: React.Dispatch<React.SetStateAction<boolean>>;
+  callBackAction: () => void;
 }
 
-function AddStaff({ open, setShowDrawer, id }: AddStaffProps) {
+function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
   const onClose = () => {
     setShowDrawer(false);
   };
@@ -48,10 +49,10 @@ function AddStaff({ open, setShowDrawer, id }: AddStaffProps) {
       <div>
         <Formik
           initialValues={{
-            firstName: data?.firstName ?? "",
-            lastName: data?.lastName ?? "",
-            email: data?.email ?? "",
-            phoneNumber: "",
+            firstName: data?.user?.firstName ?? "",
+            lastName: data?.user?.lastName ?? "",
+            email: data?.user?.email ?? "",
+            phoneNumber: data?.user?.phoneNumber ?? "",
             password: "",
             id: "",
           }}
@@ -61,16 +62,24 @@ function AddStaff({ open, setShowDrawer, id }: AddStaffProps) {
               updateClients({
                 id: id,
                 body: {
-                  firstName: data?.firstName ?? "",
-                  lastName: data?.lastName ?? "",
-                  email: data?.email ?? "",
+                  ...values,
                   role: "admin",
                 },
-              });
+              })
+                .unwrap()
+                .then((res) => {
+                  callBackAction();
+                  toast.success("Action successful!");
+                  setShowDrawer(false);
+                })
+                .catch((err) => {
+                  toast.error(err.data?.message || "Failed to add user");
+                });
             } else {
               addClient(values)
                 .unwrap()
                 .then((res) => {
+                  callBackAction();
                   toast.success("User added successfully!");
                   setShowDrawer(false);
                 })
