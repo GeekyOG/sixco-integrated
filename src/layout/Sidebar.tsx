@@ -73,7 +73,7 @@ function Sidebar({ setHideSideBar }: SidebarProps) {
   const { pathname } = location;
 
   return (
-    <div className=" hidden h-[100vh] w-[200px]  flex-none border-r-[1px] lg:block relative z-[1000] ">
+    <div className="hidden h-[100vh] w-[200px]  flex-none border-r-[1px] lg:block relative z-[1000] ">
       <div className="fixed bottom-0 top-0 w-[280px] bg-[#090909]">
         <div
           onClick={() => {
