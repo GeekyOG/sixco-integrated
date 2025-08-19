@@ -71,7 +71,7 @@ function DashboardTable({
         type={type}
         columns={columnWithAction}
         dataSource={data}
-        loading={false}
+        loading={isFetching}
         callBackAction={callBackAction}
       />
       <Table

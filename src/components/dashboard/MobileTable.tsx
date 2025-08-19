@@ -6,6 +6,8 @@ import { AnyObject } from "yup";
 import { Collapse, Divider } from "antd";
 import ActionButtons from "./ActionButtons";
 import { format } from "date-fns";
+import Loader from "../../ui/dashboard/Loader";
+import EmptyState from "../../ui/dashboard/Empty";
 interface MobileTableProps {
   columns: (
     | ColumnGroupType<AnyObject>
@@ -29,13 +31,12 @@ function MobileTable({
 }: MobileTableProps) {
   return (
     <div className="md:hidden flex flex-col w-full px-[24px] py-[16px] border rounded-md">
+      {dataSource.length == 0 && !loading && <EmptyState />}
       {loading ? (
-        <Skeleton className="w-[100%] h-[32px]" />
+        <Loader />
       ) : (
         <div className="flex flex-col gap-3">
           {dataSource?.map((item: any, i) => {
-            console.log(item);
-
             return (
               <div>
                 <Collapse
