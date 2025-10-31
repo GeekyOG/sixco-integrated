@@ -34,6 +34,11 @@ export const mainMenuOptions = [
     icon: <Users size={16} />,
   },
   {
+    text: "Roles & Permissions",
+    url: "/dashboard/roles-permissions",
+    icon: <Users size={16} />,
+  },
+  {
     text: "Manage Teams",
     url: "/dashboard/teams",
     icon: <BsPeople size={16} />,

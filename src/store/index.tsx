@@ -8,6 +8,8 @@ import { clientApi } from "../api/clientApi";
 import { reportsApi } from "../api/reportsApi";
 import { tasksApi } from "../api/tasksApi";
 import { teamsApi } from "../api/teamsApi";
+import { documentApi } from "../api/documentApi";
+import { rolesApi } from "../api/rolesApi";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +21,8 @@ export const store = configureStore({
     [reportsApi.reducerPath]: reportsApi.reducer,
     [tasksApi.reducerPath]: tasksApi.reducer,
     [teamsApi.reducerPath]: teamsApi.reducer,
+    [documentApi.reducerPath]: documentApi.reducer,
+    [rolesApi.reducerPath]: rolesApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -30,7 +34,9 @@ export const store = configureStore({
       leaveApi.middleware,
       reportsApi.middleware,
       tasksApi.middleware,
-      teamsApi.middleware
+      teamsApi.middleware,
+      documentApi.middleware,
+      rolesApi.middleware
     ),
 });
 

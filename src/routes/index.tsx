@@ -20,6 +20,8 @@ import Leaves from "../pages/Leaves";
 import ClientDetails from "../pages/ClientDetails";
 import Register from "../pages/RegisterPage";
 import StaffDetails from "../pages/StaffDetails";
+import RolesAndPermissions from "../pages/RolesAndPermissions";
+import AddRole from "../pages/AddRole";
 
 const router = createBrowserRouter([
   {
@@ -78,6 +80,14 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/staffs/:id",
         element: <StaffDetails />,
+      },
+      {
+        path: "/dashboard/roles-permissions",
+        element: <RolesAndPermissions />,
+      },
+      {
+        path: "/dashboard/roles-permissions/add-role",
+        element: <AddRole />,
       },
       {
         path: "/dashboard/teams",

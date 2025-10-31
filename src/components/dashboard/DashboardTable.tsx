@@ -67,13 +67,16 @@ function DashboardTable({
 
   return (
     <div className="w-[100%]">
-      <MobileTable
-        type={type}
-        columns={columnWithAction}
-        dataSource={data}
-        loading={isFetching}
-        callBackAction={callBackAction}
-      />
+      {type !== "roles" && (
+        <MobileTable
+          type={type}
+          columns={columnWithAction}
+          dataSource={data}
+          loading={isFetching}
+          callBackAction={callBackAction}
+        />
+      )}
+
       <Table
         columns={columnWithAction}
         dataSource={data}
@@ -108,7 +111,7 @@ function DashboardTable({
             : false
         }
       />
-      {totalPages && page && setPage && (
+      {page && setPage && (
         <div className="mt-6 flex justify-between items-center max-w-[200px]">
           <button
             onClick={handlePrev}

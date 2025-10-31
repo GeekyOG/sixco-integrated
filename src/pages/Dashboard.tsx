@@ -49,7 +49,8 @@ function Dashboard() {
 
   const formattedDate = format(new Date(), "EEEE, MMMM do");
 
-  const userData = JSON.parse(localStorage.getItem("userData") ?? "");
+  const userDataRaw = localStorage.getItem("userData");
+  const userData = userDataRaw ? JSON.parse(userDataRaw) : null;
 
   function getGreeting() {
     const now = new Date();

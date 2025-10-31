@@ -4,7 +4,15 @@ import Container from "../ui/Container";
 import BreadCrumb from "../ui/BreadCrumb";
 import DashboardDrawer from "../components/dashboard/Drawer";
 import DashboardTable from "../components/dashboard/DashboardTable";
-import { Pencil, Plus, Search, Trash, Trash2, Trash2Icon } from "lucide-react";
+import {
+  Pencil,
+  Plus,
+  Search,
+  Trash,
+  Trash2,
+  Trash2Icon,
+  Upload,
+} from "lucide-react";
 import Button from "../ui/Button";
 import { useGetTeamQuery } from "../api/teamsApi";
 import { useParams } from "react-router-dom";
@@ -25,6 +33,8 @@ import { clientsColumns } from "../modules/portfolio/clientsColumns";
 import { taskColumns } from "../modules/teams/taskColumns";
 import TeamModal from "../modules/portfolio/TeamModal";
 import ClientModal from "../modules/portfolio/ClientModal";
+import UploadModal from "../modules/portfolio/uploadModal";
+import { useLazyGetDocumentQuery } from "../api/documentApi";
 
 const { Option } = Select;
 
@@ -33,6 +43,8 @@ function ProjectDetails() {
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const [taskModalOpen, setTaskModalOpen] = useState(false);
 
+  const [docOpen, setDocOpen] = useState(false);
+
   const [teamModalOpen, setTeamModalOpen] = useState(false);
 
   const { id } = useParams();
@@ -40,7 +52,13 @@ function ProjectDetails() {
     useLazyGetPortfolioQuery();
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [getDocs, { data }] = useLazyGetDocumentQuery();
+
+  const getDocuments = () => {
+    getDocs(id);
+  };
   useEffect(() => {
+    getDocs(id);
     getProject(id);
   }, [id]);
   const handleCallBack = () => {
@@ -58,9 +76,6 @@ function ProjectDetails() {
             <p className="text-[1.5rem] font-[700] text-neutral-450">
               {projectData?.project?.name ?? "--"}
             </p>
-            <p className="max-w-[450px]">
-              {projectData?.project?.description ?? "--"}
-            </p>
           </div>
 
           <div className="flex gap-[16px] mt-2">
@@ -71,7 +86,57 @@ function ProjectDetails() {
               <Pencil size={14} />
               <p>Edit Project Details</p>
             </Button>
+
+            <Button
+              className=" text-[0.865rem] border text-neutral"
+              onClick={() => setDocOpen(!open)}
+            >
+              <Upload size={14} />
+              <p>Upload Document</p>
+            </Button>
           </div>
+        </div>
+
+        <div className="lg:flex mt-4 gap-[16px] ">
+          <p className="max-w-[450px] text-neutral-550 lg:w-[50%] border p-[12px] rounded-sm">
+            {projectData?.project?.description ?? "--"}
+          </p>
+
+          <Card className="lg:w-[50%]">
+            <div className="flex justify-between items-center">
+              <p className="py-4 font-[700] text-neutral-450 max-w-[300px]">
+                Project Documents
+              </p>
+            </div>
+            <div className="px-4 py-2">
+              {data?.documents?.length > 0 ? (
+                <ul className="space-y-2">
+                  {data.documents.map((doc, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center justify-between border-b pb-2"
+                    >
+                      <p className="text-[0.865rem] text-neutral-600">
+                        {doc.name}
+                      </p>
+                      <a
+                        href={doc.firebaseUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 text-[0.85rem] hover:underline"
+                      >
+                        View
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-[0.85rem] text-neutral-400">
+                  No documents uploaded yet.
+                </p>
+              )}
+            </div>
+          </Card>
         </div>
       </Container>
 
@@ -191,6 +256,12 @@ function ProjectDetails() {
         teamModalOpen={teamModalOpen}
         setTeamModalOpen={setTeamModalOpen}
         callBackAction={handleCallBack}
+      />
+
+      <UploadModal
+        getDocuments={getDocuments}
+        isModalOpen={docOpen}
+        handleCancel={() => setDocOpen(!docOpen)}
       />
     </div>
   );
