@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import AddStaff from "../../modules/users/AddStaff";
 import { useDeleteTaskMutation } from "../../api/tasksApi";
 import { useUnAssignMemberMutation } from "../../api/teamsApi";
+import { useDeleteRoleMutation } from "../../api/rolesApi";
 // import EditCategory from "../../modules/products/EditCategory";
 interface ActionButtonsProps {
   id: string;
@@ -49,6 +50,9 @@ function ActionButtons({
   const [deleteLeave, { isLoading: deleteLeaveLoading }] =
     useDeleteLeaveMutation();
 
+  const [deleteRole, { isLoading: deleteRoleLoading }] =
+    useDeleteRoleMutation();
+
   const handleDeleteProjectDialog = () => {
     setShowDialog(true);
     setDialogTitle("Delete Project Permanently");
@@ -56,6 +60,15 @@ function ActionButtons({
       "Deleting this Project, this Project would would not longer be displayed on your website. Please note this action cannot be undone"
     );
     setDialogBtnText("Delete Project");
+  };
+
+  const handleDeleteRoleDialog = () => {
+    setShowDialog(true);
+    setDialogTitle("Delete Role Permanently");
+    setDialogContent(
+      "Deleting this Role, this Role would would not longer be displayed on your website. Please note this action cannot be undone"
+    );
+    setDialogBtnText("Delete Role");
   };
 
   const handleDeleteTeamDialog = () => {
@@ -139,6 +152,18 @@ function ActionButtons({
       });
   };
 
+  const handleDeleteRole = () => {
+    deleteRole(id)
+      .then(() => {
+        toast.success("Action Successful");
+        callBackAction && callBackAction();
+        setShowDialog(true);
+      })
+      .catch(() => {
+        toast.error("Action Failed");
+      });
+  };
+
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
 
   const [removeProject, { isLoading }] = useRemoveProjectMutation();
@@ -201,6 +226,16 @@ function ActionButtons({
 
   return (
     <>
+      {type == "roles" && (
+        <>
+          <TableActionButtons
+            handleEdit={() => {
+              navigate(`/dashboard/roles-permissions/edit-role/${id}`);
+            }}
+            handleDelete={handleDeleteRoleDialog}
+          />
+        </>
+      )}
       {type === "teams" && (
         <>
           <TableActionButtons
@@ -371,7 +406,8 @@ function ActionButtons({
             deleteLeaveLoading ||
             isRemoveTeaMLoading ||
             isTaskLoading ||
-            isUnassignLoading
+            isUnassignLoading ||
+            deleteRoleLoading
           }
           type={"delete"}
           image={"/delete.svg"}
@@ -385,6 +421,7 @@ function ActionButtons({
               handleDeleteClient) ||
             (dialogTitle == "Delete Request Permanently" &&
               handleDeleteLeave) ||
+            (dialogTitle == "Delete Role Permanently" && handleDeleteRole) ||
             function (): void {
               throw new Error("Function not implemented.");
             }

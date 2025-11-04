@@ -10,6 +10,7 @@ import { tasksApi } from "../api/tasksApi";
 import { teamsApi } from "../api/teamsApi";
 import { documentApi } from "../api/documentApi";
 import { rolesApi } from "../api/rolesApi";
+import { hseReportApi } from "../api/hseReportApi";
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export const store = configureStore({
     [teamsApi.reducerPath]: teamsApi.reducer,
     [documentApi.reducerPath]: documentApi.reducer,
     [rolesApi.reducerPath]: rolesApi.reducer,
+    [hseReportApi.reducerPath]: hseReportApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -36,7 +38,8 @@ export const store = configureStore({
       tasksApi.middleware,
       teamsApi.middleware,
       documentApi.middleware,
-      rolesApi.middleware
+      rolesApi.middleware,
+      hseReportApi.middleware
     ),
 });
 

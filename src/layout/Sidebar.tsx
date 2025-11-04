@@ -54,7 +54,11 @@ export const mainMenuOptions = [
     url: "/dashboard/reports",
     icon: <GoReport size={16} />,
   },
-
+  {
+    text: "Manage HSE Reports",
+    url: "/dashboard/HSE-reports",
+    icon: <File size={16} />,
+  },
   {
     text: "Leave Requests",
     url: "/dashboard/leaves",

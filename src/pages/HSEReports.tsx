@@ -9,7 +9,7 @@ import BreadCrumb from "../ui/BreadCrumb";
 import { useLazyGetAllReportQuery } from "../api/reportsApi";
 import { useNavigate } from "react-router-dom";
 
-function Reports() {
+function HSEReports() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const handleAddPortfolio = () => {
@@ -54,7 +54,7 @@ function Reports() {
               />
             </div>
             <Button
-              onClick={() => navigate("/dashboard/reports/add-report")}
+              onClick={() => navigate("/dashboard/HSE-reports/add-report")}
               className="flex h-[36px] items-center"
             >
               Add Report
@@ -93,4 +93,4 @@ function Reports() {
   );
 }
 
-export default Reports;
+export default HSEReports;

@@ -22,6 +22,12 @@ import Register from "../pages/RegisterPage";
 import StaffDetails from "../pages/StaffDetails";
 import RolesAndPermissions from "../pages/RolesAndPermissions";
 import AddRole from "../pages/AddRole";
+import EditRole from "../pages/EditRole";
+import AddReport from "../pages/AddReport";
+import EditReport from "../pages/EditReport";
+import HSEReports from "../pages/HSEReports";
+import AddHSEReport from "../pages/AddHSEReport";
+import EditHSEReport from "../pages/EditHSEReport";
 
 const router = createBrowserRouter([
   {
@@ -90,6 +96,10 @@ const router = createBrowserRouter([
         element: <AddRole />,
       },
       {
+        path: "/dashboard/roles-permissions/edit-role/:id",
+        element: <EditRole />,
+      },
+      {
         path: "/dashboard/teams",
         element: <Teams />,
       },
@@ -102,7 +112,26 @@ const router = createBrowserRouter([
         path: "/dashboard/reports",
         element: <Reports />,
       },
-
+      {
+        path: "/dashboard/reports/add-report",
+        element: <AddReport />,
+      },
+      {
+        path: "/dashboard/reports/edit-report",
+        element: <EditReport />,
+      },
+      {
+        path: "/dashboard/HSE-reports",
+        element: <HSEReports />,
+      },
+      {
+        path: "/dashboard/HSE-reports/add-report",
+        element: <AddHSEReport />,
+      },
+      {
+        path: "/dashboard/HSE-reports/edit-report",
+        element: <EditHSEReport />,
+      },
       {
         path: "/dashboard/leaves",
         element: <Leaves />,

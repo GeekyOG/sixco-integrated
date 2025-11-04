@@ -6,7 +6,7 @@ export const rolesApi = createApi({
   reducerPath: "rolesApi",
   endpoints: (builder) => ({
     addRole: builder.mutation({
-      query: ({ id, body }) => ({
+      query: (body) => ({
         body,
         url: `roles/`,
         method: "POST",
@@ -58,4 +58,5 @@ export const {
   useGetRoleQuery,
   useLazyGetRoleQuery,
   useGetAllPermissionsQuery,
+  useUpdateRoleMutation,
 } = rolesApi;
