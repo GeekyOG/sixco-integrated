@@ -112,6 +112,7 @@ function Dashboard() {
           isFetching={isFetching}
           type="Portfolio"
           callBackAction={handleGetOverview}
+          hidePagination
         />
       </div>
 
@@ -135,6 +136,7 @@ function Dashboard() {
           isFetching={clientsFetching}
           type="client"
           callBackAction={handleGetClients}
+          hidePagination
         />
       </div>
       <DashboardDrawer

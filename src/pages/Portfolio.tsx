@@ -1,32 +1,50 @@
 import React, { useEffect, useState } from "react";
 import Container from "../ui/Container";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight, Download, ListFilter, Search } from "lucide-react";
 import DashboardTable from "../components/dashboard/DashboardTable";
 import { columns } from "../modules/portfolio/columns";
 import DashboardDrawer from "../components/dashboard/Drawer";
 import Button from "../ui/Button";
 import { useLazyGetAllPortfolioQuery } from "../api/portfolio";
 import BreadCrumb from "../ui/BreadCrumb";
+import { DatePicker, Popover } from "antd";
+import { handleExportCSV } from "../utils/export";
 
 function Portfolio() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const handleAddPortfolio = () => {
     setDrawerOpen(true);
   };
+  const [page, setPage] = useState(1);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const onChange = (date: any, type: string) => {
+    if (type === "start") {
+      setStartDate(date ? date.toDate() : null);
+    } else {
+      setEndDate(date ? date.toDate() : null);
+    }
+  };
 
   const [getAllPortfolio, { isFetching, data }] = useLazyGetAllPortfolioQuery();
 
   useEffect(() => {
-    getAllPortfolio("");
-  }, []);
+    getAllPortfolio({
+      projectName: searchTerm,
+      currentPage: page,
+      ...(startDate && { startDate }),
+      ...(endDate && { endDate }),
+    });
+  }, [page, searchTerm, startDate, endDate]);
 
   const handleGetPortfolio = () => {
     getAllPortfolio("");
     setDrawerOpen(false);
   };
-  const [page, setPage] = useState(1);
-
-  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <Container className="pb-[200px]">
@@ -42,13 +60,51 @@ function Portfolio() {
           </div>
 
           <div className="mb-[3px] flex items-center gap-[8px]">
-            <div className="md:flex hidden cursor-pointer items-center gap-[3px] border-b-[1px] px-[8px] py-[8px] ">
-              <Search size={16} className="text-neutral-300" />
-              <input
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className=" py-[2px] text-[0.865rem]"
-                placeholder="Search by email..."
-              />
+            <div className="lg:flex hidden cursor-pointer items-center gap-[3px]  px-[8px] py-[8px] my-3">
+              <Popover
+                content={
+                  <div className="flex flex-col gap-3 px-[4px] py-[16px]">
+                    <DatePicker
+                      onChange={(date) => onChange(date, "start")}
+                      placeholder="Start Date"
+                    />
+                    <DatePicker
+                      onChange={(date) => onChange(date, "end")}
+                      placeholder="End Date"
+                    />
+
+                    <Button className="items-center gap-3 bg-[#093aa4] text-[0.865rem]">
+                      Apply
+                    </Button>
+                  </div>
+                }
+                title=""
+                placement="bottomLeft"
+                showArrow={false}
+              >
+                <div className="flex cursor-pointer items-center gap-[3px] rounded-md px-[8px] py-[8px] text-neutral-300 hover:text-[#093aa4]">
+                  <ListFilter size={16} className="" />
+                </div>
+              </Popover>
+
+              <Button
+                className="flex items-center gap-3 bg-[#a40909] text-[0.865rem]  h-[36px]"
+                onClick={() =>
+                  handleExportCSV({ data: [], fileName: "sales.csv" })
+                }
+              >
+                <p>Export</p>
+                <Download size={16} />
+              </Button>
+
+              <div className="flex items-center border max-w-[300px] w-[100%] px-6 py-1 rounded-md">
+                <Search size={16} className="text-neutral-300" />
+                <input
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className=" py-[2px] text-[0.865rem]"
+                  placeholder="Search by project name"
+                />
+              </div>
             </div>
             <Button
               onClick={handleAddPortfolio}
@@ -59,13 +115,49 @@ function Portfolio() {
           </div>
         </div>
 
-        <div className="flex md:hidden cursor-pointer items-center gap-[3px] border-[1px] px-[8px] py-[8px] my-3">
-          <Search size={16} className="text-neutral-300" />
-          <input
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className=" py-[2px] text-[0.865rem]"
-            placeholder="Search by email..."
-          />
+        <div className="flex lg:hidden  cursor-pointer items-center gap-[3px]  px-[8px] py-[8px] my-3">
+          <Popover
+            content={
+              <div className="flex flex-col gap-3 px-[4px] py-[16px]">
+                <DatePicker
+                  onChange={(date) => onChange(date, "start")}
+                  placeholder="Start Date"
+                />
+                <DatePicker
+                  onChange={(date) => onChange(date, "end")}
+                  placeholder="End Date"
+                />
+
+                <Button className="items-center gap-3 bg-[#093aa4] text-[0.865rem]">
+                  Apply
+                </Button>
+              </div>
+            }
+            title=""
+            placement="bottomLeft"
+            showArrow={false}
+          >
+            <div className="flex cursor-pointer items-center gap-[3px] rounded-md px-[8px] py-[8px] text-neutral-300 hover:text-[#093aa4]">
+              <ListFilter size={16} className="" />
+            </div>
+          </Popover>
+
+          <Button
+            className="flex items-center gap-3 bg-[#a40909] text-[0.865rem]  h-[36px]"
+            onClick={() => handleExportCSV({ data: [], fileName: "sales.csv" })}
+          >
+            <p>Export</p>
+            <Download size={16} />
+          </Button>
+
+          <div className="flex items-center border max-w-[300px] w-[100%] px-6 py-1 rounded-md">
+            <Search size={16} className="text-neutral-300" />
+            <input
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className=" py-[2px] text-[0.865rem]"
+              placeholder="Search by project name"
+            />
+          </div>
         </div>
       </div>
       <div>

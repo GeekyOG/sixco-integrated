@@ -69,9 +69,9 @@ export const authApi = createApi({
     }),
 
     getAllUsers: builder.query({
-      query: ({ currentPage }) => ({
+      query: (args?: any) => ({
         url: "users",
-        params: { currentPage },
+        params: args,
       }),
     }),
 

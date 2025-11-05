@@ -19,6 +19,7 @@ interface DashboardTableProps {
   totalPages?: number;
   page?: number;
   setPage?: React.Dispatch<React.SetStateAction<number>>;
+  hidePagination?: boolean;
 }
 
 function DashboardTable({
@@ -33,6 +34,7 @@ function DashboardTable({
   totalPages,
   page,
   setPage,
+  hidePagination,
 }: DashboardTableProps) {
   const handleNext = () => {
     if (page && totalPages && page < totalPages && setPage) {
@@ -85,7 +87,7 @@ function DashboardTable({
         rowKey="id"
         rowClassName={() => "custom-table-row"}
         pagination={
-          !totalPages
+          !totalPages && !hidePagination
             ? {
                 pageSize: 10,
                 showSizeChanger: false,

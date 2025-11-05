@@ -111,7 +111,7 @@ function ProjectDetails() {
             <div className="px-4 py-2">
               {data?.documents?.length > 0 ? (
                 <ul className="space-y-2">
-                  {data.documents.map((doc, index) => (
+                  {data.documents.map((doc: any, index: number) => (
                     <li
                       key={index}
                       className="flex items-center justify-between border-b pb-2"

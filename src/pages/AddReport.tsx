@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import { Input, Form as AntForm, Select, Upload, UploadFile } from "antd";
 import * as Yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useGetAllPortfolioQuery } from "../api/portfolio";
+import {
+  useGetAllPortfolioQuery,
+  useLazyGetAllPortfolioQuery,
+} from "../api/portfolio";
 import Button from "../ui/Button";
 import { Plus } from "lucide-react";
+import SelectField from "../components/input/SelectField";
 
 const { Item: FormItem } = AntForm;
 const { Option } = Select;
@@ -46,9 +50,12 @@ function AddReport() {
     userId: "",
     reportURL: "",
   };
-  const { data: projectOptions } = useGetAllPortfolioQuery("");
+  const [getData, { data: projectOptions }] = useLazyGetAllPortfolioQuery();
 
-  const handleSubmit = (values) => {
+  useEffect(() => {
+    getData({});
+  }, []);
+  const handleSubmit = (values: any) => {
     console.log("Report submitted:", values);
     // Submit to API here
   };
@@ -79,23 +86,13 @@ function AddReport() {
               <div>
                 <p className="block mb-1 font- text-[1rem]">Project</p>
 
-                <Select
-                  showSearch
-                  className="w-full"
+                <SelectField
+                  name="projectId"
                   placeholder="Select a project"
-                  onChange={(value) => setFieldValue("projectId", value)}
-                  filterOption={(input, option: any) =>
-                    option?.children
-                      ?.toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                >
-                  {projectOptions?.projects?.map((project) => (
-                    <Option key={project.id} value={project.id}>
-                      {project.name}
-                    </Option>
-                  ))}
-                </Select>
+                  data={projectOptions?.projects ?? []}
+                  fetchData={getData}
+                  setFieldValue={setFieldValue}
+                />
               </div>
 
               <div className="mt-4">

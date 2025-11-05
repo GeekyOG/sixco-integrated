@@ -14,9 +14,9 @@ export const hseReportApi = createApi({
     }),
 
     getAllHSEReport: builder.query({
-      query: ({ currentPage }) => ({
+      query: (args?: any) => ({
         url: "hse/reports",
-        params: { currentPage },
+        params: args,
       }),
     }),
 

@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import Container from "../ui/Container";
 import { Search } from "lucide-react";
 import DashboardTable from "../components/dashboard/DashboardTable";
-import { columns } from "../modules/portfolio/columns";
 import DashboardDrawer from "../components/dashboard/Drawer";
 import Button from "../ui/Button";
 import BreadCrumb from "../ui/BreadCrumb";
 import { useLazyGetAllReportQuery } from "../api/reportsApi";
 import { useNavigate } from "react-router-dom";
+import { columns } from "../modules/reports/columns";
 
 function HSEReports() {
   const [drawerOpen, setDrawerOpen] = useState(false);

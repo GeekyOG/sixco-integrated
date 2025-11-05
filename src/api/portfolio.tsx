@@ -6,9 +6,9 @@ export const portfolioApi = createApi({
   reducerPath: "portfolioApi",
   endpoints: (builder) => ({
     getAllPortfolio: builder.query({
-      query: ({ currentPage }) => ({
+      query: (args) => ({
         url: "projects",
-        params: { currentPage },
+        params: args,
       }),
     }),
 

@@ -74,7 +74,7 @@ const EditRole = () => {
         validationSchema={validationSchema}
         onSubmit={(values) => {
           console.log("Form submitted:", values);
-          createRole(values);
+          createRole({ body: values, id });
         }}
       >
         {({
@@ -127,8 +127,8 @@ const EditRole = () => {
                   <Collapse accordion className="mt-[14px]">
                     {Object.entries(groupedPermissions).map(
                       ([module, permissions]) => {
-                        const allChecked = permissions.every((perm) =>
-                          values.permissions.includes(perm.name)
+                        const allChecked = permissions?.every((perm) =>
+                          values.permissions?.includes(perm.name)
                         );
 
                         return (
@@ -174,7 +174,7 @@ const EditRole = () => {
                               {permissions.map((item) => (
                                 <Checkbox
                                   key={item.id}
-                                  checked={values.permissions.includes(
+                                  checked={values.permissions?.includes(
                                     item.name
                                   )}
                                   onChange={(e) => {

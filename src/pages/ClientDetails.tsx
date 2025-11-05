@@ -1,24 +1,28 @@
 import { useEffect, useState } from "react";
-import { useGetClientsQuery } from "../api/clientApi";
+import {
+  useGetClientsQuery,
+  useLazyGetClientProjectQuery,
+} from "../api/clientApi";
 import { useParams } from "react-router-dom";
 import Container from "../ui/Container";
 import { Search } from "lucide-react";
 import DashboardTable from "../components/dashboard/DashboardTable";
 import { columns } from "../modules/portfolio/columns";
-import { useLazyGetClientProjectQuery } from "../api/portfolio";
 
 function ClientDetails() {
   const { id } = useParams();
+  const [page, setPage] = useState(1);
 
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data } = useGetClientsQuery(id);
 
-  const [getClient, { data: projectsData }] = useLazyGetClientProjectQuery();
+  const [getClient, { data: projectsData, isFetching }] =
+    useLazyGetClientProjectQuery();
 
   useEffect(() => {
-    getClient(id);
-  }, [id]);
+    getClient({ id, args: { projectName: searchTerm, currentPage: page } });
+  }, [id, page, searchTerm]);
 
   return (
     <div>
@@ -92,7 +96,7 @@ function ClientDetails() {
           <DashboardTable
             columns={columns}
             data={projectsData?.projects || []}
-            isFetching={false}
+            isFetching={isFetching}
             targetId={id}
             remove
             removeAction="project"
@@ -100,6 +104,10 @@ function ClientDetails() {
             callBackAction={() => {
               getClient(id);
             }}
+            hidePagination
+            page={page}
+            setPage={setPage}
+            totalPages={projectsData?.pagination?.totalPages}
           />
         </Container>
       </div>

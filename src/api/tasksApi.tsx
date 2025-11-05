@@ -14,9 +14,9 @@ export const tasksApi = createApi({
     }),
 
     getAllTask: builder.query({
-      query: ({ currentPage }) => ({
+      query: (args?: any) => ({
         url: "tasks",
-        params: { currentPage },
+        params: args,
       }),
     }),
 

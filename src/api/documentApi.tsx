@@ -14,9 +14,9 @@ export const documentApi = createApi({
     }),
 
     getAllDocument: builder.query({
-      query: ({ currentPage }) => ({
+      query: (args?: any) => ({
         url: "documents",
-        params: { currentPage },
+        params: args,
       }),
     }),
 

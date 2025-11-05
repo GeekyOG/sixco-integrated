@@ -14,9 +14,9 @@ export const rolesApi = createApi({
     }),
 
     getAllRole: builder.query({
-      query: ({ currentPage }) => ({
+      query: (args?: any) => ({
         url: "roles",
-        params: { currentPage },
+        params: args,
       }),
     }),
 
@@ -36,7 +36,7 @@ export const rolesApi = createApi({
     updateRole: builder.mutation({
       query: ({ body, id }) => ({
         url: `roles/${id}`,
-        method: "PATCH",
+        method: "PUT",
         body: body,
       }),
     }),

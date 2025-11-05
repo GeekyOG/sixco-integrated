@@ -64,7 +64,11 @@ export const mainMenuOptions = [
     url: "/dashboard/leaves",
     icon: <ArrowLeftRight size={16} />,
   },
-
+  {
+    text: "Messages",
+    url: "/dashboard/chat",
+    icon: <File size={16} />,
+  },
   {
     text: "Settings",
     url: "/dashboard/settings",

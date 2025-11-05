@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import { Input, Form as AntForm, Select, Upload, UploadFile } from "antd";
 import * as Yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useGetAllPortfolioQuery } from "../api/portfolio";
+import {
+  useGetAllPortfolioQuery,
+  useLazyGetAllPortfolioQuery,
+} from "../api/portfolio";
 import Button from "../ui/Button";
 import { Plus } from "lucide-react";
+import SelectField from "../components/input/SelectField";
 
 const { Item: FormItem } = AntForm;
 const { Option } = Select;
@@ -17,6 +21,7 @@ const ReportSchema = Yup.object().shape({
   projectId: Yup.string().required("Project ID is required"),
   userId: Yup.string().required("User ID is required"),
   reportURL: Yup.string().url("Must be a valid URL").nullable(),
+  dateOfReport: Yup.date().required("Date of Report is required"),
 });
 
 const Editors = {
@@ -45,12 +50,16 @@ function AddHSEReport() {
     projectId: "",
     userId: "",
     reportURL: "",
+    dateOfReport: "",
   };
-  const { data: projectOptions } = useGetAllPortfolioQuery("");
+  const [getData, { data: projectOptions }] = useLazyGetAllPortfolioQuery();
 
-  const handleSubmit = (values) => {
+  useEffect(() => {
+    getData({});
+  }, []);
+
+  const handleSubmit = (values: any) => {
     console.log("Report submitted:", values);
-    // Submit to API here
   };
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -76,26 +85,29 @@ function AddHSEReport() {
                 <Input value={values.title} onChange={handleChange} />
               </FormItem>
 
+              <FormItem
+                validateStatus={
+                  touched.dateOfReport && errors.dateOfReport ? "error" : ""
+                }
+                help={touched.dateOfReport && errors.dateOfReport}
+              >
+                <p className="block mb-1 font-semibold">Report Date</p>
+                <Input
+                  type="date"
+                  value={values.dateOfReport}
+                  onChange={handleChange}
+                />
+              </FormItem>
+
               <div>
                 <p className="block mb-1 font- text-[1rem]">Project</p>
-
-                <Select
-                  showSearch
-                  className="w-full"
+                <SelectField
+                  name="projectId"
                   placeholder="Select a project"
-                  onChange={(value) => setFieldValue("projectId", value)}
-                  filterOption={(input, option: any) =>
-                    option?.children
-                      ?.toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                >
-                  {projectOptions?.projects?.map((project) => (
-                    <Option key={project.id} value={project.id}>
-                      {project.name}
-                    </Option>
-                  ))}
-                </Select>
+                  data={projectOptions?.projects ?? []}
+                  fetchData={getData}
+                  setFieldValue={setFieldValue}
+                />
               </div>
 
               <div className="mt-4">

@@ -54,9 +54,9 @@ export const clientApi = createApi({
     }),
 
     getAllClients: builder.query({
-      query: ({ currentPage }) => ({
+      query: (args?: any) => ({
         url: "clients",
-        params: { currentPage },
+        params: args,
       }),
     }),
 
@@ -71,6 +71,13 @@ export const clientApi = createApi({
         url: `clients/${id}`,
         method: "PUT",
         body: body,
+      }),
+    }),
+
+    getClientProject: builder.query({
+      query: ({ id, args }) => ({
+        url: `clients/${id}/projects`,
+        params: args,
       }),
     }),
 
@@ -94,6 +101,7 @@ export const {
   useForgotPasswordMutation,
   useLoginUserMutation,
   useResendVerificationMutation,
+  useLazyGetClientProjectQuery,
   useResetPasswordMutation,
   useVerifyEmailMutation,
 } = clientApi;

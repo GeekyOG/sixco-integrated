@@ -28,6 +28,7 @@ import EditReport from "../pages/EditReport";
 import HSEReports from "../pages/HSEReports";
 import AddHSEReport from "../pages/AddHSEReport";
 import EditHSEReport from "../pages/EditHSEReport";
+import ChatPage from "../pages/ChatPage";
 
 const router = createBrowserRouter([
   {
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/users/:id",
         element: <ClientDetails />,
+      },
+      {
+        path: "/dashboard/chat",
+        element: <ChatPage />,
       },
       {
         path: "/dashboard/staffs",
