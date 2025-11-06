@@ -3,7 +3,6 @@ import { Field, Form, Formik } from "formik";
 import React, { useEffect } from "react";
 import Input from "../../components/input/Input";
 import Button from "../../ui/Button";
-import Toggle from "react-toggle";
 import { toast } from "react-toastify";
 import {
   useLazyGetUserQuery,
@@ -15,6 +14,8 @@ import {
   useLazyGetClientsQuery,
   useUpdateClientsMutation,
 } from "../../api/clientApi";
+import SelectField from "../../components/input/SelectField";
+import { useLazyGetAllRoleQuery } from "../../api/rolesApi";
 
 interface AddStaffProps {
   id?: string;
@@ -28,6 +29,12 @@ function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
     setShowDrawer(false);
   };
 
+  const [getALLRoles, { isFetching, data: rolesData }] =
+    useLazyGetAllRoleQuery();
+
+  useEffect(() => {
+    getALLRoles("");
+  }, []);
   const [addClient, { isLoading: clientLoading }] = useRegisterUserMutation();
   const [updateClients, { isLoading: updateClientLoading }] =
     useUpdateUserMutation();
@@ -53,6 +60,7 @@ function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
             lastName: data?.user?.lastName ?? "",
             email: data?.user?.email ?? "",
             phoneNumber: data?.user?.phoneNumber ?? "",
+            role: data?.user?.role ?? "",
             password: "",
             id: "",
           }}
@@ -63,7 +71,6 @@ function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
                 id: id,
                 body: {
                   ...values,
-                  role: "admin",
                 },
               })
                 .unwrap()
@@ -89,13 +96,8 @@ function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
             }
           }}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form className="flex flex-col gap-[15px]">
-              <div className="flex items-center gap-[10px]">
-                <Switch checked={true} />
-
-                <span>Is Staff</span>
-              </div>
               <Input
                 title="First Name"
                 name="firstName"
@@ -124,6 +126,14 @@ function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
                 placeholder="Enter your phone number"
                 errors={errors.phoneNumber}
                 touched={touched.phoneNumber}
+              />
+
+              <SelectField
+                className="h-[32px]"
+                fetchData={getALLRoles}
+                setFieldValue={setFieldValue}
+                name="role"
+                data={rolesData?.roles}
               />
 
               <Button

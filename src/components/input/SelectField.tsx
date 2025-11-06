@@ -4,6 +4,7 @@ import { Select } from "antd";
 
 import { FunctionComponent, useState } from "react";
 import { FormikErrors } from "formik";
+import { cn } from "../../utils/cn";
 
 const { Option } = Select;
 interface SelectFieldProps {
@@ -17,6 +18,8 @@ interface SelectFieldProps {
   name: string;
   data: any[];
   isLoading?: boolean;
+  className?: string;
+  value?: string | number; // Add this line
 }
 
 const SelectField: FunctionComponent<SelectFieldProps> = ({
@@ -26,12 +29,13 @@ const SelectField: FunctionComponent<SelectFieldProps> = ({
   name,
   data,
   isLoading,
+  className,
+  value, // Add this line
 }) => {
   const [searchValue, setSearchValue] = useState("");
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
-
     if (fetchData) {
       fetchData({ search: value });
     }
@@ -40,10 +44,11 @@ const SelectField: FunctionComponent<SelectFieldProps> = ({
   return (
     <Select
       showSearch
-      className="w-full"
+      className={cn("w-full", className)}
       placeholder={placeholder}
       onSearch={handleSearch}
       searchValue={searchValue}
+      value={value} // Add this line
       onChange={(value) => setFieldValue(name, value)}
       filterOption={(input, option: any) =>
         option?.children?.toLowerCase().includes(input.toLowerCase())
@@ -65,5 +70,4 @@ const SelectField: FunctionComponent<SelectFieldProps> = ({
     </Select>
   );
 };
-
 export default SelectField;

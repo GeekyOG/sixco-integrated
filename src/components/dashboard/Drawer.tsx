@@ -5,6 +5,7 @@ import AddTeamForm from "../forms/TeamForm";
 import TaskForm from "../forms/TaskForm";
 import AddLeaveForm from "../forms/LeaveForm";
 import EditPortfolioFormForm from "../forms/EditPortfolioForm";
+import EditTaskForm from "../forms/EditTaskForm";
 
 interface DashboardDrawerProps {
   id?: string;
@@ -38,6 +39,9 @@ const DashboardDrawer: React.FC<DashboardDrawerProps> = ({
       >
         {whatForm == "teams" && (
           <AddTeamForm reset={open} id={id} callBackAction={callBackAction} />
+        )}
+        {whatForm == "edit-tasks" && (
+          <EditTaskForm reset={open} id={id} callBackAction={callBackAction} />
         )}
         {whatForm == "tasks" && (
           <TaskForm reset={open} id={id} callBackAction={callBackAction} />

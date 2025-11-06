@@ -43,18 +43,6 @@ export const taskColumns: ColumnsType = [
   },
 
   {
-    title: "Assigned To",
-    dataIndex: "assignee",
-    key: "assignee",
-    render: (value) => (
-      <div>
-        <p className="text-[0.75rem]">{value.lastName}</p>{" "}
-        <p className="text-[0.75rem]">{value.firstName}</p>
-      </div>
-    ),
-  },
-
-  {
     title: "Status",
     dataIndex: "status",
     key: "status",

@@ -37,8 +37,8 @@ function TeamDetails() {
   };
   const [searchTerm, setSearchTerm] = useState("");
   const tasksWithProjectNames =
-    teamsData?.projects?.flatMap((item) =>
-      item.tasks.map((task) => ({
+    teamsData?.projects?.flatMap((item: any) =>
+      item.tasks.map((task: any) => ({
         name: item.name,
         ...task,
       }))

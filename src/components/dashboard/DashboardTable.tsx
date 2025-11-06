@@ -52,7 +52,7 @@ function DashboardTable({
     {
       title: "Actions",
       dataIndex: "action",
-      render: (_, record) => {
+      render: (_: any, record: any) => {
         return (
           <ActionButtons
             callBackAction={callBackAction}

@@ -17,6 +17,7 @@ interface InputProps extends Partial<FieldProps> {
   fieldClassName?: string;
   width?: string;
   as?: string;
+  disabled?: boolean;
   // handleChange?: (e: string | React.ChangeEvent<unknown>) => void;
   fieldChange?: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -31,6 +32,7 @@ const Input: FunctionComponent<InputProps> = ({
   touched,
   name,
   fieldClassName,
+  disabled,
   ...rest
 }) => {
   const hasError = errors && touched;
@@ -54,11 +56,13 @@ const Input: FunctionComponent<InputProps> = ({
         <Field
           type={isPassword ? "" : type}
           name={name}
+          disabled={disabled}
           placeholder={placeholder}
           className={cn(
             "bg-[#fff] border-[1px] rounded-[12px] h-[56px] mt-[8px] px-[15px] text-[0.75rem]",
             width ?? "w-[100%]",
             hasError ? "border-[#f00000]" : "",
+            disabled ? "cursor-not-allowed bg-[#f9f9f9] text-[#a0a0a0]" : "",
             fieldClassName
           )}
           {...rest}

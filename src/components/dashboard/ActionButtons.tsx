@@ -287,7 +287,7 @@ function ActionButtons({
         </>
       )}
 
-      {type === "tasks" && (
+      {type === "edit-tasks" && (
         <>
           <TableActionButtons
             setShow={() => {
