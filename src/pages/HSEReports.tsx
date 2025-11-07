@@ -12,28 +12,27 @@ import { columns } from "../modules/reports/columns";
 function HSEReports() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
-  const handleAddPortfolio = () => {
-    setDrawerOpen(true);
-  };
 
   const [page, setPage] = useState(1);
 
   const [getALLReports, { isFetching, data }] = useLazyGetAllReportQuery();
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    getALLReports("");
-  }, []);
+    getALLReports({
+      currentPage: page,
+      title: searchTerm,
+    });
+  }, [page, searchTerm]);
 
   const handleGetPortfolio = () => {
     getALLReports("");
     setDrawerOpen(false);
   };
 
-  const [searchTerm, setSearchTerm] = useState("");
-
   return (
     <Container className="pb-[200px]">
-      <BreadCrumb data={["Dashboard", "Manage Projects"]} />
+      <BreadCrumb data={["Dashboard", "Manage HSE Reports"]} />
       <div>
         <div className="flex items-center justify-between">
           <div className="flex">
@@ -50,7 +49,7 @@ function HSEReports() {
               <input
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className=" py-[2px] text-[0.865rem]"
-                placeholder="Search by email..."
+                placeholder="Search ..."
               />
             </div>
             <Button
@@ -76,7 +75,7 @@ function HSEReports() {
           columns={columns}
           data={data?.reports || []}
           isFetching={isFetching}
-          type="reports"
+          type="hse-reports"
           callBackAction={handleGetPortfolio}
           page={page}
           setPage={setPage}

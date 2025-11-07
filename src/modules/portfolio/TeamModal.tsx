@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, Modal, Select, Input as AntInput } from "antd";
 import { Formik, Form, Field } from "formik";
 import {
@@ -8,8 +8,13 @@ import {
 } from "../../api/portfolio";
 import { useParams } from "react-router-dom";
 import Button from "../../ui/Button";
-import { useGetAllTeamQuery, useLazyGetTeamQuery } from "../../api/teamsApi";
+import {
+  useGetAllTeamQuery,
+  useLazyGetAllTeamQuery,
+  useLazyGetTeamQuery,
+} from "../../api/teamsApi";
 import { toast } from "react-toastify";
+import SelectField from "../../components/input/SelectField";
 
 const { Option } = Select;
 
@@ -25,9 +30,13 @@ function TeamModal({
   callBackAction,
 }: TeamModalProps) {
   const { id } = useParams();
-  const { data: teamOptions } = useGetAllTeamQuery("");
+  const [getData, { data: teamOptions }] = useLazyGetAllTeamQuery();
   const [getProject] = useLazyGetPortfolioQuery();
   const [assignTeam, { isLoading }] = useAssignTeamMutation();
+
+  useEffect(() => {
+    getData({});
+  }, []);
 
   // Parse id safely
   const projectId = id ? parseInt(id) : null;
@@ -80,23 +89,22 @@ function TeamModal({
               <div className="flex flex-col gap-2">
                 <div>
                   <label className="block mb-1 font-semibold">Team</label>
-                  <Select
-                    showSearch
-                    className="w-full"
-                    placeholder="Select a Team"
-                    onChange={(value) => setFieldValue("teamId", value)}
-                    filterOption={(input, option: any) =>
-                      option?.children
-                        ?.toLowerCase()
-                        .includes(input.toLowerCase())
+                  <SelectField
+                    name="teamId"
+                    placeholder="Select a team"
+                    data={
+                      teamOptions?.teams?.map(
+                        (item: { teamName: any; teamId: any }) => {
+                          return {
+                            name: item.teamName,
+                            id: item.teamId,
+                          };
+                        }
+                      ) ?? []
                     }
-                  >
-                    {teamOptions?.teams?.map((team) => (
-                      <Option key={team.teamId} value={team.teamId}>
-                        {team.teamName}
-                      </Option>
-                    ))}
-                  </Select>
+                    fetchData={getData}
+                    setFieldValue={setFieldValue}
+                  />
                 </div>
               </div>
             </Card>

@@ -226,6 +226,23 @@ function ActionButtons({
 
   return (
     <>
+      {type == "hse-reports" && (
+        <>
+          <TableActionButtons
+            setShow={() => {
+              navigate(`/dashboard/teams/${id}`);
+            }}
+            handleEdit={() => {
+              setDrawerOpen(true);
+            }}
+            handleDelete={
+              remove
+                ? () => setShowRemoveDialog((prev) => !prev)
+                : handleDeleteTeamDialog
+            }
+          />
+        </>
+      )}
       {type == "roles" && (
         <>
           <TableActionButtons

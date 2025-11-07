@@ -1,27 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Formik, Form } from "formik";
-import { Input, Form as AntForm, Select, Upload, UploadFile } from "antd";
+import { Form as AntForm, Select, Upload, UploadFile, UploadProps } from "antd";
 import * as Yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import {
-  useGetAllPortfolioQuery,
-  useLazyGetAllPortfolioQuery,
-} from "../api/portfolio";
 import Button from "../ui/Button";
 import { Plus } from "lucide-react";
-import SelectField from "../components/input/SelectField";
+import { useAddHSEReportMutation } from "../api/hseReportApi";
+import Input from "../components/input/Input";
+import { useAddDocumentMutation } from "../api/hsedocumentApi";
 
 const { Item: FormItem } = AntForm;
 const { Option } = Select;
 // Validation schema
 const ReportSchema = Yup.object().shape({
   title: Yup.string().required("Title is required"),
-  content: Yup.string().required("Content is required"),
-  projectId: Yup.string().required("Project ID is required"),
-  userId: Yup.string().required("User ID is required"),
-  reportURL: Yup.string().url("Must be a valid URL").nullable(),
+  report: Yup.string().required("Content is required"),
+
   dateOfReport: Yup.date().required("Date of Report is required"),
+  timeOfReport: Yup.string().required("Time of Report is required"),
 });
 
 const Editors = {
@@ -43,27 +40,40 @@ const Editors = {
     matchVisual: false,
   },
 };
+
 function AddHSEReport() {
   const initialValues = {
     title: "",
-    content: "",
+    report: "",
     projectId: "",
-    userId: "",
     reportURL: "",
     dateOfReport: "",
+    timeOfReport: "",
   };
-  const [getData, { data: projectOptions }] = useLazyGetAllPortfolioQuery();
+  const [addHSEReport, { isLoading }] = useAddHSEReportMutation();
+  const [upload, { isLoading: uploading }] = useAddDocumentMutation();
 
-  useEffect(() => {
-    getData({});
-  }, []);
-
-  const handleSubmit = (values: any) => {
+  const handleSubmit = async (values: any) => {
     console.log("Report submitted:", values);
+    addHSEReport(values).then(async (data) => {
+      await Promise.all(
+        fileList.map((doc) => {
+          const formData = new FormData();
+          formData.append("reportId", data.data.id as string);
+          formData.append("files", doc.originFileObj as Blob);
+
+          return upload({
+            formData,
+          });
+        })
+      );
+    });
   };
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-
+  const handleFileChange: UploadProps["onChange"] = ({
+    fileList: newFileList,
+  }) => setFileList(newFileList);
   return (
     <div>
       <p className="text-2xl">Add HSE Report</p>
@@ -76,30 +86,38 @@ function AddHSEReport() {
           onSubmit={handleSubmit}
         >
           {({ values, errors, touched, handleChange, setFieldValue }) => (
-            <Form>
-              <FormItem
-                validateStatus={touched.title && errors.title ? "error" : ""}
-                help={touched.title && errors.title}
-              >
-                <p className="block mb-1 font-semibold">Report Title</p>
-                <Input value={values.title} onChange={handleChange} />
-              </FormItem>
+            <Form className="flex flex-col gap-4">
+              <Input
+                title="Report Title"
+                name="title"
+                type=""
+                touched={touched.title}
+                errors={errors.title}
+                placeholder="Enter title"
+                width="h-[36px] w-[100%] rounded-[5px]"
+              />
 
-              <FormItem
-                validateStatus={
-                  touched.dateOfReport && errors.dateOfReport ? "error" : ""
-                }
-                help={touched.dateOfReport && errors.dateOfReport}
-              >
-                <p className="block mb-1 font-semibold">Report Date</p>
-                <Input
-                  type="date"
-                  value={values.dateOfReport}
-                  onChange={handleChange}
-                />
-              </FormItem>
+              <Input
+                name="dateOfReport"
+                type="date"
+                touched={touched.dateOfReport}
+                errors={errors.dateOfReport}
+                placeholder="Enter Date of Report"
+                width="h-[36px] w-[100%] rounded-[5px]"
+                title={"Report Date"}
+              />
 
-              <div>
+              <Input
+                name="timeOfReport"
+                type="time"
+                touched={touched.timeOfReport}
+                errors={errors.timeOfReport}
+                placeholder="Enter Time of Report"
+                width="h-[36px] w-[100%] rounded-[5px]"
+                title={"Time of Report"}
+              />
+
+              {/* <div>
                 <p className="block mb-1 font- text-[1rem]">Project</p>
                 <SelectField
                   name="projectId"
@@ -107,19 +125,20 @@ function AddHSEReport() {
                   data={projectOptions?.projects ?? []}
                   fetchData={getData}
                   setFieldValue={setFieldValue}
+                  searchParam="projectName"
                 />
-              </div>
+              </div> */}
 
-              <div className="mt-4">
+              <div>
                 <p className="block mb-1 font- text-[1rem]">
                   Upload Report File (Optional)
                 </p>
                 <Upload
                   listType="picture-card"
                   fileList={fileList}
-                  onChange={handleChange}
+                  onChange={handleFileChange}
                 >
-                  {fileList.length >= 1 ? null : (
+                  {fileList.length >= 6 ? null : (
                     <button
                       style={{ border: 0, background: "none" }}
                       type="button"
@@ -137,21 +156,23 @@ function AddHSEReport() {
 
                 <FormItem
                   validateStatus={
-                    touched.content && errors.content ? "error" : ""
+                    touched.report && errors.report ? "error" : ""
                   }
-                  help={touched.content && errors.content}
+                  help={touched.report && errors.report}
                 >
                   <ReactQuill
                     className="h-[400px]"
-                    value={values.content}
+                    value={values.report}
                     modules={Editors}
-                    onChange={(value) => setFieldValue("content", value)}
+                    onChange={(value) => setFieldValue("report", value)}
                   />
                 </FormItem>
               </div>
 
               <div className="pt-4">
-                <Button className="mt-8">Submit Report</Button>
+                <Button className="mt-8" isLoading={isLoading || uploading}>
+                  Submit Report
+                </Button>
               </div>
             </Form>
           )}

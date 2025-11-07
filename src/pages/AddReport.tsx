@@ -11,6 +11,7 @@ import {
 import Button from "../ui/Button";
 import { Plus } from "lucide-react";
 import SelectField from "../components/input/SelectField";
+import { useAddHSEReportMutation } from "../api/hseReportApi";
 
 const { Item: FormItem } = AntForm;
 const { Option } = Select;
@@ -50,6 +51,9 @@ function AddReport() {
     userId: "",
     reportURL: "",
   };
+
+  const [addHSEReport, {}] = useAddHSEReportMutation();
+
   const [getData, { data: projectOptions }] = useLazyGetAllPortfolioQuery();
 
   useEffect(() => {
@@ -92,6 +96,7 @@ function AddReport() {
                   data={projectOptions?.projects ?? []}
                   fetchData={getData}
                   setFieldValue={setFieldValue}
+                  searchParam="projectName"
                 />
               </div>
 

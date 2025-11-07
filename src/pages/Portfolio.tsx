@@ -9,6 +9,7 @@ import { useLazyGetAllPortfolioQuery } from "../api/portfolio";
 import BreadCrumb from "../ui/BreadCrumb";
 import { DatePicker, Popover } from "antd";
 import { handleExportCSV } from "../utils/export";
+import { cn } from "../utils/cn";
 
 function Portfolio() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -18,6 +19,9 @@ function Portfolio() {
   const [page, setPage] = useState(1);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const status = ["To Do", "In Progress", "Review", "Done"];
+
+  const [statusFilter, setStatusFilter] = useState("");
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -38,8 +42,9 @@ function Portfolio() {
       currentPage: page,
       ...(startDate && { startDate }),
       ...(endDate && { endDate }),
+      ...(statusFilter && { status: statusFilter }),
     });
-  }, [page, searchTerm, startDate, endDate]);
+  }, [page, searchTerm, startDate, endDate, statusFilter]);
 
   const handleGetPortfolio = () => {
     getAllPortfolio("");
@@ -63,20 +68,48 @@ function Portfolio() {
             <div className="lg:flex hidden cursor-pointer items-center gap-[3px]  px-[8px] py-[8px] my-3">
               <Popover
                 content={
-                  <div className="flex flex-col gap-3 px-[4px] py-[16px]">
-                    <DatePicker
-                      onChange={(date) => onChange(date, "start")}
-                      placeholder="Start Date"
-                    />
-                    <DatePicker
-                      onChange={(date) => onChange(date, "end")}
-                      placeholder="End Date"
-                    />
+                  <>
+                    <p>Filter by</p>
+                    <div className="flex flex-col gap-3 px-[4px] py-[16px]">
+                      <p>Status</p>
+                      {status?.map((item) => (
+                        <div
+                          className="cursor-pointer border-b flex flex-col gap-2"
+                          onClick={() => {
+                            if (statusFilter == item) {
+                              setStatusFilter("");
+                            } else {
+                              setStatusFilter(item);
+                            }
+                          }}
+                        >
+                          <p
+                            className={cn(
+                              "text-[0.865rem] font-[700]",
+                              statusFilter == item && "text-green-550"
+                            )}
+                          >
+                            {item}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex flex-col gap-3 px-[4px] py-[16px]">
+                      <p>Date</p>
+                      <DatePicker
+                        onChange={(date) => onChange(date, "start")}
+                        placeholder="Start Date"
+                      />
+                      <DatePicker
+                        onChange={(date) => onChange(date, "end")}
+                        placeholder="End Date"
+                      />
 
-                    <Button className="items-center gap-3 bg-[#093aa4] text-[0.865rem]">
-                      Apply
-                    </Button>
-                  </div>
+                      <Button className="items-center gap-3 bg-[#093aa4] text-[0.865rem]">
+                        Apply
+                      </Button>
+                    </div>
+                  </>
                 }
                 title=""
                 placement="bottomLeft"

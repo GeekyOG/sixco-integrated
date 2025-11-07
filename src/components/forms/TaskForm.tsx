@@ -127,11 +127,17 @@ const TaskForm: React.FC<TaskFormProps> = ({ reset, callBackAction, id }) => {
                         .includes(input.toLowerCase())
                     }
                   >
-                    {teamsData?.users?.map((user) => (
-                      <Option key={user.userId} value={user.userId}>
-                        {user.firstName} {user.lastName}
-                      </Option>
-                    ))}
+                    {teamsData?.users?.map(
+                      (user: {
+                        userId: string;
+                        firstName: string;
+                        lastName: string;
+                      }) => (
+                        <Option key={user.userId} value={user.userId}>
+                          {user.firstName} {user.lastName}
+                        </Option>
+                      )
+                    )}
                   </Select>
                 </div>
 
@@ -143,11 +149,13 @@ const TaskForm: React.FC<TaskFormProps> = ({ reset, callBackAction, id }) => {
                     placeholder="Select a user"
                     onChange={(value) => setFieldValue("projectId", value)}
                   >
-                    {teamsData?.projects?.map((user) => (
-                      <Option key={user.id} value={user.id}>
-                        {user.name}
-                      </Option>
-                    ))}
+                    {teamsData?.projects?.map(
+                      (user: { id: string; name: string }) => (
+                        <Option key={user.id} value={user.id}>
+                          {user.name}
+                        </Option>
+                      )
+                    )}
                   </Select>
                 </div>
                 <Input

@@ -6,32 +6,12 @@ import { format } from "date-fns";
 
 export const columns: ColumnsType = [
   {
-    title: "Name",
-    dataIndex: "",
-    key: "",
+    title: "Title",
+    dataIndex: "title",
+    key: "title",
     render(_, value) {
-      console.log(value);
-
-      return <p>{value.name}</p>;
+      return <p>{value.title}</p>;
     },
-  },
-
-  {
-    title: "Description",
-    dataIndex: "image",
-    key: "image",
-    render(_, value) {
-      console.log(value);
-
-      return <p>{value.description}</p>;
-    },
-  },
-
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    render: (value) => <StatusPill status={value} />,
   },
 
   {
@@ -49,6 +29,19 @@ export const columns: ColumnsType = [
     key: "timeOfReport",
     render: (item) => {
       return <div className="capitalize">{item}</div>;
+    },
+  },
+
+  {
+    title: "Reporter",
+    dataIndex: "reporter",
+    key: "reporter",
+    render(_, value) {
+      return (
+        <p>
+          {value.reporter?.lastName} {value.reporter?.firstName}
+        </p>
+      );
     },
   },
 ];

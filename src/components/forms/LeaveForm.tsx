@@ -133,7 +133,7 @@ const AddLeaveForm: React.FC<AddLeaveFormProps> = ({
                   />
 
                   <Input
-                    title="Start Date"
+                    title="End Date"
                     name="endDate"
                     type="date"
                     touched={touched.endDate}

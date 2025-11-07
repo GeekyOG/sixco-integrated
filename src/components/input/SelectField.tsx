@@ -19,7 +19,8 @@ interface SelectFieldProps {
   data: any[];
   isLoading?: boolean;
   className?: string;
-  value?: string | number; // Add this line
+  value?: string | number;
+  searchParam?: string;
 }
 
 const SelectField: FunctionComponent<SelectFieldProps> = ({
@@ -30,14 +31,17 @@ const SelectField: FunctionComponent<SelectFieldProps> = ({
   data,
   isLoading,
   className,
-  value, // Add this line
+  value,
+  searchParam,
 }) => {
   const [searchValue, setSearchValue] = useState("");
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
     if (fetchData) {
-      fetchData({ search: value });
+      fetchData({
+        [searchParam ? searchParam : "search"]: value,
+      });
     }
   };
 

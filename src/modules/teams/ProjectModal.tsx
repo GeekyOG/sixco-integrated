@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, Modal, Select, Input as AntInput } from "antd";
 import { Formik, Form, Field } from "formik";
 import {
   useAssignTeamMutation,
   useGetAllPortfolioQuery,
+  useLazyGetAllPortfolioQuery,
 } from "../../api/portfolio";
 import { useParams } from "react-router-dom";
 import Button from "../../ui/Button";
 import { useLazyGetTeamQuery } from "../../api/teamsApi";
 import { toast } from "react-toastify";
+import SelectField from "../../components/input/SelectField";
 
 const { Option } = Select;
 
@@ -22,10 +24,13 @@ function ProjectModal({
   setProjectModalOpen,
 }: ProjectModalProps) {
   const { id } = useParams();
-  const { data: projectOptions } = useGetAllPortfolioQuery("");
+  const [getData, { data: projectOptions }] = useLazyGetAllPortfolioQuery();
   const [getTeam] = useLazyGetTeamQuery();
   const [assignTeam, { isLoading }] = useAssignTeamMutation();
 
+  useEffect(() => {
+    getData({});
+  }, []);
   // Parse id safely
   const teamId = id ? parseInt(id) : null;
 
@@ -79,23 +84,14 @@ function ProjectModal({
               <div className="flex flex-col gap-2">
                 <div>
                   <label className="block mb-1 font-semibold">Project</label>
-                  <Select
-                    showSearch
-                    className="w-full"
+                  <SelectField
+                    name="projectId"
                     placeholder="Select a project"
-                    onChange={(value) => setFieldValue("projectId", value)}
-                    filterOption={(input, option: any) =>
-                      option?.children
-                        ?.toLowerCase()
-                        .includes(input.toLowerCase())
-                    }
-                  >
-                    {projectOptions?.projects?.map((project) => (
-                      <Option key={project.id} value={project.id}>
-                        {project.name}
-                      </Option>
-                    ))}
-                  </Select>
+                    data={projectOptions?.projects ?? []}
+                    fetchData={getData}
+                    setFieldValue={setFieldValue}
+                    searchParam="projectName"
+                  />
                 </div>
               </div>
             </Card>

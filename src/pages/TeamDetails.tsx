@@ -102,15 +102,23 @@ function TeamDetails() {
             callBackAction={handleCallBack}
             columns={membersColumns}
             data={
-              teamsData?.users?.map((item) => {
-                return {
-                  email: item.email,
-                  firstName: item.firstName,
-                  lastName: item.lastName,
-                  note: item.note,
-                  id: item.userId,
-                };
-              }) ?? []
+              teamsData?.users?.map(
+                (item: {
+                  email: any;
+                  firstName: any;
+                  lastName: any;
+                  note: any;
+                  userId: any;
+                }) => {
+                  return {
+                    email: item.email,
+                    firstName: item.firstName,
+                    lastName: item.lastName,
+                    note: item.note,
+                    id: item.userId,
+                  };
+                }
+              ) ?? []
             }
             type="team-members"
             targetId={id}
@@ -177,7 +185,7 @@ function TeamDetails() {
             columns={taskColumns}
             data={tasksWithProjectNames || []}
             callBackAction={handleCallBack}
-            type="tasks"
+            type="edit-tasks"
             isFetching={false}
           />
         </Card>

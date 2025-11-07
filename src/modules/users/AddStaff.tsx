@@ -134,6 +134,7 @@ function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
                 setFieldValue={setFieldValue}
                 name="role"
                 data={rolesData?.roles}
+                searchParam="name"
               />
 
               <Button

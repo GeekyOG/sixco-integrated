@@ -33,7 +33,7 @@ function Reports() {
 
   return (
     <Container className="pb-[200px]">
-      <BreadCrumb data={["Dashboard", "Manage Projects"]} />
+      <BreadCrumb data={["Dashboard", "Manage Reports"]} />
       <div>
         <div className="flex items-center justify-between">
           <div className="flex">

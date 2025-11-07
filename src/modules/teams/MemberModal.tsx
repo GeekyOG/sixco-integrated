@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, Modal, Select, Input as AntInput } from "antd";
 import { Formik, Form, Field, FieldArray } from "formik";
 import {
@@ -8,9 +8,13 @@ import {
 import { useParams } from "react-router-dom";
 import Button from "../../ui/Button";
 import { Plus, Trash2Icon } from "lucide-react";
-import { useGetAllUsersQuery } from "../../api/authApi";
+import {
+  useGetAllUsersQuery,
+  useLazyGetAllUsersQuery,
+} from "../../api/authApi";
 import { useAssignMemberMutation } from "../../api/teamsApi";
 import { toast } from "react-toastify";
+import SelectField from "../../components/input/SelectField";
 const { Option } = Select;
 
 interface MemberModalProps {
@@ -24,7 +28,12 @@ function MemberModal({
   setMemberModalOpen,
   callBackAction,
 }: MemberModalProps) {
-  const { data: userOptions, isFetching } = useGetAllUsersQuery("");
+  const [getUsers, { data: userOptions, isFetching }] =
+    useLazyGetAllUsersQuery();
+
+  useEffect(() => {
+    getUsers({});
+  }, []);
   const { id } = useParams();
 
   const [assignMember, { isLoading }] = useAssignMemberMutation();
@@ -101,42 +110,30 @@ function MemberModal({
                         <div className="flex flex-col gap-2">
                           <div>
                             <p>User</p>
-                            <Select
-                              showSearch
-                              className="w-full"
-                              placeholder="Select a user"
-                              onChange={(value) =>
-                                setFieldValue(`users[${index}].id`, value)
+                            <SelectField
+                              searchParam="email"
+                              data={
+                                userOptions?.users?.map(
+                                  (item: {
+                                    id: string;
+                                    firstName: string;
+                                    lastName: string;
+                                  }) => {
+                                    return {
+                                      id: item.id,
+                                      name:
+                                        item.firstName + " " + item.lastName,
+                                    };
+                                  }
+                                ) || []
                               }
-                              filterOption={(input, option) => {
-                                const children = option?.children;
-                                const label =
-                                  typeof children === "string"
-                                    ? children
-                                    : Array.isArray(children)
-                                    ? children.join(" ")
-                                    : "";
-
-                                return label
-                                  .toLowerCase()
-                                  .includes(input.toLowerCase());
-                              }}
-                            >
-                              {userOptions?.users?.map((user) => (
-                                <Option key={user.id} value={user.id}>
-                                  {user.firstName} {user.lastName}
-                                </Option>
-                              ))}
-                            </Select>
-                          </div>
-                          {/* <div>
-                            <label>Role</label>
-                            <Field
-                              name={`users[${index}].role`}
-                              as={AntInput}
-                              placeholder="Enter role"
+                              name={`users[${index}].id`}
+                              setFieldValue={setFieldValue}
+                              placeholder="Search by email address"
+                              fetchData={getUsers}
                             />
-                          </div> */}
+                          </div>
+
                           <div>
                             <label>Note</label>
                             <Field

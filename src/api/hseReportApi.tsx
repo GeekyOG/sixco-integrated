@@ -8,27 +8,27 @@ export const hseReportApi = createApi({
     addHSEReport: builder.mutation({
       query: (body) => ({
         body,
-        url: "hse/reports",
+        url: "hse-reports",
         method: "POST",
       }),
     }),
 
     getAllHSEReport: builder.query({
       query: (args?: any) => ({
-        url: "hse/reports",
+        url: "hse-reports",
         params: args,
       }),
     }),
 
     getHSEReport: builder.query({
       query: (id) => ({
-        url: `hse/reports/${id}`,
+        url: `hse-reports/${id}`,
       }),
     }),
 
     updateHSEReport: builder.mutation({
       query: ({ body, id }) => ({
-        url: `hse/reports/${id}`,
+        url: `hse-reports/${id}`,
         method: "PUT",
         body: body,
       }),
@@ -36,7 +36,7 @@ export const hseReportApi = createApi({
 
     deleteHSEReport: builder.mutation({
       query: (id) => ({
-        url: `hse/reports/${id}`,
+        url: `hse-reports/${id}`,
         method: "DELETE",
       }),
     }),

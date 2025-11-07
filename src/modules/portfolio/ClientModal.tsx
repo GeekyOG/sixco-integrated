@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, Modal, Select, Input as AntInput } from "antd";
 import { Formik, Form, Field } from "formik";
 import {
@@ -13,7 +13,9 @@ import { toast } from "react-toastify";
 import {
   useAddClientMutation,
   useGetAllClientsQuery,
+  useLazyGetAllClientsQuery,
 } from "../../api/clientApi";
+import SelectField from "../../components/input/SelectField";
 
 const { Option } = Select;
 
@@ -29,8 +31,12 @@ function ClientModal({
   callBackAction,
 }: ClientModalProps) {
   const { id } = useParams();
-  const { data: clientOptions } = useGetAllClientsQuery("");
+  const [getData, { data: clientOptions }] = useLazyGetAllClientsQuery();
   const [assignClient, { isLoading }] = useAddClientToProjectMutation();
+
+  useEffect(() => {
+    getData({});
+  }, []);
 
   // Parse id safely
   const projectId = id ? parseInt(id) : null;
@@ -43,7 +49,6 @@ function ClientModal({
       title={null}
       open={clientModalOpen}
       onCancel={() => {
-        console.log("Modal closed");
         setClientModalOpen(false);
       }}
       footer={null}
@@ -55,8 +60,6 @@ function ClientModal({
           projectId: projectId,
         }}
         onSubmit={(values, { setSubmitting }) => {
-          console.log({ clientId: values.clientId ?? "", projectId: id ?? "" });
-
           assignClient({
             clientId: values.clientId ?? "",
             projectId: id ?? "",
@@ -83,41 +86,24 @@ function ClientModal({
               <div className="flex flex-col gap-2">
                 <div>
                   <label className="block mb-1 font-semibold">Partner</label>
-                  <Select
-                    showSearch
-                    className="w-full"
-                    placeholder="Select a Client/Partner"
-                    value={values.clientId}
-                    onChange={(value) => setFieldValue("clientId", value)}
-                    filterOption={(input, option) => {
-                      const children = option?.children;
-                      const label =
-                        typeof children === "string"
-                          ? children
-                          : Array.isArray(children)
-                          ? children.join(" ")
-                          : "";
-
-                      return label.toLowerCase().includes(input.toLowerCase());
-                    }}
-                  >
-                    {clientOptions?.clients?.map((client) => (
-                      <Option key={client.id} value={client.id}>
-                        {client.firstName} {client.lastName}
-                      </Option>
-                    ))}
-                  </Select>
-                </div>
-
-                {/* <div>
-                  <label className="block mb-1 font-semibold">Note</label>
-                  <Field
-                    name="note"
-                    as={AntInput.TextArea}
-                    placeholder="Optional note"
-                    rows={4}
+                  <SelectField
+                    name="clientId"
+                    placeholder="Select a project"
+                    data={
+                      clientOptions?.clients?.map(
+                        (item: { firstName: any; lastName: any; id: any }) => {
+                          return {
+                            name: `${item.firstName} ${item.lastName}`,
+                            id: item.id,
+                          };
+                        }
+                      ) ?? []
+                    }
+                    fetchData={getData}
+                    setFieldValue={setFieldValue}
+                    searchParam="email"
                   />
-                </div> */}
+                </div>
               </div>
             </Card>
 
