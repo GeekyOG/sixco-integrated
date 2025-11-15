@@ -93,7 +93,12 @@ function MobileTable({
       return (
         `${item.firstName || ""} ${item.lastName || ""}`.trim() || "Unnamed"
       );
-    return item.name || item.title || "Unnamed Item";
+    return (
+      item.name ||
+      item.title ||
+      `${item.firstName} ${item.lastName}` ||
+      "Unnamed Item"
+    );
   };
 
   // Get color scheme based on type
