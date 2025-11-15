@@ -148,64 +148,68 @@ const AuditLogViewer = () => {
               />
             </div>
 
-            {/* Action filter */}
-            <div className="flex items-center gap-2">
-              <Filter className="text-gray-400 w-5 h-5" />
-              <select
-                value={filterAction}
-                onChange={(e) => setFilterAction(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="ALL">All Actions</option>
-                <option value="CREATE">Create</option>
-                <option value="UPDATE">Update</option>
-                <option value="DELETE">Delete</option>
-                <option value="LOGIN">Login</option>
-              </select>
-            </div>
+            <div className="flex flex-row gap-4 flex-wrap">
+              {/* Action filter */}
 
-            {/* User filter */}
-            <div className="flex items-center gap-2">
-              <select
-                value={filterUser}
-                onChange={(e) => setFilterUser(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="ALL">All Users</option>
-                {users.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.firstName} {user.lastName}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <div className="flex items-center gap-2">
+                <Filter className="text-gray-400 w-5 h-5" />
+                <select
+                  value={filterAction}
+                  onChange={(e) => setFilterAction(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="ALL">All Actions</option>
+                  <option value="CREATE">Create</option>
+                  <option value="UPDATE">Update</option>
+                  <option value="DELETE">Delete</option>
+                  <option value="LOGIN">Login</option>
+                </select>
+              </div>
 
-            {/* Model filter */}
-            <div className="flex items-center gap-2">
-              <select
-                value={filterModel}
-                onChange={(e) => setFilterModel(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="ALL">All Models</option>
-                {models.map((model) => (
-                  <option key={model.id} value={model.id}>
-                    {model.name}
-                  </option>
-                ))}
-              </select>
+              {/* User filter */}
+              <div className="flex items-center gap-2">
+                <select
+                  value={filterUser}
+                  onChange={(e) => setFilterUser(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="ALL">All Users</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.firstName} {user.lastName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Model filter */}
+              <div className="flex items-center gap-2">
+                <select
+                  value={filterModel}
+                  onChange={(e) => setFilterModel(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="ALL">All Models</option>
+                  {models.map((model) => (
+                    <option key={model.id} value={model.id}>
+                      {model.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
           {/* Date range filter */}
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex flex-col md:flex-row md:items-center gap-2 mt-2">
+            <p>Filter by Date range</p>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
-            <span className="text-gray-500">to</span>
+            <span className="text-gray-500 text-center">to</span>
             <input
               type="date"
               value={endDate}

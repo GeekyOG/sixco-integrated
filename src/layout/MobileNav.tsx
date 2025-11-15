@@ -2,6 +2,7 @@ import clsx from "clsx";
 import {
   ArrowLeftRight,
   File,
+  History,
   LayoutGrid,
   MenuIcon,
   Settings,
@@ -43,15 +44,24 @@ const NavOptions: { text: string; url: string; icon: ReactNode }[] = [
   },
 
   {
-    text: "Manage Reports",
-    url: "/dashboard/reports",
-    icon: <GoReport size={16} />,
+    text: "Manage HSE Reports",
+    url: "/dashboard/HSE-reports",
+    icon: <File size={16} />,
   },
-
   {
     text: "Leave Requests",
     url: "/dashboard/leaves",
     icon: <ArrowLeftRight size={16} />,
+  },
+  {
+    text: "Messages",
+    url: "/dashboard/chat",
+    icon: <File size={16} />,
+  },
+  {
+    text: "Audit",
+    url: "/dashboard/audit",
+    icon: <History size={16} />,
   },
 
   {
