@@ -6,9 +6,9 @@ export const hseDocumentApi = createApi({
   reducerPath: "hseDocumentApi",
   endpoints: (builder) => ({
     addDocument: builder.mutation({
-      query: ({ id, body }) => ({
+      query: ({ body }) => ({
         body,
-        url: `hse/documents/${id}`,
+        url: `hse/documents`,
         method: "POST",
       }),
     }),

@@ -1,145 +1,160 @@
 import React, { useState } from "react";
 import { Formik, Form } from "formik";
-import { Input, Form as AntForm, Select, Upload, UploadFile } from "antd";
+import { Form as AntForm, Select, Upload, UploadFile, UploadProps } from "antd";
 import * as Yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useGetAllPortfolioQuery } from "../api/portfolio";
 import Button from "../ui/Button";
 import { Plus } from "lucide-react";
+import {
+  useAddHSEReportMutation,
+  useGetHSEReportQuery,
+  useUpdateHSEReportMutation,
+} from "../api/hseReportApi";
+import Input from "../components/input/Input";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const { Item: FormItem } = AntForm;
 const { Option } = Select;
 // Validation schema
 const ReportSchema = Yup.object().shape({
   title: Yup.string().required("Title is required"),
-  content: Yup.string().required("Content is required"),
-  projectId: Yup.string().required("Project ID is required"),
-  userId: Yup.string().required("User ID is required"),
-  reportURL: Yup.string().url("Must be a valid URL").nullable(),
+  report: Yup.string().required("Content is required"),
+
+  dateOfReport: Yup.date().required("Date of Report is required"),
+  timeOfReport: Yup.string().required("Time of Report is required"),
 });
 
 const Editors = {
   toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
+    [{ header: [1, 2, 3, 4, 5, 6, false] }, { font: [] }],
     [{ size: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
+    ["bold", "italic", "underline", "strike", "blockquote", "code-block"],
     [
       { list: "ordered" },
       { list: "bullet" },
       { indent: "-1" },
       { indent: "+1" },
     ],
+    [{ color: [] }, { background: [] }], // text & background color
+    [{ align: [] }], // text alignment
     ["link", "image", "video"],
     ["clean"],
+    ["table"], // requires table module
   ],
   clipboard: {
-    // toggle to add extra line breaks when pasting HTML:
     matchVisual: false,
   },
 };
-function EditHSEReport() {
+
+function AddHSEReport() {
+  const { id } = useParams();
+
+  const { data: reportData } = useGetHSEReportQuery(id);
+
   const initialValues = {
-    title: "",
-    content: "",
-    projectId: "",
-    userId: "",
+    title: reportData?.report.title ?? "",
+    report: reportData?.report.report ?? "",
+
     reportURL: "",
+    dateOfReport: reportData?.report.dateOfReport ?? "",
+    timeOfReport: reportData?.report.timeOfReport ?? "",
   };
-  const { data: projectOptions } = useGetAllPortfolioQuery("");
 
-  const handleSubmit = (values) => {
+  const [updateHSEReport, { isLoading }] = useUpdateHSEReportMutation();
+  const navigate = useNavigate();
+  const handleSubmit = async (values: any) => {
     console.log("Report submitted:", values);
-    // Submit to API here
+    updateHSEReport({ body: values, id })
+      .unwrap()
+      .then(() => {
+        toast.success("HSE Report updated successfully");
+        navigate(`/dashboard/HSE-reports/details/${id}`);
+      })
+      .catch((error) => {
+        toast.error(error?.data?.message || "Failed to update HSE Report");
+      });
   };
-
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   return (
     <div>
-      <p className="text-2xl">EDIT HSE Report</p>
+      <p className="text-2xl">Add HSE Report</p>
       <p className="text-[0.865rem]">Enter report details</p>
 
       <div className="mt-8 border p-8">
         <Formik
           initialValues={initialValues}
           validationSchema={ReportSchema}
+          enableReinitialize={true}
           onSubmit={handleSubmit}
         >
           {({ values, errors, touched, handleChange, setFieldValue }) => (
-            <Form>
-              <FormItem
-                validateStatus={touched.title && errors.title ? "error" : ""}
-                help={touched.title && errors.title}
-              >
-                <p className="block mb-1 font-semibold">Report Title</p>
-                <Input value={values.title} onChange={handleChange} />
-              </FormItem>
+            <Form className="flex flex-col gap-4">
+              <Input
+                title="Report Title"
+                name="title"
+                type=""
+                touched={touched.title}
+                errors={errors.title}
+                placeholder="Enter title"
+                width="h-[36px] w-[100%] rounded-[5px]"
+              />
 
-              <div>
+              <Input
+                name="dateOfReport"
+                type="date"
+                touched={touched.dateOfReport}
+                errors={errors.dateOfReport}
+                placeholder="Enter Date of Report"
+                width="h-[36px] w-[100%] rounded-[5px]"
+                title={"Report Date"}
+              />
+
+              <Input
+                name="timeOfReport"
+                type="time"
+                touched={touched.timeOfReport}
+                errors={errors.timeOfReport}
+                placeholder="Enter Time of Report"
+                width="h-[36px] w-[100%] rounded-[5px]"
+                title={"Time of Report"}
+              />
+
+              {/* <div>
                 <p className="block mb-1 font- text-[1rem]">Project</p>
-
-                <Select
-                  showSearch
-                  className="w-full"
+                <SelectField
+                  name="projectId"
                   placeholder="Select a project"
-                  onChange={(value) => setFieldValue("projectId", value)}
-                  filterOption={(input, option: any) =>
-                    option?.children
-                      ?.toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                >
-                  {projectOptions?.projects?.map((project) => (
-                    <Option key={project.id} value={project.id}>
-                      {project.name}
-                    </Option>
-                  ))}
-                </Select>
-              </div>
-
-              <div className="mt-4">
-                <p className="block mb-1 font- text-[1rem]">
-                  Upload Report File (Optional)
-                </p>
-                <Upload
-                  listType="picture-card"
-                  fileList={fileList}
-                  onChange={handleChange}
-                >
-                  {fileList.length >= 1 ? null : (
-                    <button
-                      style={{ border: 0, background: "none" }}
-                      type="button"
-                      className="flex flex-col justify-center items-center"
-                    >
-                      <Plus />
-                      <div style={{ marginTop: 8 }}>Upload</div>
-                    </button>
-                  )}
-                </Upload>
-              </div>
+                  data={projectOptions?.projects ?? []}
+                  fetchData={getData}
+                  setFieldValue={setFieldValue}
+                  searchParam="projectName"
+                />
+              </div> */}
 
               <div className="mt-4">
                 <p className="block mb-1 font- text-[1rem]">Content</p>
 
                 <FormItem
                   validateStatus={
-                    touched.content && errors.content ? "error" : ""
+                    touched.report && errors.report ? "error" : ""
                   }
-                  help={touched.content && errors.content}
+                  help={touched.report && errors.report}
                 >
                   <ReactQuill
                     className="h-[400px]"
-                    value={values.content}
+                    value={values.report}
                     modules={Editors}
-                    onChange={(value) => setFieldValue("content", value)}
+                    onChange={(value) => setFieldValue("report", value)}
                   />
                 </FormItem>
               </div>
 
               <div className="pt-4">
-                <Button className="mt-8">Submit Report</Button>
+                <Button className="mt-8" isLoading={isLoading}>
+                  Submit Report
+                </Button>
               </div>
             </Form>
           )}
@@ -149,4 +164,4 @@ function EditHSEReport() {
   );
 }
 
-export default EditHSEReport;
+export default AddHSEReport;

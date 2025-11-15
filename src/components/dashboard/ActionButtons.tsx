@@ -16,6 +16,9 @@ import AddStaff from "../../modules/users/AddStaff";
 import { useDeleteTaskMutation } from "../../api/tasksApi";
 import { useUnAssignMemberMutation } from "../../api/teamsApi";
 import { useDeleteRoleMutation } from "../../api/rolesApi";
+import { useDeleteHSEReportMutation } from "../../api/hseReportApi";
+import { useDeleteReportMutation } from "../../api/reportsApi";
+import { useDeleteUserMutation } from "../../api/authApi";
 // import EditCategory from "../../modules/products/EditCategory";
 interface ActionButtonsProps {
   id: string;
@@ -53,6 +56,15 @@ function ActionButtons({
   const [deleteRole, { isLoading: deleteRoleLoading }] =
     useDeleteRoleMutation();
 
+  const [deleteHSEReport, { isLoading: deleteHSEReportLoading }] =
+    useDeleteHSEReportMutation();
+
+  const [deleteReport, { isLoading: deleteReportLoading }] =
+    useDeleteReportMutation();
+
+  const [deleteUser, { isLoading: deleteUserLoading }] =
+    useDeleteUserMutation();
+
   const handleDeleteProjectDialog = () => {
     setShowDialog(true);
     setDialogTitle("Delete Project Permanently");
@@ -79,6 +91,16 @@ function ActionButtons({
     );
     setDialogBtnText("Delete Team");
   };
+
+  const handleDeleteHSEReportDialog = () => {
+    setShowDialog(true);
+    setDialogTitle("Delete Report Permanently");
+    setDialogContent(
+      "Deleting this Report, this Report would would not longer be displayed on your website. Please note this action cannot be undone"
+    );
+    setDialogBtnText("Delete Report");
+  };
+
   const handleDeleteStaffDialog = () => {
     setShowDialog(true);
     setDialogTitle("Delete Staff Permanently");
@@ -224,22 +246,59 @@ function ActionButtons({
     setDialogBtnText("Remove Member");
   };
 
+  const handleDeleteHSEReport = () => {
+    deleteHSEReport(id)
+      .unwrap()
+      .then(() => {
+        setShowDialog(false);
+        callBackAction ? callBackAction() : null;
+      });
+  };
+
+  const handleDeleteReport = () => {
+    deleteReport(id)
+      .unwrap()
+      .then(() => {
+        setShowDialog(false);
+        callBackAction ? callBackAction() : null;
+      });
+  };
+
+  const handleDeleteUser = () => {
+    deleteUser(id)
+      .unwrap()
+      .then(() => {
+        setShowDialog(false);
+        callBackAction ? callBackAction() : null;
+      });
+  };
+
   return (
     <>
       {type == "hse-reports" && (
         <>
           <TableActionButtons
             setShow={() => {
-              navigate(`/dashboard/teams/${id}`);
+              navigate(`/dashboard/HSE-reports/details/${id}`);
             }}
             handleEdit={() => {
-              setDrawerOpen(true);
+              navigate(`/dashboard/HSE-reports/edit-report/${id}`);
             }}
-            handleDelete={
-              remove
-                ? () => setShowRemoveDialog((prev) => !prev)
-                : handleDeleteTeamDialog
-            }
+            handleDelete={handleDeleteHSEReportDialog}
+          />
+        </>
+      )}
+
+      {type == "reports" && (
+        <>
+          <TableActionButtons
+            setShow={() => {
+              navigate(`/dashboard/reports/details/${id}`);
+            }}
+            handleEdit={() => {
+              navigate(`/dashboard/reports/edit-report/${id}`);
+            }}
+            handleDelete={handleDeleteHSEReportDialog}
           />
         </>
       )}
@@ -424,11 +483,18 @@ function ActionButtons({
             isRemoveTeaMLoading ||
             isTaskLoading ||
             isUnassignLoading ||
-            deleteRoleLoading
+            deleteRoleLoading ||
+            deleteHSEReportLoading ||
+            deleteReportLoading ||
+            deleteUserLoading
           }
           type={"delete"}
           image={"/delete.svg"}
           action={
+            (dialogTitle == "Delete Staff Permanently" && handleDeleteUser) ||
+            (type == "reports" && handleDeleteReport) ||
+            (dialogTitle == "Delete Report Permanently" &&
+              handleDeleteHSEReport) ||
             (dialogTitle == "Remove Team Member" && handleUnassignMember) ||
             (dialogTitle == "Delete task Permanently" && handleTaskDelete) ||
             (dialogTitle == "Remove Project" && handleTeamRemove) ||

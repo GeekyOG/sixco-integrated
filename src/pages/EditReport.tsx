@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Formik, Form } from "formik";
-import { Input, Form as AntForm, Select, Upload, UploadFile } from "antd";
+import { Form as AntForm, Select, Upload, UploadFile } from "antd";
 import * as Yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useGetAllPortfolioQuery } from "../api/portfolio";
 import Button from "../ui/Button";
 import { Plus } from "lucide-react";
+import Input from "../components/input/Input";
 
 const { Item: FormItem } = AntForm;
 const { Option } = Select;
@@ -21,20 +22,22 @@ const ReportSchema = Yup.object().shape({
 
 const Editors = {
   toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
+    [{ header: [1, 2, 3, 4, 5, 6, false] }, { font: [] }],
     [{ size: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
+    ["bold", "italic", "underline", "strike", "blockquote", "code-block"],
     [
       { list: "ordered" },
       { list: "bullet" },
       { indent: "-1" },
       { indent: "+1" },
     ],
+    [{ color: [] }, { background: [] }], // text & background color
+    [{ align: [] }], // text alignment
     ["link", "image", "video"],
     ["clean"],
+    ["table"], // requires table module
   ],
   clipboard: {
-    // toggle to add extra line breaks when pasting HTML:
     matchVisual: false,
   },
 };
@@ -64,17 +67,20 @@ function EditReport() {
         <Formik
           initialValues={initialValues}
           validationSchema={ReportSchema}
+          enableReinitialize={true}
           onSubmit={handleSubmit}
         >
           {({ values, errors, touched, handleChange, setFieldValue }) => (
             <Form>
-              <FormItem
-                validateStatus={touched.title && errors.title ? "error" : ""}
-                help={touched.title && errors.title}
-              >
-                <p className="block mb-1 font-semibold">Report Title</p>
-                <Input value={values.title} onChange={handleChange} />
-              </FormItem>
+              <Input
+                title="Report Title"
+                name="title"
+                type=""
+                touched={touched.title}
+                errors={errors.title}
+                placeholder="Enter title"
+                width="h-[36px] w-[100%] rounded-[5px]"
+              />
 
               <div>
                 <p className="block mb-1 font- text-[1rem]">Project</p>

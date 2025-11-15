@@ -8,6 +8,7 @@ import BreadCrumb from "../ui/BreadCrumb";
 import { useLazyGetAllReportQuery } from "../api/reportsApi";
 import { useNavigate } from "react-router-dom";
 import { columns } from "../modules/reports/columns";
+import { useLazyGetAllHSEReportQuery } from "../api/hseReportApi";
 
 function HSEReports() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -15,7 +16,7 @@ function HSEReports() {
 
   const [page, setPage] = useState(1);
 
-  const [getALLReports, { isFetching, data }] = useLazyGetAllReportQuery();
+  const [getALLReports, { isFetching, data }] = useLazyGetAllHSEReportQuery();
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {

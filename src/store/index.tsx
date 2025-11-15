@@ -12,6 +12,9 @@ import { documentApi } from "../api/documentApi";
 import { rolesApi } from "../api/rolesApi";
 import { hseReportApi } from "../api/hseReportApi";
 import { hseDocumentApi } from "../api/hsedocumentApi";
+import { chatsApi } from "../api/chatsApi";
+import { directChatApi } from "../api/directChat";
+import { auditApi } from "../api/audit";
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +30,9 @@ export const store = configureStore({
     [rolesApi.reducerPath]: rolesApi.reducer,
     [hseReportApi.reducerPath]: hseReportApi.reducer,
     [hseDocumentApi.reducerPath]: hseDocumentApi.reducer,
+    [chatsApi.reducerPath]: chatsApi.reducer,
+    [directChatApi.reducerPath]: directChatApi.reducer,
+    [auditApi.reducerPath]: auditApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -42,7 +48,10 @@ export const store = configureStore({
       documentApi.middleware,
       rolesApi.middleware,
       hseReportApi.middleware,
-      hseDocumentApi.middleware
+      hseDocumentApi.middleware,
+      chatsApi.middleware,
+      directChatApi.middleware,
+      auditApi.middleware
     ),
 });
 

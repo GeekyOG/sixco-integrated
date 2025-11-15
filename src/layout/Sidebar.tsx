@@ -7,6 +7,7 @@ import {
   ArrowLeftRight,
   ChevronLeft,
   File,
+  History,
   LayoutGrid,
   LogOutIcon,
   ReceiptText,
@@ -68,6 +69,11 @@ export const mainMenuOptions = [
     text: "Messages",
     url: "/dashboard/chat",
     icon: <File size={16} />,
+  },
+  {
+    text: "Audit",
+    url: "/dashboard/audit",
+    icon: <History size={16} />,
   },
   {
     text: "Settings",

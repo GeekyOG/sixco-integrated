@@ -29,6 +29,9 @@ import HSEReports from "../pages/HSEReports";
 import AddHSEReport from "../pages/AddHSEReport";
 import EditHSEReport from "../pages/EditHSEReport";
 import ChatPage from "../pages/ChatPage";
+import ReportDetails from "../pages/reportDetails";
+import Audit from "../pages/Audit";
+import HSEReportDetails from "../pages/HSEReportDetails";
 
 const router = createBrowserRouter([
   {
@@ -118,6 +121,10 @@ const router = createBrowserRouter([
         element: <Reports />,
       },
       {
+        path: "/dashboard/reports/details/:id",
+        element: <ReportDetails />,
+      },
+      {
         path: "/dashboard/reports/add-report",
         element: <AddReport />,
       },
@@ -130,16 +137,24 @@ const router = createBrowserRouter([
         element: <HSEReports />,
       },
       {
+        path: "/dashboard/HSE-reports/details/:id",
+        element: <HSEReportDetails />,
+      },
+      {
         path: "/dashboard/HSE-reports/add-report",
         element: <AddHSEReport />,
       },
       {
-        path: "/dashboard/HSE-reports/edit-report",
+        path: "/dashboard/HSE-reports/edit-report/:id",
         element: <EditHSEReport />,
       },
       {
         path: "/dashboard/leaves",
         element: <Leaves />,
+      },
+      {
+        path: "/dashboard/audit",
+        element: <Audit />,
       },
       {
         path: "/dashboard/settings",

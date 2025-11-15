@@ -4,28 +4,36 @@ import Container from "../ui/Container";
 import BreadCrumb from "../ui/BreadCrumb";
 import DashboardDrawer from "../components/dashboard/Drawer";
 import DashboardTable from "../components/dashboard/DashboardTable";
-import { Pencil, Plus, Search } from "lucide-react";
+import {
+  Pencil,
+  Plus,
+  Search,
+  Users,
+  Briefcase,
+  ListChecks,
+  UserPlus,
+  FolderPlus,
+} from "lucide-react";
 import Button from "../ui/Button";
-import { useGetTeamQuery, useLazyGetTeamQuery } from "../api/teamsApi";
+import { useLazyGetTeamQuery } from "../api/teamsApi";
 import { useParams } from "react-router-dom";
 import { Card } from "antd";
 import { projectColumns } from "../modules/teams/projectColumns";
 import { membersColumns } from "../modules/teams/membersColumns";
-import { BiTask } from "react-icons/bi";
+import { taskColumns } from "../modules/teams/taskColumns";
 import ProjectModal from "../modules/teams/ProjectModal";
 import MemberModal from "../modules/teams/MemberModal";
-import { taskColumns } from "../modules/teams/taskColumns";
 
 function TeamDetails() {
   const [open, setOpen] = useState(false);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const [taskModalOpen, setTaskModalOpen] = useState(false);
-
   const [memberModalOpen, setMemberModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { id } = useParams();
-
   const [getTeam, { data: teamsData, isFetching }] = useLazyGetTeamQuery();
+
   useEffect(() => {
     getTeam(id);
   }, [id]);
@@ -35,7 +43,7 @@ function TeamDetails() {
     setOpen(false);
     setTaskModalOpen(false);
   };
-  const [searchTerm, setSearchTerm] = useState("");
+
   const tasksWithProjectNames =
     teamsData?.projects?.flatMap((item: any) =>
       item.tasks.map((task: any) => ({
@@ -44,153 +52,242 @@ function TeamDetails() {
       }))
     ) || [];
 
+  const memberCount = teamsData?.users?.length || 0;
+  const projectCount = teamsData?.projects?.length || 0;
+  const taskCount = tasksWithProjectNames?.length || 0;
+
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       <Container>
-        <BreadCrumb data={["Dashboard", "Teams", "Team details"]} />
-        <div className="mt-[32px] lg:flex justify-between  items-end">
-          <div>
-            <p className="text-[1.5rem] font-[700] text-neutral-450">
-              {teamsData?.teamName ?? "--"}
-            </p>
-            <p className="max-w-[450px]">{teamsData?.description ?? "--"}</p>
-          </div>
+        {/* Breadcrumb */}
+        <div className="pt-6">
+          <BreadCrumb data={["Dashboard", "Teams", "Team Details"]} />
+        </div>
 
-          <div className="flex gap-[16px]">
-            <Button
-              className="bg-transparent border text-neutral-550"
-              onClick={() => setOpen(!open)}
-            >
-              <Pencil size={14} />
-              <p>Edit Team Details</p>
-            </Button>
+        {/* Header Section */}
+        <div className="mt-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <Users className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+                      {teamsData?.teamName || "Loading..."}
+                    </h1>
+                  </div>
+                </div>
 
-            <Button
-              className="border"
-              onClick={() => setTaskModalOpen(!taskModalOpen)}
-            >
-              <BiTask size={14} />
-              <p>Assign Task</p>
-            </Button>
+                <div className="prose prose-sm max-w-none">
+                  <p className="text-gray-600 leading-relaxed">
+                    {teamsData?.description || (
+                      <span className="text-gray-400 italic">
+                        No description provided
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                {/* Quick Stats */}
+                <div className="flex flex-wrap gap-4 mt-4">
+                  <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 rounded-lg">
+                    <Users className="w-4 h-4 text-blue-600" />
+                    <span className="text-sm font-medium text-gray-700">
+                      {memberCount} Members
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-2 bg-purple-50 rounded-lg">
+                    <Briefcase className="w-4 h-4 text-purple-600" />
+                    <span className="text-sm font-medium text-gray-700">
+                      {projectCount} Projects
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-2 bg-green-50 rounded-lg">
+                    <ListChecks className="w-4 h-4 text-green-600" />
+                    <span className="text-sm font-medium text-gray-700">
+                      {taskCount} Tasks
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm transition-colors duration-200"
+                  onClick={() => setOpen(!open)}
+                >
+                  <Pencil size={16} />
+                  <span className="hidden sm:inline">Edit Team</span>
+                  <span className="sm:hidden">Edit</span>
+                </Button>
+
+                <Button
+                  className="bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-sm transition-colors duration-200"
+                  onClick={() => setTaskModalOpen(!taskModalOpen)}
+                >
+                  <Plus size={16} />
+                  <span className="hidden sm:inline">Assign Task</span>
+                  <span className="sm:hidden">Task</span>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </Container>
 
-      <Container className="lg:flex gap-6 mt-[16px] ">
-        <Card className="lg:w-[50%]">
-          <div className="flex justify-between items-center">
-            <p className="py-4 font-[700] text-neutral-450">
-              Team Members ({teamsData?.users.length ?? 0})
-            </p>
-            <Button
-              className="bg-transparent border text-neutral-550 flex rounded-md lg:gap-3 items-center px-2"
-              onClick={() => setMemberModalOpen(true)}
-            >
-              <Plus size={14} />
-              <p>Add Team Member</p>
-            </Button>
-          </div>
-          <div className="px-4 py-2 rounded-sm w-full mt-4 border flex items-center gap-2">
-            <Search size={14} />
-            <input
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className=" py-[2px] text-[0.865rem] "
-              placeholder="Search members"
-            />
-          </div>
-          <DashboardTable
-            callBackAction={handleCallBack}
-            columns={membersColumns}
-            data={
-              teamsData?.users?.map(
-                (item: {
-                  email: any;
-                  firstName: any;
-                  lastName: any;
-                  note: any;
-                  userId: any;
-                }) => {
-                  return {
-                    email: item.email,
-                    firstName: item.firstName,
-                    lastName: item.lastName,
-                    note: item.note,
-                    id: item.userId,
-                  };
+      {/* Members & Projects Section */}
+      <Container className="mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Team Members Card */}
+          <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5 text-blue-600" />
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Team Members
+                  </h2>
+                  <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                    {memberCount}
+                  </span>
+                </div>
+                <Button
+                  className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm text-sm"
+                  onClick={() => setMemberModalOpen(true)}
+                >
+                  <UserPlus size={14} />
+                  <span>Add Member</span>
+                </Button>
+              </div>
+
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="Search members..."
+                />
+              </div>
+
+              <DashboardTable
+                callBackAction={handleCallBack}
+                columns={membersColumns}
+                data={
+                  teamsData?.users?.map(
+                    (item: {
+                      email: any;
+                      firstName: any;
+                      lastName: any;
+                      note: any;
+                      userId: any;
+                    }) => ({
+                      email: item.email,
+                      firstName: item.firstName,
+                      lastName: item.lastName,
+                      note: item.note,
+                      id: item.userId,
+                    })
+                  ) ?? []
                 }
-              ) ?? []
-            }
-            type="team-members"
-            targetId={id}
-            isFetching={false}
-          />
-        </Card>
+                type="team-members"
+                targetId={id}
+                isFetching={isFetching}
+              />
+            </div>
+          </Card>
 
-        <Card className="lg:w-[50%]">
-          <div className="flex justify-between items-center">
-            <p className="py-4 font-[700] text-neutral-450 max-w-[300px]">
-              Projects Assigned
-            </p>
-            <Button
-              className="bg-transparent border text-neutral-550 flex rounded-md gap-3 items-center"
-              onClick={() => setProjectModalOpen(true)}
-            >
-              <Plus size={14} />
-              <p>Add Project</p>
-            </Button>
-          </div>
-          <div className="px-4 py-2 rounded-sm w-full mt-4 border flex items-center gap-2">
-            <Search size={14} />
-            <input
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="py-[2px] text-[0.865rem]"
-              placeholder="Search teams"
+          {/* Projects Assigned Card */}
+          <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Briefcase className="w-5 h-5 text-purple-600" />
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Projects Assigned
+                  </h2>
+                  <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                    {projectCount}
+                  </span>
+                </div>
+                <Button
+                  className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm text-sm"
+                  onClick={() => setProjectModalOpen(true)}
+                >
+                  <FolderPlus size={14} />
+                  <span>Add Project</span>
+                </Button>
+              </div>
+
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="Search projects..."
+                />
+              </div>
+
+              <DashboardTable
+                columns={projectColumns}
+                data={teamsData?.projects ?? []}
+                type="project"
+                targetId={id}
+                removeAction="project"
+                callBackAction={handleCallBack}
+                isFetching={isFetching}
+              />
+            </div>
+          </Card>
+        </div>
+      </Container>
+
+      {/* Tasks Section */}
+      <Container className="mt-6 pb-8">
+        <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow duration-200">
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <ListChecks className="w-5 h-5 text-green-600" />
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Team Tasks
+                </h2>
+                <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                  {taskCount}
+                </span>
+              </div>
+              <Button
+                className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm text-sm"
+                onClick={() => setTaskModalOpen(true)}
+              >
+                <Plus size={14} />
+                <span>Add Task</span>
+              </Button>
+            </div>
+
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="Search tasks..."
+              />
+            </div>
+
+            <DashboardTable
+              columns={taskColumns}
+              data={tasksWithProjectNames || []}
+              callBackAction={handleCallBack}
+              type="edit-tasks"
+              isFetching={isFetching}
             />
           </div>
-          <DashboardTable
-            columns={projectColumns}
-            data={teamsData?.projects ?? []}
-            type="project"
-            targetId={id}
-            removeAction="project"
-            callBackAction={handleCallBack}
-            isFetching={false}
-          />
         </Card>
       </Container>
 
-      <Container>
-        <Card className="w-[100%]">
-          <div className="flex justify-between items-center">
-            <p className="py-4 font-[700] text-neutral-450 max-w-[300px]">
-              Team Tasks
-            </p>
-            <Button
-              className="bg-transparent border text-neutral-550 flex rounded-md gap-3 items-center "
-              onClick={() => setTaskModalOpen(true)}
-            >
-              <Plus size={14} />
-              <p>Add Task</p>
-            </Button>
-          </div>
-          <div className="px-4 py-2 rounded-sm w-full mt-4 border flex items-center gap-2">
-            <Search size={14} />
-            <input
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="py-[2px] text-[0.865rem]"
-              placeholder="Search teams"
-            />
-          </div>
-          <DashboardTable
-            columns={taskColumns}
-            data={tasksWithProjectNames || []}
-            callBackAction={handleCallBack}
-            type="edit-tasks"
-            isFetching={false}
-          />
-        </Card>
-      </Container>
-
+      {/* Modals */}
       <DashboardDrawer
         callBackAction={handleCallBack}
         open={open}
@@ -208,13 +305,11 @@ function TeamDetails() {
         />
       )}
 
-      {/* Project Modal */}
       <ProjectModal
         projectModalOpen={projectModalOpen}
         setProjectModalOpen={setProjectModalOpen}
       />
 
-      {/* Add Members Modal */}
       <MemberModal
         callBackAction={handleCallBack}
         memberModalOpen={memberModalOpen}

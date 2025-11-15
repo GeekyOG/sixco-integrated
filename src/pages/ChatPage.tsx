@@ -16,9 +16,9 @@ const ChatPage = () => (
     </main>
 
     {/* Info Panel */}
-    <aside className="w-80 bg-gray-50 p-4 hidden lg:block">
+    {/* <aside className="w-80 bg-gray-50 p-4 hidden lg:block">
       <GroupDetails />
-    </aside>
+    </aside> */}
   </div>
 );
 

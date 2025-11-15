@@ -23,20 +23,22 @@ const ReportSchema = Yup.object().shape({
 
 const Editors = {
   toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
+    [{ header: [1, 2, 3, 4, 5, 6, false] }, { font: [] }],
     [{ size: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
+    ["bold", "italic", "underline", "strike", "blockquote", "code-block"],
     [
       { list: "ordered" },
       { list: "bullet" },
       { indent: "-1" },
       { indent: "+1" },
     ],
+    [{ color: [] }, { background: [] }], // text & background color
+    [{ align: [] }], // text alignment
     ["link", "image", "video"],
     ["clean"],
+    ["table"], // requires table module
   ],
   clipboard: {
-    // toggle to add extra line breaks when pasting HTML:
     matchVisual: false,
   },
 };
@@ -59,11 +61,11 @@ function AddHSEReport() {
       await Promise.all(
         fileList.map((doc) => {
           const formData = new FormData();
-          formData.append("reportId", data.data.id as string);
+          formData.append("reportId", data.data.report.id as string);
           formData.append("files", doc.originFileObj as Blob);
 
           return upload({
-            formData,
+            body: formData,
           });
         })
       );
