@@ -29,9 +29,9 @@ import HSEReports from "../pages/HSEReports";
 import AddHSEReport from "../pages/AddHSEReport";
 import EditHSEReport from "../pages/EditHSEReport";
 import ChatPage from "../pages/ChatPage";
-import ReportDetails from "../pages/reportDetails";
 import Audit from "../pages/Audit";
 import HSEReportDetails from "../pages/HSEReportDetails";
+import ReportDetails from "../pages/ReportDetails";
 
 const router = createBrowserRouter([
   {
