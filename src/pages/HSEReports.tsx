@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import Container from "../ui/Container";
-import { Search } from "lucide-react";
+import {
+  Search,
+  Plus,
+  Shield,
+  Download,
+  X,
+  AlertCircle,
+  CheckCircle,
+  FileText,
+} from "lucide-react";
 import DashboardTable from "../components/dashboard/DashboardTable";
 import DashboardDrawer from "../components/dashboard/Drawer";
 import Button from "../ui/Button";
@@ -8,88 +17,295 @@ import BreadCrumb from "../ui/BreadCrumb";
 import { useLazyGetAllReportQuery } from "../api/reportsApi";
 import { useNavigate } from "react-router-dom";
 import { columns } from "../modules/reports/columns";
+import { Card } from "antd";
+import { handleExportCSV } from "../utils/export";
+import { format } from "date-fns";
 import { useLazyGetAllHSEReportQuery } from "../api/hseReportApi";
 
 function HSEReports() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  const [page, setPage] = useState(1);
-
   const [getALLReports, { isFetching, data }] = useLazyGetAllHSEReportQuery();
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    getALLReports({
-      currentPage: page,
-      title: searchTerm,
-    });
-  }, [page, searchTerm]);
+    getALLReports("");
+  }, []);
+
+  const handleAddPortfolio = () => {
+    setDrawerOpen(true);
+  };
 
   const handleGetPortfolio = () => {
     getALLReports("");
     setDrawerOpen(false);
   };
 
-  return (
-    <Container className="pb-[200px]">
-      <BreadCrumb data={["Dashboard", "Manage HSE Reports"]} />
-      <div>
-        <div className="flex items-center justify-between">
-          <div className="flex">
-            <div className="border-[1px] px-[15px] py-[8px]">
-              <p className="font-[600]">
-                All Reports ({data?.pagination.totalItems ?? 0})
-              </p>
-            </div>
-          </div>
+  // Filter reports based on search term
+  const filteredReports = data?.reports?.filter((report: any) => {
+    if (!searchTerm) return true;
+    return (
+      report.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.reporter?.firstName
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      report.reporter?.lastName
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      report.reporter?.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
-          <div className="mb-[3px] flex items-center gap-[8px]">
-            <div className="md:flex hidden cursor-pointer items-center gap-[3px] border-b-[1px] px-[8px] py-[8px] ">
-              <Search size={16} className="text-neutral-300" />
-              <input
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className=" py-[2px] text-[0.865rem]"
-                placeholder="Search ..."
-              />
-            </div>
-            <Button
-              onClick={() => navigate("/dashboard/HSE-reports/add-report")}
-              className="flex h-[36px] items-center"
-            >
-              Add Report
-            </Button>
-          </div>
+  const reportsCount = filteredReports?.length || 0;
+  const totalReports = data?.reports?.length || 0;
+
+  // Enhanced export function with actual reports data
+  const handleExportReports = () => {
+    if (!data?.reports || data.reports.length === 0) {
+      alert("No data available to export");
+      return;
+    }
+
+    // Transform the data for CSV export
+    const exportData = data.reports.map((report: any) => ({
+      "Report Title": report.title || "",
+      "Reporter Name": report.reporter
+        ? `${report.reporter.firstName || ""} ${
+            report.reporter.lastName || ""
+          }`.trim()
+        : "",
+      "Reporter Email": report.reporter?.email || "",
+      "Date of Report": report.dateOfReport
+        ? format(new Date(report.dateOfReport), "yyyy-MM-dd")
+        : "",
+      "Time of Report": report.timeOfReport || "",
+      Status: report.status || "Open",
+      "Document Count": report.documents?.length || 0,
+      "Closed By": report.closer
+        ? `${report.closer.firstName || ""} ${
+            report.closer.lastName || ""
+          }`.trim()
+        : "",
+      "Closed At": report.closedAt
+        ? format(new Date(report.closedAt), "yyyy-MM-dd HH:mm:ss")
+        : "",
+      "Created At": report.createdAt
+        ? format(new Date(report.createdAt), "yyyy-MM-dd HH:mm:ss")
+        : "",
+    }));
+
+    // Generate filename with timestamp
+    const timestamp = format(new Date(), "yyyy-MM-dd_HHmmss");
+    const fileName = `hse_reports_export_${timestamp}.csv`;
+
+    handleExportCSV({ data: exportData, fileName });
+  };
+
+  const clearSearch = () => {
+    setSearchTerm("");
+  };
+
+  // Calculate stats
+  const reportsByStatus = {
+    open: data?.reports?.filter((r: any) => r.status === "open")?.length || 0,
+    closed:
+      data?.reports?.filter((r: any) => r.status === "closed")?.length || 0,
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Container>
+        {/* Breadcrumb */}
+        <div className="pt-6">
+          <BreadCrumb data={["Dashboard", "HSE Reports"]} />
         </div>
 
-        <div className="flex md:hidden cursor-pointer items-center gap-[3px] border-[1px] px-[8px] py-[8px] my-3">
-          <Search size={16} className="text-neutral-300" />
-          <input
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className=" py-[2px] text-[0.865rem]"
-            placeholder="Search by email..."
+        {/* Header Section */}
+        <div className="mt-6">
+          <Card className="shadow-sm border-gray-200">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Title & Count */}
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 rounded-lg">
+                  <Shield className="w-6 h-6 text-red-600" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    HSE Reports
+                  </h1>
+                  <p className="text-sm text-gray-600">
+                    {searchTerm
+                      ? `${reportsCount} of ${totalReports} reports`
+                      : `${totalReports} ${
+                          totalReports === 1 ? "report" : "reports"
+                        } total`}
+                  </p>
+                </div>
+              </div>
+
+              {/* Desktop Actions */}
+              <div className="hidden md:flex items-center gap-3">
+                {/* Export Button */}
+                <Button
+                  className="bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
+                  onClick={handleExportReports}
+                  disabled={totalReports === 0}
+                >
+                  <Download size={16} />
+                  <span>Export ({totalReports})</span>
+                </Button>
+
+                {/* Search */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all w-64"
+                    placeholder="Search reports..."
+                    value={searchTerm}
+                  />
+                </div>
+
+                {/* Add Report Button */}
+                <Button
+                  onClick={() => navigate("/dashboard/reports/add-report")}
+                  className="bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
+                >
+                  <Plus size={16} />
+                  <span>Add Report</span>
+                </Button>
+              </div>
+
+              {/* Mobile Actions */}
+              <div className="md:hidden space-y-3">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    placeholder="Search reports..."
+                    value={searchTerm}
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
+                    onClick={handleExportReports}
+                    disabled={totalReports === 0}
+                  >
+                    <Download size={16} />
+                    <span>Export</span>
+                  </Button>
+
+                  <Button
+                    onClick={() => navigate("/dashboard/reports/add-report")}
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
+                  >
+                    <Plus size={16} />
+                    <span>Add Report</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Active Search Display */}
+            {searchTerm && (
+              <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-gray-200">
+                <span className="text-sm text-gray-600 font-medium">
+                  Searching:
+                </span>
+                <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-800 rounded-md text-sm">
+                  "{searchTerm}"
+                  <button
+                    onClick={clearSearch}
+                    className="hover:bg-red-200 rounded-full p-0.5"
+                  >
+                    ×
+                  </button>
+                </span>
+                {reportsCount === 0 && (
+                  <span className="text-sm text-gray-500">
+                    No reports found matching your search
+                  </span>
+                )}
+              </div>
+            )}
+          </Card>
+        </div>
+
+        {/* Stats Cards */}
+        {/* {!searchTerm && data?.reports && (
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-red-50 rounded-lg">
+                  <Shield className="w-6 h-6 text-red-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {totalReports}
+                  </p>
+                  <p className="text-sm text-gray-600">Total Reports</p>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-orange-50 rounded-lg">
+                  <AlertCircle className="w-6 h-6 text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {reportsByStatus.open}
+                  </p>
+                  <p className="text-sm text-gray-600">Open Reports</p>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-green-50 rounded-lg">
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {reportsByStatus.closed}
+                  </p>
+                  <p className="text-sm text-gray-600">Closed Reports</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        )} */}
+
+        {/* Table */}
+        <div className="mt-6 pb-8">
+          <DashboardTable
+            columns={columns}
+            data={filteredReports || []}
+            isFetching={isFetching}
+            type="hse-reports"
+            callBackAction={handleGetPortfolio}
+            page={page}
+            setPage={setPage}
+            totalPages={data?.pagination?.totalPages}
           />
         </div>
-      </div>
-      <div>
-        <DashboardTable
-          columns={columns}
-          data={data?.reports || []}
-          isFetching={isFetching}
-          type="hse-reports"
+
+        {/* Drawer */}
+        <DashboardDrawer
           callBackAction={handleGetPortfolio}
-          page={page}
-          setPage={setPage}
-          totalPages={data?.pagination?.totalPages}
+          open={drawerOpen}
+          setOpen={setDrawerOpen}
+          whatForm={"hse-reports"}
         />
-      </div>
-      <DashboardDrawer
-        callBackAction={handleGetPortfolio}
-        open={drawerOpen}
-        setOpen={setDrawerOpen}
-        whatForm={"reports"}
-      />
-    </Container>
+      </Container>
+    </div>
   );
 }
 

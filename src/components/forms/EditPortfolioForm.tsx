@@ -98,11 +98,13 @@ const EditPortfolioFormForm: React.FC<EditPortfolioFormFormProps> = ({
                         .includes(input.toLowerCase())
                     }
                   >
-                    {["To Do", "In Progress", "Completed"]?.map((status, i) => (
-                      <Option key={i} value={status}>
-                        {status}
-                      </Option>
-                    ))}
+                    {["To Do", "In Progress", "Review", "Done"]?.map(
+                      (status, i) => (
+                        <Option key={i} value={status}>
+                          {status}
+                        </Option>
+                      )
+                    )}
                   </Select>
                 </div>
                 <Input
