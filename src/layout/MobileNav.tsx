@@ -27,11 +27,11 @@ const NavOptions: { text: string; url: string; icon: ReactNode }[] = [
     url: "/dashboard/staffs",
     icon: <Users size={16} />,
   },
-  {
-    text: "Roles & Permissions",
-    url: "/dashboard/roles-permissions",
-    icon: <Users size={16} />,
-  },
+  // {
+  //   text: "Roles & Permissions",
+  //   url: "/dashboard/roles-permissions",
+  //   icon: <Users size={16} />,
+  // },
   {
     text: "Manage Teams",
     url: "/dashboard/teams",
