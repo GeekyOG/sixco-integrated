@@ -60,7 +60,7 @@ function EditReport() {
 
   return (
     <div>
-      <p className="text-2xl">Add Report</p>
+      <p className="text-2xl">Edit Report</p>
       <p className="text-[0.865rem]">Enter report details</p>
 
       <div className="mt-8 border p-8">

@@ -79,7 +79,7 @@ function AddHSEReport() {
 
   return (
     <div>
-      <p className="text-2xl">Add HSE Report</p>
+      <p className="text-2xl">Edit HSE Report</p>
       <p className="text-[0.865rem]">Enter report details</p>
 
       <div className="mt-8 border p-8">

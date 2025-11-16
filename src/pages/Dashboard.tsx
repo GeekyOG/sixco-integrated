@@ -89,18 +89,18 @@ function Dashboard() {
       <Container>
         {/* Welcome Section */}
         <div className="pt-6 pb-8">
-          <Card className="shadow-sm border-gray-200 bg-gradient-to-br from-indigo-50 to-white">
+          <Card className="shadow-sm border-gray-200 bg-gradient-to-br from-green-100 to-white">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-5 h-5 text-indigo-600" />
-                  <p className="text-sm text-indigo-600 font-medium">
+                  <Calendar className="w-5 h-5 text-green-600" />
+                  <p className="text-sm text-green-600 font-medium">
                     {formattedDate}
                   </p>
                 </div>
                 <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">
                   {getGreeting()},{" "}
-                  <span className="capitalize text-indigo-600">
+                  <span className="capitalize text-green-600">
                     {userData?.firstName || "User"}
                   </span>
                 </h1>

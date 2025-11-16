@@ -129,7 +129,7 @@ const router = createBrowserRouter([
         element: <AddReport />,
       },
       {
-        path: "/dashboard/reports/edit-report",
+        path: "/dashboard/reports/edit-report/:id",
         element: <EditReport />,
       },
       {

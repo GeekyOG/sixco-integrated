@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
-import { Form as AntForm, Select, Upload, UploadFile } from "antd";
+import { Form as AntForm, Select, Upload, UploadFile, UploadProps } from "antd";
 import * as Yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -20,7 +20,7 @@ const { Option } = Select;
 // Validation schema
 const ReportSchema = Yup.object().shape({
   title: Yup.string().required("Title is required"),
-  content: Yup.string().required("Content is required"),
+  report: Yup.string().required("Content is required"),
   projectId: Yup.string().required("Project ID is required"),
 });
 
@@ -51,10 +51,8 @@ function AddReport() {
 
   const initialValues = {
     title: "",
-    content: "",
+    report: "",
     projectId: "",
-    userId: userData.id,
-    reportURL: "",
     dateOfReport: "",
     timeOfReport: "",
   };
@@ -67,12 +65,27 @@ function AddReport() {
     getData({});
   }, []);
   const handleSubmit = (values: any) => {
-    addHSEReport(values);
+    const formData = new FormData();
+    formData.append("report", values.report);
+    formData.append("projectId", values.projectId);
+    formData.append("dateOfReport", values.dateOfReport);
+    formData.append("timeOfReport", values.timeOfReport);
+    formData.append("title", values.title);
+
+    formData.append(
+      "files",
+      fileList?.map((doc) => doc.originFileObj as Blob)
+    );
+    addHSEReport(formData);
     console.log("Report submitted:", values);
     // Submit to API here
   };
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+  const handleFileChange: UploadProps["onChange"] = ({
+    fileList: newFileList,
+  }) => setFileList(newFileList);
 
   return (
     <div>
@@ -137,7 +150,7 @@ function AddReport() {
                 <Upload
                   listType="picture-card"
                   fileList={fileList}
-                  onChange={handleChange}
+                  onChange={handleFileChange}
                 >
                   {fileList.length >= 1 ? null : (
                     <button
@@ -157,15 +170,15 @@ function AddReport() {
 
                 <FormItem
                   validateStatus={
-                    touched.content && errors.content ? "error" : ""
+                    touched.report && errors.report ? "error" : ""
                   }
-                  help={touched.content && errors.content}
+                  help={touched.report && errors.report}
                 >
                   <ReactQuill
                     className="h-[400px]"
-                    value={values.content}
+                    value={values.report}
                     modules={Editors}
-                    onChange={(value) => setFieldValue("content", value)}
+                    onChange={(value) => setFieldValue("report", value)}
                   />
                 </FormItem>
               </div>
