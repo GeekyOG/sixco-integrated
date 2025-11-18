@@ -32,6 +32,8 @@ import ChatPage from "../pages/ChatPage";
 import Audit from "../pages/Audit";
 import HSEReportDetails from "../pages/HSEReportDetails";
 import ReportDetails from "../pages/ReportDetails";
+import HSEManagementSystem from "../pages/HSEManagement";
+import FinanceDashboard from "../pages/FinanceDashboard";
 
 const router = createBrowserRouter([
   {
@@ -133,6 +135,10 @@ const router = createBrowserRouter([
         element: <EditReport />,
       },
       {
+        path: "/dashboard/hse-management",
+        element: <HSEManagementSystem />,
+      },
+      {
         path: "/dashboard/HSE-reports",
         element: <HSEReports />,
       },
@@ -151,6 +157,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/leaves",
         element: <Leaves />,
+      },
+      {
+        path: "/dashboard/finance",
+        element: <FinanceDashboard />,
       },
       {
         path: "/dashboard/audit",

@@ -11,6 +11,7 @@ import {
   ListChecks,
   CheckCircle2,
   Clock,
+  TrendingUp,
 } from "lucide-react";
 import DashboardTable from "../components/dashboard/DashboardTable";
 import { useGetUserQuery } from "../api/authApi";
@@ -136,7 +137,7 @@ function StaffDetails() {
             <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <ListChecks className="w-6 h-6 text-gray-600" />
+                  <ListChecks className="w-6 h-6 text-green-600" />
                 </div>
                 <p className="text-2xl font-bold text-gray-900">
                   {taskStats.total}
@@ -148,7 +149,7 @@ function StaffDetails() {
             <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
               <div className="text-center">
                 <div className="text-2xl mb-2 text-center flex justify-center">
-                  <Clock className="text-center" />
+                  <Clock className="text-center text-green-600" />
                 </div>
                 <p className="text-2xl font-bold text-gray-700">
                   {taskStats.toDo}
@@ -159,10 +160,10 @@ function StaffDetails() {
 
             <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
               <div className="text-center">
-                <div className="text-2xl mb-2">🔄</div>
-                <p className="text-2xl font-bold text-blue-600">
-                  {taskStats.inProgress}
-                </p>
+                <div className="text-2xl mb-2 flex justify-center">
+                  <TrendingUp className="text-center text-green-600" />
+                </div>
+                <p className="text-2xl font-bold ">{taskStats.inProgress}</p>
                 <p className="text-xs text-gray-600 mt-1">In Progress</p>
               </div>
             </Card>
@@ -180,10 +181,8 @@ function StaffDetails() {
             <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
               <div className="text-center">
                 <div className="text-2xl mb-2">✅</div>
-                <p className="text-2xl font-bold text-green-600">
-                  {taskStats.done}
-                </p>
-                <p className="text-xs text-gray-600 mt-1">Done</p>
+                <p className="text-2xl font-bold ">{taskStats.done}</p>
+                <p className="text-xs  mt-1">Done</p>
               </div>
             </Card>
           </div>

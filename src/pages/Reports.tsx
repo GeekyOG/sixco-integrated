@@ -18,7 +18,7 @@ import { useLazyGetAllReportQuery } from "../api/reportsApi";
 import { useNavigate } from "react-router-dom";
 import { columns } from "../modules/reports/columns";
 import { Card } from "antd";
-import { handleExportCSV } from "../utils/export";
+import { exportToCSV, handleExportCSV } from "../utils/export";
 import { format } from "date-fns";
 
 function Reports() {
@@ -147,7 +147,7 @@ function Reports() {
                 {/* Export Button */}
                 <Button
                   className="bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                  onClick={handleExportReports}
+                  onClick={() => exportToCSV(filteredReports, "reports.csv")}
                   disabled={totalReports === 0}
                 >
                   <Download size={16} />
@@ -190,7 +190,7 @@ function Reports() {
                 <div className="flex gap-2">
                   <Button
                     className="flex-1 bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                    onClick={handleExportReports}
+                    onClick={() => exportToCSV(filteredReports, "reports.csv")}
                     disabled={totalReports === 0}
                   >
                     <Download size={16} />
@@ -232,53 +232,6 @@ function Reports() {
             )}
           </Card>
         </div>
-
-        {/* Stats Cards */}
-        {/* {!searchTerm && data?.reports && (
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-red-50 rounded-lg">
-                  <Shield className="w-6 h-6 text-red-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {totalReports}
-                  </p>
-                  <p className="text-sm text-gray-600">Total Reports</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-orange-50 rounded-lg">
-                  <AlertCircle className="w-6 h-6 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {reportsByStatus.open}
-                  </p>
-                  <p className="text-sm text-gray-600">Open Reports</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-green-50 rounded-lg">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {reportsByStatus.closed}
-                  </p>
-                  <p className="text-sm text-gray-600">Closed Reports</p>
-                </div>
-              </div>
-            </Card>
-          </div>
-        )} */}
 
         {/* Table */}
         <div className="mt-6 pb-8">

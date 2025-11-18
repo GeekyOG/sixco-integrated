@@ -132,3 +132,119 @@ export function timeAgo(dateString: string) {
   if (hours < 24) return `${hours} hours ago`;
   return `${days} days ago`;
 }
+
+// Reusable CSV export function
+export const exportToCSV = (
+  data: any[],
+  filename: string,
+  columns?: string[]
+) => {
+  if (!data || data.length === 0) {
+    console.warn("No data to export");
+    return;
+  }
+
+  // If columns not provided, extract from first object
+  const headers = columns || Object.keys(data[0]);
+
+  // Create CSV header row
+  const csvHeader = headers.join(",");
+
+  // Create CSV data rows
+  const csvRows = data.map((row) => {
+    return headers
+      .map((header) => {
+        const value = row[header];
+
+        // Handle different data types
+        if (value === null || value === undefined) {
+          return "";
+        }
+
+        // Convert value to string and escape quotes
+        const stringValue = String(value).replace(/"/g, '""');
+
+        // Wrap in quotes if contains comma, newline, or quote
+        if (
+          stringValue.includes(",") ||
+          stringValue.includes("\n") ||
+          stringValue.includes('"')
+        ) {
+          return `"${stringValue}"`;
+        }
+
+        return stringValue;
+      })
+      .join(",");
+  });
+
+  // Combine header and rows
+  const csv = [csvHeader, ...csvRows].join("\n");
+
+  // Create download link
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+
+  link.setAttribute("href", url);
+  link.setAttribute(
+    "download",
+    filename.endsWith(".csv") ? filename : `${filename}.csv`
+  );
+  link.style.display = "none";
+
+  document.body.appendChild(link);
+  link.click();
+
+  // Cleanup
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
+export const exportWithCustomHeaders = (
+  data: any[],
+  filename: string,
+  columnMapping: Record<string, string>
+) => {
+  if (!data || data.length === 0) return;
+
+  const headers = Object.keys(columnMapping);
+  const headerLabels = Object.values(columnMapping);
+
+  const csvHeader = headerLabels.join(",");
+
+  const csvRows = data.map((row) => {
+    return headers
+      .map((header) => {
+        const value = row[header];
+        if (value === null || value === undefined) return "";
+
+        const stringValue = String(value).replace(/"/g, '""');
+        if (
+          stringValue.includes(",") ||
+          stringValue.includes("\n") ||
+          stringValue.includes('"')
+        ) {
+          return `"${stringValue}"`;
+        }
+        return stringValue;
+      })
+      .join(",");
+  });
+
+  const csv = [csvHeader, ...csvRows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+
+  link.setAttribute("href", url);
+  link.setAttribute(
+    "download",
+    filename.endsWith(".csv") ? filename : `${filename}.csv`
+  );
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Search,
   Filter,
@@ -9,33 +9,46 @@ import {
   Activity,
   ChevronLeft,
   ChevronRight,
+  X,
 } from "lucide-react";
 import { useGetAllAuditQuery, useLazyGetAllAuditQuery } from "../api/audit";
+import { useGetAllUsersQuery } from "../api/authApi";
 
 const AuditLogViewer = () => {
   const [expandedId, setExpandedId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterUser, setFilterUser] = useState("ALL");
+  const [filterUser, setFilterUser] = useState("");
   const [filterAction, setFilterAction] = useState("ALL");
-  const [filterModel, setFilterModel] = useState("ALL");
+  const [filterModel, setFilterModel] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  const users = [{ id: "1", firstName: "Alice", lastName: "Smith" }];
-  const models = [{ id: "m1", name: "Model A" }];
+  const { data: staffsData, isFetching } = useGetAllUsersQuery({
+    limit: 10000000,
+  });
+  const users = staffsData?.users ?? [];
+  const models = [
+    "HSEReport",
+    "Report",
+    "User",
+    "Leave",
+    "Client",
+    "Project",
+    "Task",
+    "Team",
+  ];
 
   const [getData, { data: auditData }] = useLazyGetAllAuditQuery();
   const [page, setPage] = useState(1);
 
   useEffect(() => {
     getData({
-      model: searchTerm,
+      model: filterModel,
       page,
-      limit: 10,
+      limit: 50,
+      userId: filterUser,
     });
-  }, [page, searchTerm]);
-
-  console.log(auditData?.audits);
+  }, [page, searchTerm, filterModel, filterUser]);
 
   const totalPages = auditData?.pagination?.totalPages;
 
@@ -109,7 +122,7 @@ const AuditLogViewer = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
             <div className="text-2xl font-bold text-gray-900">
-              {auditData?.audits?.length}
+              {auditData?.pagination?.totalItems}
             </div>
             <div className="text-sm text-gray-600">Total Events</div>
           </div>
@@ -152,7 +165,6 @@ const AuditLogViewer = () => {
               {/* Action filter */}
 
               <div className="flex items-center gap-2">
-                <Filter className="text-gray-400 w-5 h-5" />
                 <select
                   value={filterAction}
                   onChange={(e) => setFilterAction(e.target.value)}
@@ -168,40 +180,38 @@ const AuditLogViewer = () => {
 
               {/* User filter */}
               <div className="flex items-center gap-2">
-                <select
+                <SearchableSelect
                   value={filterUser}
-                  onChange={(e) => setFilterUser(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="ALL">All Users</option>
-                  {users.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.firstName} {user.lastName}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setFilterUser}
+                  options={users?.map((user) => {
+                    return {
+                      label: `${user.firstName} ${user.lastName}`,
+                      value: user.id,
+                    };
+                  })}
+                  placeholder="Select user..."
+                />
               </div>
 
               {/* Model filter */}
               <div className="flex items-center gap-2">
-                <select
+                <SearchableSelect
                   value={filterModel}
-                  onChange={(e) => setFilterModel(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="ALL">All Models</option>
-                  {models.map((model) => (
-                    <option key={model.id} value={model.id}>
-                      {model.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setFilterModel}
+                  options={models?.map((model) => {
+                    return {
+                      label: model,
+                      value: model,
+                    };
+                  })}
+                  placeholder="Select model..."
+                />
               </div>
             </div>
           </div>
 
           {/* Date range filter */}
-          <div className="flex flex-col md:flex-row md:items-center gap-2 mt-2">
+          <div className="hidden md:flex flex-col md:flex-row md:items-center gap-2 mt-2">
             <p>Filter by Date range</p>
             <input
               type="date"
@@ -373,3 +383,121 @@ const AuditLogViewer = () => {
 };
 
 export default AuditLogViewer;
+
+// Searchable Select Component
+const SearchableSelect = ({
+  value,
+  onChange,
+  options,
+  placeholder = "Select...",
+  label = "",
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const dropdownRef = useRef(null);
+  const inputRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+        setSearchTerm("");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Focus input when dropdown opens
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
+
+  // Filter options based on search term
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(searchTerm?.toLowerCase())
+  );
+
+  // Get selected option label
+  const selectedOption = options.find((opt) => opt.value === value);
+  const selectedLabel = selectedOption ? selectedOption.label : placeholder;
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      {/* Selected value display */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-left flex items-center justify-between gap-2"
+      >
+        <span className={value === "ALL" ? "text-gray-500" : "text-gray-900"}>
+          {selectedLabel}
+        </span>
+        <ChevronDown
+          className={`w-4 h-4 text-gray-400 transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      {/* Dropdown */}
+      {isOpen && (
+        <div className="absolute top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-hidden flex flex-col">
+          {/* Search input */}
+          <div className="p-2 border-b border-gray-200">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                ref={inputRef}
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-9 pr-8 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Search..."
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Options list */}
+          <div className="overflow-y-auto max-h-60">
+            {filteredOptions.length > 0 ? (
+              filteredOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => {
+                    onChange(option.value);
+                    setIsOpen(false);
+                    setSearchTerm("");
+                  }}
+                  className={`w-full text-left px-4 py-2 text-sm hover:bg-blue-50 transition-colors ${
+                    value === option.value
+                      ? "bg-blue-100 text-blue-700 font-medium"
+                      : "text-gray-700"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))
+            ) : (
+              <div className="px-4 py-8 text-center text-sm text-gray-500">
+                No results found
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

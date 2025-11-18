@@ -18,7 +18,7 @@ import { useLazyGetAllReportQuery } from "../api/reportsApi";
 import { useNavigate } from "react-router-dom";
 import { columns } from "../modules/reports/columns";
 import { Card } from "antd";
-import { handleExportCSV } from "../utils/export";
+import { exportToCSV, handleExportCSV } from "../utils/export";
 import { format } from "date-fns";
 import { useLazyGetAllHSEReportQuery } from "../api/hseReportApi";
 
@@ -61,48 +61,6 @@ function HSEReports() {
   const reportsCount = filteredReports?.length || 0;
   const totalReports = data?.reports?.length || 0;
 
-  // Enhanced export function with actual reports data
-  const handleExportReports = () => {
-    if (!data?.reports || data.reports.length === 0) {
-      alert("No data available to export");
-      return;
-    }
-
-    // Transform the data for CSV export
-    const exportData = data.reports.map((report: any) => ({
-      "Report Title": report.title || "",
-      "Reporter Name": report.reporter
-        ? `${report.reporter.firstName || ""} ${
-            report.reporter.lastName || ""
-          }`.trim()
-        : "",
-      "Reporter Email": report.reporter?.email || "",
-      "Date of Report": report.dateOfReport
-        ? format(new Date(report.dateOfReport), "yyyy-MM-dd")
-        : "",
-      "Time of Report": report.timeOfReport || "",
-      Status: report.status || "Open",
-      "Document Count": report.documents?.length || 0,
-      "Closed By": report.closer
-        ? `${report.closer.firstName || ""} ${
-            report.closer.lastName || ""
-          }`.trim()
-        : "",
-      "Closed At": report.closedAt
-        ? format(new Date(report.closedAt), "yyyy-MM-dd HH:mm:ss")
-        : "",
-      "Created At": report.createdAt
-        ? format(new Date(report.createdAt), "yyyy-MM-dd HH:mm:ss")
-        : "",
-    }));
-
-    // Generate filename with timestamp
-    const timestamp = format(new Date(), "yyyy-MM-dd_HHmmss");
-    const fileName = `hse_reports_export_${timestamp}.csv`;
-
-    handleExportCSV({ data: exportData, fileName });
-  };
-
   const clearSearch = () => {
     setSearchTerm("");
   };
@@ -118,9 +76,9 @@ function HSEReports() {
     <div className="min-h-screen bg-gray-50">
       <Container>
         {/* Breadcrumb */}
-        <div className="pt-6">
+        {/* <div className="pt-6">
           <BreadCrumb data={["Dashboard", "HSE Reports"]} />
-        </div>
+        </div> */}
 
         {/* Header Section */}
         <div className="mt-6">
@@ -150,7 +108,7 @@ function HSEReports() {
                 {/* Export Button */}
                 <Button
                   className="bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                  onClick={handleExportReports}
+                  onClick={() => exportToCSV(filteredReports, "hse-report.csv")}
                   disabled={totalReports === 0}
                 >
                   <Download size={16} />
@@ -170,7 +128,7 @@ function HSEReports() {
 
                 {/* Add Report Button */}
                 <Button
-                  onClick={() => navigate("/dashboard/reports/add-report")}
+                  onClick={() => navigate("/dashboard/hse-reports/add-report")}
                   className="bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
                 >
                   <Plus size={16} />
@@ -193,7 +151,9 @@ function HSEReports() {
                 <div className="flex gap-2">
                   <Button
                     className="flex-1 bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                    onClick={handleExportReports}
+                    onClick={() =>
+                      exportToCSV(filteredReports, "hse-report.csv")
+                    }
                     disabled={totalReports === 0}
                   >
                     <Download size={16} />
@@ -235,53 +195,6 @@ function HSEReports() {
             )}
           </Card>
         </div>
-
-        {/* Stats Cards */}
-        {/* {!searchTerm && data?.reports && (
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-red-50 rounded-lg">
-                  <Shield className="w-6 h-6 text-red-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {totalReports}
-                  </p>
-                  <p className="text-sm text-gray-600">Total Reports</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-orange-50 rounded-lg">
-                  <AlertCircle className="w-6 h-6 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {reportsByStatus.open}
-                  </p>
-                  <p className="text-sm text-gray-600">Open Reports</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="shadow-sm border-gray-200 hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-green-50 rounded-lg">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {reportsByStatus.closed}
-                  </p>
-                  <p className="text-sm text-gray-600">Closed Reports</p>
-                </div>
-              </div>
-            </Card>
-          </div>
-        )} */}
 
         {/* Table */}
         <div className="mt-6 pb-8">

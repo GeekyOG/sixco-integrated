@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { useLocation } from "react-router-dom";
 
@@ -57,7 +57,7 @@ export const mainMenuOptions = [
   },
   {
     text: "Manage HSE Reports",
-    url: "/dashboard/HSE-reports",
+    url: "/dashboard/hse-management",
     icon: <File size={16} />,
   },
   {
@@ -68,6 +68,11 @@ export const mainMenuOptions = [
   {
     text: "Messages",
     url: "/dashboard/chat",
+    icon: <File size={16} />,
+  },
+  {
+    text: "Finance",
+    url: "/dashboard/finance",
     icon: <File size={16} />,
   },
   {
@@ -90,10 +95,24 @@ interface SidebarProps {
 function Sidebar({ setHideSideBar }: SidebarProps) {
   const location = useLocation();
   const { pathname } = location;
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [activeUrl, setActiveUrl] = useState("/dashboard");
 
+  if (isCollapsed) {
+    return (
+      <div className="hidden lg:block h-screen w-20 bg-zinc-950 border-r border-zinc-800 relative">
+        <button
+          onClick={() => setIsCollapsed(false)}
+          className="absolute right-4 top-6 text-gray-400 hover:text-white transition-colors"
+        >
+          <ChevronLeft size={24} className="rotate-180" />
+        </button>
+      </div>
+    );
+  }
   return (
     <div className="hidden h-[100vh] w-[200px]  flex-none border-r-[1px] lg:block relative z-[1000] ">
-      <div className="fixed bottom-0 top-0 w-[280px] bg-[#090909]">
+      <div className="fixed bottom-0 top-0 w-[280px] bg-[#090909] overflow-scroll">
         <div
           onClick={() => {
             setHideSideBar((prev) => !prev);
@@ -125,7 +144,7 @@ function Sidebar({ setHideSideBar }: SidebarProps) {
           ))}
         </div>
 
-        <div className="absolute bottom-5 ml-[24px] mt-auto text-[#fff]">
+        <div className=" bottom-5 ml-[24px] mt-auto text-[#fff]">
           <Button className="flex items-center gap-[10px] bg-transparent">
             <LogOutIcon size={16} />
             <p className="text-[0.813rem] leading-[22.4px]">Logout</p>

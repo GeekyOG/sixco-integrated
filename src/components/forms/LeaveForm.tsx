@@ -1,17 +1,10 @@
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import Button from "../../ui/Button";
-import Dropzone from "react-dropzone";
 import { cn } from "../../utils/cn";
-import { Image } from "lucide-react";
 import Input from "../input/Input";
 import { toast } from "react-toastify";
-import DatePicker from "react-datepicker";
-import {
-  useAddPortfolioMutation,
-  useLazyGetPortfolioQuery,
-  useUpdatePortfolioMutation,
-} from "../../api/portfolio";
+
 import {
   useAddLeaveMutation,
   useLazyGetAllLeaveQuery,
@@ -45,9 +38,13 @@ const AddLeaveForm: React.FC<AddLeaveFormProps> = ({
     if (id) {
       getLeave(id)
         .unwrap()
-        .then(() => {});
+        .then(() => {
+          setDescription(data.leave.reason);
+        });
     }
   }, [id, featuredLoading, reset, data]);
+
+  console.log(data);
 
   return (
     <div>
@@ -60,29 +57,13 @@ const AddLeaveForm: React.FC<AddLeaveFormProps> = ({
       )}
       {!featuredLoading && (
         <Formik
+          enableReinitialize
           initialValues={{
-            reason: data?.reason || "",
-            startDate: data?.startDate || "",
-            endDate: data?.startDate || "",
+            reason: data?.leave?.reason || "",
+            startDate: data?.leave?.startDate?.split("T")[0] || "",
+            endDate: data?.leave?.startDate?.split("T")[0] || "",
           }}
           onSubmit={(values, { resetForm }) => {
-            if (id) {
-              updateLeave({ body: values, id })
-                .unwrap()
-                .then(() => {
-                  resetForm();
-                  getLeaves("");
-                  setDescription("");
-                  toast.success("Action successful");
-                  if (callBackAction) {
-                    callBackAction();
-                  }
-                })
-                .catch((err) => {
-                  toast.error(err.message ?? "Something went wrong");
-                });
-            }
-
             if (!id) {
               addLeave(values)
                 .unwrap()
@@ -110,6 +91,7 @@ const AddLeaveForm: React.FC<AddLeaveFormProps> = ({
                 <div>
                   <p className="text-[0.865rem] font-[500]">Reason</p>
                   <textarea
+                    disabled={!!id}
                     className="h-[200px] w-[100%] rounded-[5px] p-[5px] border-[1px]"
                     name="reason"
                     placeholder="Enter Reason.."
@@ -123,6 +105,7 @@ const AddLeaveForm: React.FC<AddLeaveFormProps> = ({
 
                 <div className="flex justify-center items-center gap-4">
                   <Input
+                    disabled={!!id}
                     title="Start Date"
                     name="startDate"
                     type="date"
@@ -133,6 +116,7 @@ const AddLeaveForm: React.FC<AddLeaveFormProps> = ({
                   />
 
                   <Input
+                    disabled={!!id}
                     title="End Date"
                     name="endDate"
                     type="date"
@@ -142,10 +126,42 @@ const AddLeaveForm: React.FC<AddLeaveFormProps> = ({
                     width="h-[36px] w-[100%] rounded-[5px]"
                   />
                 </div>
+                {id ? (
+                  <div className="flex gap-4">
+                    <Button
+                      isLoading={isLoading || updateLoading}
+                      onClick={() => {
+                        updateLeave({
+                          id,
+                          body: {
+                            status: "approved",
+                          },
+                        });
+                      }}
+                    >
+                      Approve Leave
+                    </Button>
 
-                <Button isLoading={isLoading || updateLoading}>
-                  Add Leave
-                </Button>
+                    <Button
+                      onClick={() => {
+                        updateLeave({
+                          id,
+                          body: {
+                            status: "rejected",
+                          },
+                        });
+                      }}
+                      className="bg-red-600"
+                      isLoading={isLoading || updateLoading}
+                    >
+                      Reject Leave
+                    </Button>
+                  </div>
+                ) : (
+                  <Button isLoading={isLoading || updateLoading}>
+                    Submit Request
+                  </Button>
+                )}
               </Form>
             );
           }}

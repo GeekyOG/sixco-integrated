@@ -5,7 +5,10 @@ import DashboardTable from "../components/dashboard/DashboardTable";
 import DashboardDrawer from "../components/dashboard/Drawer";
 import Button from "../ui/Button";
 import BreadCrumb from "../ui/BreadCrumb";
-import { useLazyGetAllRoleQuery } from "../api/rolesApi";
+import {
+  useGetAllPermissionsQuery,
+  useLazyGetAllRoleQuery,
+} from "../api/rolesApi";
 import { columns } from "../modules/roles/columns";
 import { Link } from "react-router-dom";
 import { Card } from "antd";
@@ -16,6 +19,8 @@ function RolesAndPermissions() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const { data: permissions } = useGetAllPermissionsQuery("");
 
   const [getALLRoles, { isFetching, data }] = useLazyGetAllRoleQuery();
 
@@ -223,12 +228,7 @@ function RolesAndPermissions() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-gray-900">
-                    {
-                      data.roles.filter(
-                        (r: any) =>
-                          r.status === "Active" || r.status === "active"
-                      ).length
-                    }
+                    {totalRoles}
                   </p>
                   <p className="text-sm text-gray-600">Active Roles</p>
                 </div>
@@ -242,11 +242,7 @@ function RolesAndPermissions() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-gray-900">
-                    {data.roles.reduce(
-                      (sum: number, role: any) =>
-                        sum + (role.permissions?.length || 0),
-                      0
-                    )}
+                    {permissions?.permissions.length || 0}
                   </p>
                   <p className="text-sm text-gray-600">Total Permissions</p>
                 </div>

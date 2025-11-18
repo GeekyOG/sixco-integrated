@@ -67,25 +67,27 @@ const ContactList = () => {
             </li>
           )
         )}
-        {clientsData?.clients?.map(
-          (
-            item: { firstName: string; lastName: string; id: string },
-            i: number
-          ) => (
-            <li
-              onClick={() =>
-                handleClick(item.id, `${item.firstName} ${item.lastName}`)
-              }
-              key={i}
-              className={cn(
-                "rounded cursor-pointer",
-                recipientId == item.id && "bg-blue-600"
-              )}
-            >
-              {item.firstName} {item.lastName}
-            </li>
-          )
-        )}
+        <div className="mt-2">
+          {clientsData?.clients?.map(
+            (
+              item: { firstName: string; lastName: string; id: string },
+              i: number
+            ) => (
+              <li
+                onClick={() =>
+                  handleClick(item.id, `${item.firstName} ${item.lastName}`)
+                }
+                key={i}
+                className={cn(
+                  "rounded cursor-pointer p-2 ",
+                  recipientId == item.id && "bg-blue-600"
+                )}
+              >
+                {item.firstName} {item.lastName}
+              </li>
+            )
+          )}
+        </div>
       </ul>
     </div>
   );

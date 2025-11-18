@@ -18,7 +18,7 @@ import { Card } from "antd";
 import { useLazyGetHSEReportQuery } from "../api/hseReportApi";
 import { useLazyGetAllDocumentQuery } from "../api/hsedocumentApi";
 import { formatDate } from "date-fns";
-import UploadModal from "../modules/portfolio/uploadModal";
+import UploadModal from "../modules/reports/uploadModal";
 
 const statusConfig = {
   open: {
@@ -226,7 +226,7 @@ function HSEReportDetails() {
                               </p>
                             </div>
                             <a
-                              href={doc.firebaseUrl}
+                              href={doc.firebaseUrls[0]}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 text-sm hover:text-blue-700 font-medium ml-2 flex-shrink-0 hover:underline"

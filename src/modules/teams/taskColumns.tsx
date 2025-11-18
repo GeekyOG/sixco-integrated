@@ -16,9 +16,11 @@ export const taskColumns: ColumnsType = [
 
   {
     title: "Project",
-    dataIndex: "project",
-    key: "project",
-    render: (value) => <p className="text-[0.75rem]">{value?.name ?? "--"}</p>,
+    dataIndex: "name",
+    key: "name",
+    render: (value) => {
+      return <p className="text-[0.75rem]">{value}</p>;
+    },
   },
   {
     title: "Description",

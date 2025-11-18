@@ -14,7 +14,10 @@ import { useDeleteClientsMutation } from "../../api/clientApi";
 import { useNavigate } from "react-router-dom";
 import AddStaff from "../../modules/users/AddStaff";
 import { useDeleteTaskMutation } from "../../api/tasksApi";
-import { useUnAssignMemberMutation } from "../../api/teamsApi";
+import {
+  useDeleteTeamMutation,
+  useUnAssignMemberMutation,
+} from "../../api/teamsApi";
 import { useDeleteRoleMutation } from "../../api/rolesApi";
 import { useDeleteHSEReportMutation } from "../../api/hseReportApi";
 import { useDeleteReportMutation } from "../../api/reportsApi";
@@ -61,6 +64,9 @@ function ActionButtons({
 
   const [deleteReport, { isLoading: deleteReportLoading }] =
     useDeleteReportMutation();
+
+  const [deleteTeam, { isLoading: deleteTeamLoading }] =
+    useDeleteTeamMutation();
 
   const [deleteUser, { isLoading: deleteUserLoading }] =
     useDeleteUserMutation();
@@ -273,6 +279,15 @@ function ActionButtons({
       });
   };
 
+  const handleDeleteTeam = () => {
+    deleteTeam(id)
+      .unwrap()
+      .then(() => {
+        setShowDialog(false);
+        callBackAction ? callBackAction() : null;
+      });
+  };
+
   return (
     <>
       {type == "hse-reports" && (
@@ -321,11 +336,7 @@ function ActionButtons({
             handleEdit={() => {
               setDrawerOpen(true);
             }}
-            handleDelete={
-              remove
-                ? () => setShowRemoveDialog((prev) => !prev)
-                : handleDeleteTeamDialog
-            }
+            handleDelete={handleDeleteTeamDialog}
           />
         </>
       )}
@@ -486,11 +497,13 @@ function ActionButtons({
             deleteRoleLoading ||
             deleteHSEReportLoading ||
             deleteReportLoading ||
-            deleteUserLoading
+            deleteUserLoading ||
+            deleteTeamLoading
           }
           type={"delete"}
           image={"/delete.svg"}
           action={
+            (dialogTitle == "Delete Team Permanently" && handleDeleteTeam) ||
             (dialogTitle == "Delete Staff Permanently" && handleDeleteUser) ||
             (type == "reports" && handleDeleteReport) ||
             (dialogTitle == "Delete Report Permanently" &&

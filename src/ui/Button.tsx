@@ -4,6 +4,7 @@ import Spinner from "./Spinner";
 import { cn } from "../utils/cn";
 
 interface ButtonProps {
+  disabled?: boolean;
   children: React.ReactNode;
   className?: string;
   isLoading?: boolean;
@@ -14,6 +15,7 @@ interface ButtonProps {
 const Button: FunctionComponent<ButtonProps> = ({
   children,
   className,
+  disabled,
   isLoading,
   onClick,
   type = "submit",
@@ -21,7 +23,7 @@ const Button: FunctionComponent<ButtonProps> = ({
 }) => {
   return (
     <button
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       onClick={onClick || (() => {})}
       type={type}
       className={cn(

@@ -17,7 +17,7 @@ import Button from "../ui/Button";
 import { useLazyGetAllPortfolioQuery } from "../api/portfolio";
 import BreadCrumb from "../ui/BreadCrumb";
 import { DatePicker, Popover, Card } from "antd";
-import { handleExportCSV } from "../utils/export";
+import { exportToCSV, handleExportCSV } from "../utils/export";
 import { cn } from "../utils/cn";
 import { format } from "date-fns";
 
@@ -78,47 +78,6 @@ function Portfolio() {
     setEndDate("");
     setStatusFilter("");
     setSearchTerm("");
-  };
-
-  // Enhanced export function with actual project data
-  const handleExportProjects = () => {
-    if (!data?.projects || data.projects.length === 0) {
-      alert("No data available to export");
-      return;
-    }
-
-    // Transform the data for CSV export
-    const exportData = data.projects.map((project: any) => ({
-      "Project Name": project.name || "",
-      Description: project.description || "",
-      Status: project.status || "",
-      "Start Date": project.startDate
-        ? format(new Date(project.startDate), "yyyy-MM-dd")
-        : "",
-      "End Date": project.endDate
-        ? format(new Date(project.endDate), "yyyy-MM-dd")
-        : "",
-      "Team Count": project.teams?.length || 0,
-      Teams: project.teams
-        ? project.teams.map((t: any) => t.teamName || t.name || "").join("; ")
-        : "",
-      "Client Count": project.clients?.length || 0,
-      Clients: project.clients
-        ? project.clients
-            .map((c: any) => `${c.firstName || ""} ${c.lastName || ""}`.trim())
-            .join("; ")
-        : "",
-      "Task Count": project.tasks?.length || 0,
-      "Created At": project.createdAt
-        ? format(new Date(project.createdAt), "yyyy-MM-dd HH:mm:ss")
-        : "",
-    }));
-
-    // Generate filename with timestamp
-    const timestamp = format(new Date(), "yyyy-MM-dd_HHmmss");
-    const fileName = `projects_export_${timestamp}.csv`;
-
-    handleExportCSV({ data: exportData, fileName });
   };
 
   const hasActiveFilters = searchTerm || startDate || endDate || statusFilter;
@@ -288,7 +247,7 @@ function Portfolio() {
                 {/* Export Button */}
                 <Button
                   className="bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                  onClick={handleExportProjects}
+                  onClick={() => exportToCSV(data?.projects, "projects.csv")}
                   disabled={projectCount === 0}
                 >
                   <Download size={16} />
@@ -370,7 +329,7 @@ function Portfolio() {
 
                   <Button
                     className="flex-1 bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                    onClick={handleExportProjects}
+                    onClick={() => exportToCSV(data?.projects, "projects.csv")}
                     disabled={projectCount === 0}
                   >
                     <Download size={16} />

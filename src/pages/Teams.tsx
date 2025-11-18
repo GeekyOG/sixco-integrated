@@ -8,7 +8,7 @@ import { useLazyGetAllTeamQuery } from "../api/teamsApi";
 import DashboardDrawer from "../components/dashboard/Drawer";
 import { columns } from "../modules/teams/columns";
 import { Card } from "antd";
-import { handleExportCSV } from "../utils/export";
+import { exportToCSV, handleExportCSV } from "../utils/export";
 import { format } from "date-fns";
 
 function Teams() {
@@ -50,40 +50,6 @@ function Teams() {
   const teamsCount = filteredTeams?.length || 0;
   const totalTeams = teamsData?.teams?.length || 0;
 
-  // Enhanced export function with actual teams data
-  const handleExportTeams = () => {
-    if (!teamsData?.teams || teamsData.teams.length === 0) {
-      alert("No data available to export");
-      return;
-    }
-
-    // Transform the data for CSV export
-    const exportData = teamsData.teams.map((team: any) => ({
-      "Team Name": team.teamName || "",
-      Description: team.description || "",
-      "Member Count": team.users?.length || 0,
-      Members: team.users
-        ? team.users
-            .map((u: any) => `${u.firstName || ""} ${u.lastName || ""}`.trim())
-            .join("; ")
-        : "",
-      "Project Count": team.projects?.length || 0,
-      Projects: team.projects
-        ? team.projects.map((p: any) => p.name || "").join("; ")
-        : "",
-      Status: team.status || "Active",
-      "Created At": team.createdAt
-        ? format(new Date(team.createdAt), "yyyy-MM-dd HH:mm:ss")
-        : "",
-    }));
-
-    // Generate filename with timestamp
-    const timestamp = format(new Date(), "yyyy-MM-dd_HHmmss");
-    const fileName = `teams_export_${timestamp}.csv`;
-
-    handleExportCSV({ data: exportData, fileName });
-  };
-
   const clearSearch = () => {
     setSearchTerm("");
   };
@@ -122,7 +88,7 @@ function Teams() {
                 {/* Export Button */}
                 <Button
                   className="bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                  onClick={handleExportTeams}
+                  onClick={() => exportToCSV(filteredTeams, "teams.csv")}
                   disabled={totalTeams === 0}
                 >
                   <Download size={16} />
@@ -165,7 +131,7 @@ function Teams() {
                 <div className="flex gap-2">
                   <Button
                     className="flex-1 bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                    onClick={handleExportTeams}
+                    onClick={() => exportToCSV(filteredTeams, "teams.csv")}
                     disabled={totalTeams === 0}
                   >
                     <Download size={16} />

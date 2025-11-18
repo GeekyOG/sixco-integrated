@@ -1,5 +1,5 @@
 // Required imports
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Container from "../ui/Container";
 import BreadCrumb from "../ui/BreadCrumb";
 import DashboardDrawer from "../components/dashboard/Drawer";
@@ -14,12 +14,11 @@ import {
   UserCircle,
   ListChecks,
   Calendar,
-  AlertCircle,
+  ChevronDown,
 } from "lucide-react";
 import Button from "../ui/Button";
 import { useParams } from "react-router-dom";
 import { Card } from "antd";
-import { projectColumns } from "../modules/teams/projectColumns";
 import { teamColumns } from "../modules/portfolio/teamsColumms";
 import { clientsColumns } from "../modules/portfolio/clientsColumns";
 import { taskColumns } from "../modules/teams/taskColumns";
@@ -40,6 +39,101 @@ function ProjectDetails() {
   const [getProject, { data: projectData, isFetching }] =
     useLazyGetPortfolioQuery();
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [selectedAssignee, setSelectedAssignee] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+
+  // Get unique assignees
+  const assignees = useMemo(() => {
+    const uniqueAssignees = new Set();
+    projectData?.project?.tasks?.forEach(
+      (task: {
+        assignee: {
+          firstName: string;
+          lastName: string;
+        };
+      }) => {
+        if (task.assignee) {
+          uniqueAssignees.add(
+            `${task.assignee.firstName} ${task.assignee.lastName}`
+          );
+        }
+      }
+    );
+    return Array.from(uniqueAssignees);
+  }, [projectData]);
+
+  // Get unique statuses
+  const statuses = useMemo(() => {
+    return ["To Do", "In Progress", "Review", "Done"];
+  }, [projectData]);
+
+  // Filter tasks based on search, assignee, and status
+  const filteredTasks = useMemo(() => {
+    let tasks: {
+      id: string;
+      title: string;
+      description: string;
+      status: string;
+      dueDate: string;
+      assignee: {
+        firstName: string;
+        lastName: string;
+      };
+    }[] =
+      projectData?.project.tasks?.map(
+        (item: {
+          id: string;
+          title: string;
+          description: string;
+          status: string;
+          dueDate: string;
+          assignee: {};
+        }) => {
+          return {
+            id: item.id,
+            title: item.title,
+            name: projectData?.project?.name,
+            description: item.description,
+            status: item.status,
+            dueDate: item.dueDate,
+            assignee: item.assignee,
+          };
+        }
+      ) || [];
+
+    // Filter by search term
+    if (searchTerm) {
+      tasks = tasks.filter(
+        (task: { title: string; description: string }) =>
+          task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          task.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by assignee
+    if (selectedAssignee) {
+      tasks = tasks.filter((task) => {
+        const fullName = `${task.assignee.firstName} ${task.assignee.lastName}`;
+        return fullName === selectedAssignee;
+      });
+    }
+
+    // Filter by status
+    if (selectedStatus) {
+      tasks = tasks.filter((task) => task.status === selectedStatus);
+    }
+
+    return tasks.map((item) => ({
+      id: item.id,
+      title: item.title,
+      name: projectData?.project.name,
+      description: item.description,
+      status: item.status,
+      dueDate: item.dueDate,
+      assignee: item.assignee,
+    }));
+  }, [projectData, searchTerm, selectedAssignee, selectedStatus]);
 
   const [getDocs, { data }] = useLazyGetDocumentQuery();
 
@@ -327,21 +421,40 @@ function ProjectDetails() {
               </Button>
             </div>
 
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                placeholder="Search tasks..."
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="relative flex-1 min-w-[250px]">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    placeholder="Search tasks..."
+                  />
+                </div>
+
+                <FilterDropdown
+                  label="User"
+                  value={selectedAssignee}
+                  onChange={setSelectedAssignee}
+                  options={assignees}
+                />
+
+                <FilterDropdown
+                  label="Status"
+                  value={selectedStatus}
+                  onChange={setSelectedStatus}
+                  options={statuses}
+                />
+              </div>
+
+              <DashboardTable
+                columns={taskColumns}
+                data={filteredTasks}
+                type="edit-tasks"
+                isFetching={isFetching}
               />
             </div>
-
-            <DashboardTable
-              columns={taskColumns}
-              data={[]}
-              type="tasks"
-              isFetching={isFetching}
-            />
           </div>
         </Card>
       </Container>
@@ -359,7 +472,7 @@ function ProjectDetails() {
         callBackAction={handleCallBack}
         open={taskModalOpen}
         setOpen={setTaskModalOpen}
-        whatForm={"tasks"}
+        whatForm={"project-tasks"}
       />
 
       <ClientModal
@@ -384,3 +497,62 @@ function ProjectDetails() {
 }
 
 export default ProjectDetails;
+
+const FilterDropdown = ({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: any;
+  options: any;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 px-4 py-2.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-all bg-white"
+      >
+        <span className="text-gray-700">{label}:</span>
+        <span className="font-medium">{value || "All"}</span>
+        <ChevronDown className="w-4 h-4 text-gray-400" />
+      </button>
+
+      {isOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-10"
+            onClick={() => setIsOpen(false)}
+          />
+          <div className="absolute top-full mt-1 left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[200px]">
+            <button
+              onClick={() => {
+                onChange("");
+                setIsOpen(false);
+              }}
+              className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors"
+            >
+              All
+            </button>
+            {options.map((option: string) => (
+              <button
+                key={option}
+                onClick={() => {
+                  onChange(option);
+                  setIsOpen(false);
+                }}
+                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors"
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};

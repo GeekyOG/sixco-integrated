@@ -28,8 +28,8 @@ export const leaveApi = createApi({
 
     updateLeave: builder.mutation({
       query: ({ body, id }) => ({
-        url: `leaves/${id}`,
-        method: "PATCH",
+        url: `leaves/${id}/status`,
+        method: "PUT",
         body: body,
       }),
     }),

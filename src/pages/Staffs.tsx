@@ -16,7 +16,7 @@ import BreadCrumb from "../ui/BreadCrumb";
 import { useLazyGetAllUsersQuery } from "../api/authApi";
 import AddStaff from "../modules/users/AddStaff";
 import { DatePicker, Popover, Card } from "antd";
-import { handleExportCSV } from "../utils/export";
+import { exportToCSV } from "../utils/export";
 import { format } from "date-fns";
 
 function Staffs() {
@@ -61,34 +61,6 @@ function Staffs() {
     setStartDate("");
     setEndDate("");
     setSearchTerm("");
-  };
-
-  // Enhanced export function with actual staff data
-  const handleExportStaffs = () => {
-    if (!staffsData?.users || staffsData.users.length === 0) {
-      alert("No data available to export");
-      return;
-    }
-
-    // Transform the data for CSV export
-    const exportData = staffsData.users.map((staff: any) => ({
-      "First Name": staff.firstName || "",
-      "Last Name": staff.lastName || "",
-      "Full Name": staff.fullName || "",
-      Email: staff.email || "",
-      "Phone Number": staff.phoneNumber || "",
-      Role: staff.role || "",
-      Status: staff.status || "",
-      "Created At": staff.createdAt
-        ? format(new Date(staff.createdAt), "yyyy-MM-dd HH:mm:ss")
-        : "",
-    }));
-
-    // Generate filename with timestamp
-    const timestamp = format(new Date(), "yyyy-MM-dd_HHmmss");
-    const fileName = `staff_export_${timestamp}.csv`;
-
-    handleExportCSV({ data: exportData, fileName });
   };
 
   const hasActiveFilters = searchTerm || startDate || endDate;
@@ -184,7 +156,7 @@ function Staffs() {
                 {/* Export Button */}
                 <Button
                   className="bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                  onClick={handleExportStaffs}
+                  onClick={() => exportToCSV(staffsData?.users, "staffs.csv")}
                   disabled={staffCount === 0}
                 >
                   <Download size={16} />
@@ -262,7 +234,7 @@ function Staffs() {
 
                   <Button
                     className="flex-1 bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                    onClick={handleExportStaffs}
+                    onClick={() => exportToCSV(staffsData?.users, "staffs.csv")}
                     disabled={staffCount === 0}
                   >
                     <Download size={16} />

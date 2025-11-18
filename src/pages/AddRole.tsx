@@ -18,17 +18,17 @@ const { Title, Text } = Typography;
 
 interface CreateRoleFormData {
   name: string;
-  permissions: string[];
+  permissionNames: string[];
 }
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Role name is required"),
-  permissions: Yup.array().min(1, "Select at least one permission"),
+  permissionNames: Yup.array().min(1, "Select at least one permission"),
 });
 
 const initialValues: CreateRoleFormData = {
   name: "",
-  permissions: [],
+  permissionNames: [],
 };
 
 const AddRole = () => {
@@ -87,9 +87,11 @@ const AddRole = () => {
 
               <AntForm.Item
                 validateStatus={
-                  touched.permissions && errors.permissions ? "error" : ""
+                  touched.permissionNames && errors.permissionNames
+                    ? "error"
+                    : ""
                 }
-                help={touched.permissions && errors.permissions}
+                help={touched.permissionNames && errors.permissionNames}
               >
                 <p className="text-[700]">Permissions</p>
                 <Text type="secondary" className="text-[0.813rem]">
@@ -110,7 +112,7 @@ const AddRole = () => {
                       {Object.entries(groupedPermissions).map(
                         ([module, permissions]) => {
                           const allChecked = permissions.every((perm) =>
-                            values.permissions.includes(perm.name)
+                            values.permissionNames.includes(perm.name)
                           );
 
                           return (
@@ -126,7 +128,7 @@ const AddRole = () => {
                                     onClick={(e) => {
                                       e.stopPropagation(); // prevent accordion toggle
                                       const newPermissions = allChecked
-                                        ? values.permissions.filter(
+                                        ? values.permissionNames.filter(
                                             (name) =>
                                               !permissions.some(
                                                 (perm) => perm.name === name
@@ -134,14 +136,14 @@ const AddRole = () => {
                                           )
                                         : Array.from(
                                             new Set([
-                                              ...values.permissions,
+                                              ...values.permissionNames,
                                               ...permissions.map(
                                                 (perm) => perm.name
                                               ),
                                             ])
                                           );
                                       setFieldValue(
-                                        "permissions",
+                                        "permissionNames",
                                         newPermissions
                                       );
                                     }}
@@ -156,20 +158,20 @@ const AddRole = () => {
                                 {permissions.map((item) => (
                                   <Checkbox
                                     key={item.id}
-                                    checked={values.permissions.includes(
+                                    checked={values.permissionNames.includes(
                                       item.name
                                     )}
                                     onChange={(e) => {
                                       const checked = e.target.checked;
                                       if (checked) {
-                                        setFieldValue("permissions", [
-                                          ...values.permissions,
+                                        setFieldValue("permissionNames", [
+                                          ...values.permissionNames,
                                           item.name,
                                         ]);
                                       } else {
                                         setFieldValue(
-                                          "permissions",
-                                          values.permissions.filter(
+                                          "permissionNames",
+                                          values.permissionNames.filter(
                                             (name) => name !== item.name
                                           )
                                         );

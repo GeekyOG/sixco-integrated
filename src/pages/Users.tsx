@@ -3,6 +3,7 @@ import DashboardTable from "../components/dashboard/DashboardTable";
 import Container from "../ui/Container";
 import Button from "../ui/Button";
 import AddUser from "../modules/users/AddUser";
+import { exportToCSV } from "../utils/export";
 import {
   Download,
   ListFilter,
@@ -63,33 +64,6 @@ function Users() {
     setStartDate("");
     setEndDate("");
     setSearchTerm("");
-  };
-
-  // Enhanced export function with actual data
-  const handleExportClients = () => {
-    if (!clientsData?.clients || clientsData.clients.length === 0) {
-      // Show a toast or alert that there's no data to export
-      alert("No data available to export");
-      return;
-    }
-
-    // Transform the data for CSV export
-    const exportData = clientsData.clients.map((client: any) => ({
-      "First Name": client.firstName || "",
-      "Last Name": client.lastName || "",
-      Email: client.email || "",
-      "Phone Number": client.phoneNumber || "",
-      "Approval Status": client.approvalStatus || "",
-      "Created At": client.createdAt
-        ? format(new Date(client.createdAt), "yyyy-MM-dd HH:mm:ss")
-        : "",
-    }));
-
-    // Generate filename with timestamp
-    const timestamp = format(new Date(), "yyyy-MM-dd_HHmmss");
-    const fileName = `clients_export_${timestamp}.csv`;
-
-    handleExportCSV({ data: exportData, fileName });
   };
 
   const hasActiveFilters = searchTerm || startDate || endDate;
@@ -184,7 +158,9 @@ function Users() {
                 {/* Export Button */}
                 <Button
                   className="bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                  onClick={handleExportClients}
+                  onClick={() =>
+                    exportToCSV(clientsData?.clients, "clients.csv")
+                  }
                   disabled={clientCount === 0}
                 >
                   <Download size={16} />
@@ -262,7 +238,9 @@ function Users() {
 
                   <Button
                     className="flex-1 bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
-                    onClick={handleExportClients}
+                    onClick={() =>
+                      exportToCSV(clientsData?.clients, "clients.csv")
+                    }
                     disabled={clientCount === 0}
                   >
                     <Download size={16} />
