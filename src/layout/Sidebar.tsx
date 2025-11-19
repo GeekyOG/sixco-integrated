@@ -20,73 +20,104 @@ import Button from "../ui/Button";
 import { FcCollaboration } from "react-icons/fc";
 import { BsPeople } from "react-icons/bs";
 import { GoReport } from "react-icons/go";
+import { hasPermission } from "../utils/permissionUtils";
 
-export const mainMenuOptions = [
+export const allMenuOptions = [
   { text: "Overview", url: "/dashboard", icon: <LayoutGrid size={16} /> },
   {
     text: "Manage Clients",
     url: "/dashboard/users",
     icon: <Users size={16} />,
+    permission: "client:read",
   },
-
   {
     text: "Manage Staffs",
     url: "/dashboard/staffs",
     icon: <Users size={16} />,
+    permission: "user:read",
   },
   {
     text: "Roles & Permissions",
     url: "/dashboard/roles-permissions",
     icon: <Users size={16} />,
+    permission: "role:read",
   },
   {
     text: "Manage Teams",
     url: "/dashboard/teams",
     icon: <BsPeople size={16} />,
+    permission: "team:read",
   },
   {
     text: "Manage Projects",
     url: "/dashboard/projects",
     icon: <File size={16} />,
+    permission: "project:read",
   },
-
   {
     text: "Manage Reports",
     url: "/dashboard/reports",
     icon: <GoReport size={16} />,
+    permission: "report:read",
   },
   {
     text: "Manage HSE Reports",
     url: "/dashboard/hse-management",
     icon: <File size={16} />,
+    permission: "report:read",
   },
   {
     text: "Leave Requests",
     url: "/dashboard/leaves",
     icon: <ArrowLeftRight size={16} />,
+    permission: "leave:read",
   },
   {
     text: "Messages",
     url: "/dashboard/chat",
     icon: <File size={16} />,
+    permission: "chat:read",
   },
   {
     text: "Finance",
     url: "/dashboard/finance",
     icon: <File size={16} />,
+    permission: "finance:read",
   },
   {
     text: "Audit",
     url: "/dashboard/audit",
     icon: <History size={16} />,
+    permission: "audit:read",
   },
   {
     text: "Settings",
     url: "/dashboard/settings",
     icon: <Settings size={16} />,
+    permission: "settings:read",
   },
-  ,
 ];
+
+/**
+ * Get filtered menu options based on user permissions
+ * Overview is always shown; other items only shown if user has read permission
+ */
+export const getVisibleMenuOptions = () => {
+  return allMenuOptions.filter((item) => {
+    // Overview is always visible
+    if (
+      item.text === "Overview" ||
+      item.text === "Audit" ||
+      item.text == "Settings" ||
+      item.text == "Messages"
+    )
+      return true;
+    // Other items require read permission
+    return item.permission ? hasPermission(item.permission) : false;
+  });
+};
+
+export const mainMenuOptions = getVisibleMenuOptions();
 
 interface SidebarProps {
   setHideSideBar: React.Dispatch<React.SetStateAction<boolean>>;
