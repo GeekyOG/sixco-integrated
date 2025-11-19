@@ -52,7 +52,11 @@ function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
   };
 
   return (
-    <Drawer title="Add Staff" onClose={onClose} open={open}>
+    <Drawer
+      title={id ? "Edit Staff Details" : "Add Staff"}
+      onClose={onClose}
+      open={open}
+    >
       <div>
         <Formik
           initialValues={{
@@ -60,9 +64,7 @@ function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
             lastName: data?.user?.lastName ?? "",
             email: data?.user?.email ?? "",
             phoneNumber: data?.user?.phoneNumber ?? "",
-            role: data?.user?.role ?? "",
-            password: "",
-            id: "",
+            roleId: data?.user?.roleId ?? "",
           }}
           enableReinitialize={true}
           onSubmit={(values) => {
@@ -132,7 +134,7 @@ function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
                 className="h-[32px]"
                 fetchData={getALLRoles}
                 setFieldValue={setFieldValue}
-                name="role"
+                name="roleId"
                 data={rolesData?.roles}
                 searchParam="name"
               />
