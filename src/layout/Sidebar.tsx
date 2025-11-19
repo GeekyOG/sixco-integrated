@@ -10,14 +10,10 @@ import {
   History,
   LayoutGrid,
   LogOutIcon,
-  ReceiptText,
   Settings,
-  Store,
-  UserCheck,
   Users,
 } from "lucide-react";
 import Button from "../ui/Button";
-import { FcCollaboration } from "react-icons/fc";
 import { BsPeople } from "react-icons/bs";
 import { GoReport } from "react-icons/go";
 import { hasPermission } from "../utils/permissionUtils";
@@ -127,7 +123,6 @@ function Sidebar({ setHideSideBar }: SidebarProps) {
   const location = useLocation();
   const { pathname } = location;
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeUrl, setActiveUrl] = useState("/dashboard");
 
   if (isCollapsed) {
     return (

@@ -108,6 +108,7 @@ const ChatWindow = () => {
             <Spinner />
           </div>
         ) : (
+          data?.length > 0 &&
           data?.map((msg: any) => {
             const isUser = msg.sender.id === userData.id;
             return (
@@ -119,7 +120,7 @@ const ChatWindow = () => {
               >
                 {!isUser && (
                   <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
-                    {msg.sender.charAt(0)}
+                    {msg?.sender?.firstName?.charAt(0)}
                   </div>
                 )}
                 <div
@@ -128,10 +129,10 @@ const ChatWindow = () => {
                   }`}
                 >
                   <div className="text-sm text-gray-600 font-medium mb-1">
-                    {msg.sender.firstName} {msg.sender.lastName} •{" "}
+                    {msg?.sender?.firstName} {msg?.sender?.lastName} •{" "}
                     {timeAgo(msg.createdAt)}
                   </div>
-                  <div className="text-gray-800">{msg.content}</div>
+                  <div className="text-gray-800">{msg?.content}</div>
                 </div>
               </div>
             );
