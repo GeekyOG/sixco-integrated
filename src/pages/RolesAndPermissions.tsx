@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { Card } from "antd";
 import { handleExportCSV } from "../utils/export";
 import { format } from "date-fns";
+import PermissionAwareButton from "../components/PermissionAwareButton";
 
 function RolesAndPermissions() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -170,10 +171,14 @@ function RolesAndPermissions() {
                     to="/dashboard/roles-permissions/add-role"
                     className="flex-1"
                   >
-                    <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm text-sm">
+                    <PermissionAwareButton
+                      permission="role:create"
+                      onClick={() => {}}
+                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm text-sm"
+                    >
                       <Plus size={16} />
                       <span>Add Role</span>
-                    </Button>
+                    </PermissionAwareButton>
                   </Link>
                 </div>
               </div>

@@ -10,6 +10,7 @@ import { columns } from "../modules/teams/columns";
 import { Card } from "antd";
 import { exportToCSV, handleExportCSV } from "../utils/export";
 import { format } from "date-fns";
+import PermissionAwareButton from "../components/PermissionAwareButton";
 
 function Teams() {
   const [open, setOpen] = useState(false);
@@ -107,13 +108,14 @@ function Teams() {
                 </div>
 
                 {/* Add Team Button */}
-                <Button
+                <PermissionAwareButton
+                  permission="team:create"
                   onClick={showDrawer}
                   className="bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-sm text-sm"
                 >
                   <Plus size={16} />
                   <span>Add Team</span>
-                </Button>
+                </PermissionAwareButton>
               </div>
 
               {/* Mobile Actions */}
@@ -138,13 +140,14 @@ function Teams() {
                     <span>Export</span>
                   </Button>
 
-                  <Button
+                  <PermissionAwareButton
+                    permission="team:create"
                     onClick={showDrawer}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-sm text-sm"
+                    className="bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-sm text-sm"
                   >
                     <Plus size={16} />
                     <span>Add Team</span>
-                  </Button>
+                  </PermissionAwareButton>
                 </div>
               </div>
             </div>

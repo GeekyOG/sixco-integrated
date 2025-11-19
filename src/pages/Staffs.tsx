@@ -18,6 +18,7 @@ import AddStaff from "../modules/users/AddStaff";
 import { DatePicker, Popover, Card } from "antd";
 import { exportToCSV } from "../utils/export";
 import { format } from "date-fns";
+import PermissionAwareButton from "../components/PermissionAwareButton";
 
 function Staffs() {
   const [open, setOpen] = useState(false);
@@ -175,13 +176,14 @@ function Staffs() {
                 </div>
 
                 {/* Add Staff Button */}
-                <Button
+                <PermissionAwareButton
+                  permission="user:create"
                   onClick={showDrawer}
                   className="bg-green-600 hover:bg-green-700 text-white border-0 shadow-sm text-sm"
                 >
                   <Plus size={16} />
                   <span>Add Staff</span>
-                </Button>
+                </PermissionAwareButton>
               </div>
 
               {/* Mobile Actions */}
@@ -241,13 +243,14 @@ function Staffs() {
                     <span>Export</span>
                   </Button>
 
-                  <Button
+                  <PermissionAwareButton
+                    permission="user:create"
                     onClick={showDrawer}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white border-0 shadow-sm text-sm"
+                    className="bg-green-600 hover:bg-green-700 text-white border-0 shadow-sm text-sm"
                   >
                     <Plus size={16} />
                     <span>Add</span>
-                  </Button>
+                  </PermissionAwareButton>
                 </div>
               </div>
             </div>

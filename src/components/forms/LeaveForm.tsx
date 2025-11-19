@@ -44,8 +44,6 @@ const AddLeaveForm: React.FC<AddLeaveFormProps> = ({
     }
   }, [id, featuredLoading, reset, data]);
 
-  console.log(data);
-
   return (
     <div>
       {featuredLoading && id && (
@@ -136,7 +134,21 @@ const AddLeaveForm: React.FC<AddLeaveFormProps> = ({
                           body: {
                             status: "approved",
                           },
-                        });
+                        })
+                          .unwrap()
+                          .then(() => {
+                            getLeaves("");
+                            setDescription("");
+                            toast.success("Action successful");
+                            if (callBackAction) {
+                              callBackAction();
+                            }
+                          })
+                          .catch((err) => {
+                            toast.error(
+                              err.data.message ?? "Something went wrong"
+                            );
+                          });
                       }}
                     >
                       Approve Leave
@@ -149,7 +161,21 @@ const AddLeaveForm: React.FC<AddLeaveFormProps> = ({
                           body: {
                             status: "rejected",
                           },
-                        });
+                        })
+                          .unwrap()
+                          .then(() => {
+                            getLeaves("");
+                            setDescription("");
+                            toast.success("Action successful");
+                            if (callBackAction) {
+                              callBackAction();
+                            }
+                          })
+                          .catch((err) => {
+                            toast.error(
+                              err.data.message ?? "Something went wrong"
+                            );
+                          });
                       }}
                       className="bg-red-600"
                       isLoading={isLoading || updateLoading}

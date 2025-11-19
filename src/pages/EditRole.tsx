@@ -17,7 +17,8 @@ import {
   useLazyGetRoleQuery,
   useUpdateRoleMutation,
 } from "../api/rolesApi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const { Title, Text } = Typography;
 
@@ -49,10 +50,9 @@ const EditRole = () => {
     getRole(id);
   }, [id]);
 
-  console.log(id);
+  const navigate = useNavigate();
 
-  const [createRole, { isLoading, isError, isSuccess: isCreateSuccess }] =
-    useUpdateRoleMutation();
+  const [createRole, { isLoading }] = useUpdateRoleMutation();
 
   const { Panel } = Collapse;
   const groupedPermissions = data?.permissions?.reduce((acc, permission) => {
@@ -74,7 +74,15 @@ const EditRole = () => {
         validationSchema={validationSchema}
         onSubmit={(values) => {
           console.log("Form submitted:", values);
-          createRole({ body: values, id });
+          createRole({ body: values, id })
+            .unwrap()
+            .then(() => {
+              toast.success("Operation Successful");
+              navigate("/dashboard/roles-permissions");
+            })
+            .catch((err) => {
+              toast.error(err.data.message ?? "Something went wrong");
+            });
         }}
       >
         {({
@@ -209,7 +217,9 @@ const EditRole = () => {
               )}
             </AntForm.Item>
 
-            <Button className="max-w-[200px]">Update Role</Button>
+            <Button isLoading={isLoading} className="max-w-[200px]">
+              Update Role
+            </Button>
           </Form>
         )}
       </Formik>

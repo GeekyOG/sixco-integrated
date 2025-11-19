@@ -20,6 +20,7 @@ import { columns } from "../modules/reports/columns";
 import { Card } from "antd";
 import { exportToCSV, handleExportCSV } from "../utils/export";
 import { format } from "date-fns";
+import PermissionAwareButton from "../components/PermissionAwareButton";
 
 function Reports() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -166,13 +167,14 @@ function Reports() {
                 </div>
 
                 {/* Add Report Button */}
-                <Button
+                <PermissionAwareButton
+                  permission="report:create"
                   onClick={() => navigate("/dashboard/reports/add-report")}
-                  className="bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
                 >
                   <Plus size={16} />
                   <span>Add Report</span>
-                </Button>
+                </PermissionAwareButton>
               </div>
 
               {/* Mobile Actions */}
@@ -197,13 +199,14 @@ function Reports() {
                     <span>Export</span>
                   </Button>
 
-                  <Button
+                  <PermissionAwareButton
+                    permission="report:create"
                     onClick={() => navigate("/dashboard/reports/add-report")}
                     className="flex-1 bg-red-600 hover:bg-red-700 text-white border-0 shadow-sm text-sm"
                   >
                     <Plus size={16} />
                     <span>Add Report</span>
-                  </Button>
+                  </PermissionAwareButton>
                 </div>
               </div>
             </div>

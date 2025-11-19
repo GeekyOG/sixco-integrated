@@ -19,6 +19,7 @@ import BreadCrumb from "../ui/BreadCrumb";
 import { DatePicker, Popover, Card } from "antd";
 import { handleExportCSV } from "../utils/export";
 import { format } from "date-fns";
+import PermissionAwareButton from "../components/PermissionAwareButton";
 
 function Users() {
   const [open, setOpen] = useState(false);
@@ -179,13 +180,14 @@ function Users() {
                 </div>
 
                 {/* Add Client Button */}
-                <Button
+                <PermissionAwareButton
+                  permission="client:create"
                   onClick={showDrawer}
                   className="bg-purple-600 hover:bg-purple-700 text-white border-0 shadow-sm text-sm"
                 >
                   <Plus size={16} />
-                  <span>Add Client</span>
-                </Button>
+                  <span>New Client</span>
+                </PermissionAwareButton>
               </div>
 
               {/* Mobile Actions */}

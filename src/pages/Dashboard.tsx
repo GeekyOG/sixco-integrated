@@ -21,6 +21,7 @@ import { format } from "date-fns";
 import { Card } from "antd";
 import Container from "../ui/Container";
 import Button from "../ui/Button";
+import PermissionAwareButton from "../components/PermissionAwareButton";
 
 function Dashboard() {
   const [getClients, { data: clientsData, isFetching: clientsFetching }] =
@@ -111,20 +112,23 @@ function Dashboard() {
 
               {/* Quick Actions */}
               <div className="flex flex-wrap gap-2">
-                <Button
+                <PermissionAwareButton
+                  permission="project:create"
                   onClick={handleAddPortfolio}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm text-sm"
                 >
                   <Plus size={16} />
                   <span>New Project</span>
-                </Button>
-                <Button
+                </PermissionAwareButton>
+
+                <PermissionAwareButton
+                  permission="client:create"
                   onClick={() => setOpenAddCustomers(true)}
                   className="bg-purple-600 hover:bg-purple-700 text-white border-0 shadow-sm text-sm"
                 >
                   <Plus size={16} />
                   <span>New Client</span>
-                </Button>
+                </PermissionAwareButton>
               </div>
             </div>
           </Card>

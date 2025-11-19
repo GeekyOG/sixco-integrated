@@ -23,6 +23,7 @@ import { membersColumns } from "../modules/teams/membersColumns";
 import { taskColumns } from "../modules/teams/taskColumns";
 import ProjectModal from "../modules/teams/ProjectModal";
 import MemberModal from "../modules/teams/MemberModal";
+import PermissionAwareButton from "../components/PermissionAwareButton";
 
 function TeamDetails() {
   const [open, setOpen] = useState(false);
@@ -115,23 +116,25 @@ function TeamDetails() {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3">
-                <Button
+                <PermissionAwareButton
+                  permission="team:update"
                   className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm transition-colors duration-200"
                   onClick={() => setOpen(!open)}
                 >
                   <Pencil size={16} />
                   <span className="hidden sm:inline">Edit Team</span>
                   <span className="sm:hidden">Edit</span>
-                </Button>
+                </PermissionAwareButton>
 
-                <Button
+                <PermissionAwareButton
+                  permission="task:create"
                   className="bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-sm transition-colors duration-200"
                   onClick={() => setTaskModalOpen(!taskModalOpen)}
                 >
                   <Plus size={16} />
                   <span className="hidden sm:inline">Assign Task</span>
                   <span className="sm:hidden">Task</span>
-                </Button>
+                </PermissionAwareButton>
               </div>
             </div>
           </div>
@@ -154,13 +157,14 @@ function TeamDetails() {
                     {memberCount}
                   </span>
                 </div>
-                <Button
+                <PermissionAwareButton
+                  permission="team:update"
                   className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm text-sm"
                   onClick={() => setMemberModalOpen(true)}
                 >
                   <UserPlus size={14} />
                   <span>Add Member</span>
-                </Button>
+                </PermissionAwareButton>
               </div>
 
               <div className="relative">
@@ -212,13 +216,14 @@ function TeamDetails() {
                     {projectCount}
                   </span>
                 </div>
-                <Button
+                <PermissionAwareButton
+                  permission="team:update"
                   className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm text-sm"
                   onClick={() => setProjectModalOpen(true)}
                 >
                   <FolderPlus size={14} />
                   <span>Add Project</span>
-                </Button>
+                </PermissionAwareButton>
               </div>
 
               <div className="relative">
@@ -258,13 +263,14 @@ function TeamDetails() {
                   {taskCount}
                 </span>
               </div>
-              <Button
+              <PermissionAwareButton
+                permission="task:create"
                 className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm text-sm"
                 onClick={() => setTaskModalOpen(true)}
               >
                 <Plus size={14} />
                 <span>Add Task</span>
-              </Button>
+              </PermissionAwareButton>
             </div>
 
             <div className="relative">

@@ -13,6 +13,8 @@ import * as Yup from "yup";
 import Button from "../ui/Button";
 import { useAddRoleMutation, useGetAllPermissionsQuery } from "../api/rolesApi";
 import Container from "../ui/Container";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -33,9 +35,8 @@ const initialValues: CreateRoleFormData = {
 
 const AddRole = () => {
   const { data, isFetching, isSuccess } = useGetAllPermissionsQuery("");
-
-  const [createRole, { isLoading, isError, isSuccess: isCreateSuccess }] =
-    useAddRoleMutation();
+  const navigate = useNavigate();
+  const [createRole, { isLoading }] = useAddRoleMutation();
 
   const { Panel } = Collapse;
   const groupedPermissions = data?.permissions?.reduce((acc, permission) => {
@@ -57,7 +58,15 @@ const AddRole = () => {
           validationSchema={validationSchema}
           onSubmit={(values) => {
             console.log("Form submitted:", values);
-            createRole(values);
+            createRole(values)
+              .unwrap()
+              .then(() => {
+                toast.success("Operation Successful");
+                navigate("/dashboard/roles-permissions");
+              })
+              .catch((err) => {
+                toast.error(err.data.message ?? "Something went wrong");
+              });
           }}
         >
           {({
@@ -193,7 +202,9 @@ const AddRole = () => {
                 )}
               </AntForm.Item>
 
-              <Button className="max-w-[200px]">Create Role</Button>
+              <Button isLoading={isLoading} className="max-w-[200px]">
+                Create Role
+              </Button>
             </Form>
           )}
         </Formik>

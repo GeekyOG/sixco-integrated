@@ -22,6 +22,35 @@ import { useDeleteRoleMutation } from "../../api/rolesApi";
 import { useDeleteHSEReportMutation } from "../../api/hseReportApi";
 import { useDeleteReportMutation } from "../../api/reportsApi";
 import { useDeleteUserMutation } from "../../api/authApi";
+import {
+  canDeleteClient,
+  canDeleteHSE,
+  canDeleteLeave,
+  canDeleteProject,
+  canDeleteReport,
+  canDeleteRole,
+  canDeleteTask,
+  canDeleteTeam,
+  canDeleteUser,
+  canReadClient,
+  canReadHSE,
+  canReadLeave,
+  canReadProject,
+  canReadReport,
+  canReadRole,
+  canReadTask,
+  canReadTeam,
+  canReadUser,
+  canUpdateClient,
+  canUpdateHSE,
+  canUpdateLeave,
+  canUpdateProject,
+  canUpdateReport,
+  canUpdateRole,
+  canUpdateTask,
+  canUpdateTeam,
+  canUpdateUser,
+} from "../../utils/permissionUtils";
 // import EditCategory from "../../modules/products/EditCategory";
 interface ActionButtonsProps {
   id: string;
@@ -121,7 +150,7 @@ function ActionButtons({
     setDialogContent(
       "Deleting this Leave, this Leave would would not longer be displayed on your website. Please note this action cannot be undone"
     );
-    setDialogBtnText("Delete Featured Work");
+    setDialogBtnText("Delete Leave");
   };
   const handleDeleteTaskDialog = () => {
     setShowDialog(true);
@@ -293,6 +322,9 @@ function ActionButtons({
       {type == "hse-reports" && (
         <>
           <TableActionButtons
+            hasViewPermission={canReadHSE()}
+            hasDeletePermission={canDeleteHSE()}
+            hasEditPermission={canUpdateHSE()}
             setShow={() => {
               navigate(`/dashboard/HSE-reports/details/${id}`);
             }}
@@ -307,6 +339,9 @@ function ActionButtons({
       {type == "reports" && (
         <>
           <TableActionButtons
+            hasViewPermission={canReadReport()}
+            hasDeletePermission={canDeleteReport()}
+            hasEditPermission={canUpdateReport()}
             setShow={() => {
               navigate(`/dashboard/reports/details/${id}`);
             }}
@@ -320,6 +355,9 @@ function ActionButtons({
       {type == "roles" && (
         <>
           <TableActionButtons
+            hasViewPermission={canReadRole()}
+            hasDeletePermission={canDeleteRole()}
+            hasEditPermission={canUpdateRole()}
             handleEdit={() => {
               navigate(`/dashboard/roles-permissions/edit-role/${id}`);
             }}
@@ -330,6 +368,9 @@ function ActionButtons({
       {type === "teams" && (
         <>
           <TableActionButtons
+            hasViewPermission={canReadTeam()}
+            hasDeletePermission={canDeleteTeam()}
+            hasEditPermission={canUpdateTeam()}
             setShow={() => {
               navigate(`/dashboard/teams/${id}`);
             }}
@@ -344,6 +385,9 @@ function ActionButtons({
       {type === "Portfolio" && (
         <>
           <TableActionButtons
+            hasViewPermission={canReadProject()}
+            hasDeletePermission={canDeleteProject()}
+            hasEditPermission={canUpdateProject()}
             setShow={() => {
               navigate(`/dashboard/projects/${id}`);
             }}
@@ -362,6 +406,9 @@ function ActionButtons({
       {type === "project" && (
         <>
           <TableActionButtons
+            hasViewPermission={canReadProject()}
+            hasDeletePermission={canDeleteProject()}
+            hasEditPermission={canUpdateProject()}
             setShow={() => {
               navigate(`/dashboard/projects/${id}`);
             }}
@@ -377,6 +424,9 @@ function ActionButtons({
       {type === "edit-tasks" && (
         <>
           <TableActionButtons
+            hasViewPermission={canReadTask()}
+            hasDeletePermission={canDeleteTask()}
+            hasEditPermission={canUpdateTask()}
             setShow={() => {
               setDrawerOpen(true);
             }}
@@ -392,6 +442,9 @@ function ActionButtons({
       {type === "staff" && (
         <>
           <TableActionButtons
+            hasViewPermission={canReadUser()}
+            hasDeletePermission={canDeleteUser()}
+            hasEditPermission={canUpdateUser()}
             setShow={() => {
               navigate(`/dashboard/staffs/${id}`);
             }}
@@ -410,6 +463,9 @@ function ActionButtons({
       {type == "team-members" && (
         <>
           <TableActionButtons
+            hasViewPermission={canReadUser()}
+            hasDeletePermission={canDeleteUser()}
+            hasEditPermission={canUpdateUser()}
             setShow={() => {
               navigate(`/dashboard/staffs/${id}`);
             }}
@@ -421,6 +477,9 @@ function ActionButtons({
       {type === "Leave" && (
         <>
           <TableActionButtons
+            hasViewPermission={canReadLeave()}
+            hasDeletePermission={canDeleteLeave()}
+            hasEditPermission={canUpdateLeave()}
             handleEdit={() => {
               setDrawerOpen(true);
             }}
@@ -436,6 +495,9 @@ function ActionButtons({
       {type === "client" && (
         <>
           <TableActionButtons
+            hasViewPermission={canReadClient()}
+            hasDeletePermission={canDeleteClient()}
+            hasEditPermission={canUpdateClient()}
             setShow={() => {
               navigate(`/dashboard/users/${id}`);
             }}
@@ -503,6 +565,7 @@ function ActionButtons({
           type={"delete"}
           image={"/delete.svg"}
           action={
+            (dialogTitle == "Delete Leave Permanently" && handleDeleteLeave) ||
             (dialogTitle == "Delete Team Permanently" && handleDeleteTeam) ||
             (dialogTitle == "Delete Staff Permanently" && handleDeleteUser) ||
             (type == "reports" && handleDeleteReport) ||

@@ -27,6 +27,7 @@ import ClientModal from "../modules/portfolio/ClientModal";
 import UploadModal from "../modules/portfolio/uploadModal";
 import { useLazyGetPortfolioQuery } from "../api/portfolio";
 import { useLazyGetDocumentQuery } from "../api/documentApi";
+import PermissionAwareButton from "../components/PermissionAwareButton";
 
 function ProjectDetails() {
   const [open, setOpen] = useState(false);
@@ -216,23 +217,25 @@ function ProjectDetails() {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3">
-                <Button
+                <PermissionAwareButton
+                  permission="project:update"
                   className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm transition-colors duration-200"
                   onClick={() => setOpen(!open)}
                 >
                   <Pencil size={16} />
                   <span className="hidden sm:inline">Edit Project</span>
                   <span className="sm:hidden">Edit</span>
-                </Button>
+                </PermissionAwareButton>
 
-                <Button
+                <PermissionAwareButton
+                  permission="project:update"
                   className="bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-sm transition-colors duration-200"
                   onClick={() => setDocOpen(!docOpen)}
                 >
                   <Upload size={16} />
                   <span className="hidden sm:inline">Upload Document</span>
                   <span className="sm:hidden">Upload</span>
-                </Button>
+                </PermissionAwareButton>
               </div>
             </div>
           </div>
@@ -329,13 +332,15 @@ function ProjectDetails() {
                     {projectData?.project?.teams?.length || 0}
                   </span>
                 </div>
-                <Button
+
+                <PermissionAwareButton
+                  permission="project:update"
                   className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm text-sm"
                   onClick={() => setTeamModalOpen(true)}
                 >
                   <Plus size={14} />
                   <span>Assign Team</span>
-                </Button>
+                </PermissionAwareButton>
               </div>
 
               <div className="relative">
@@ -369,13 +374,14 @@ function ProjectDetails() {
                     {projectData?.project?.clients?.length || 0}
                   </span>
                 </div>
-                <Button
+                <PermissionAwareButton
+                  permission="project:update"
                   className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm text-sm"
                   onClick={() => setProjectModalOpen(true)}
                 >
                   <Plus size={14} />
                   <span>Add Client</span>
-                </Button>
+                </PermissionAwareButton>
               </div>
 
               <div className="relative">
@@ -412,13 +418,14 @@ function ProjectDetails() {
                   0
                 </span>
               </div>
-              <Button
+              <PermissionAwareButton
+                permission="task:create"
                 className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm text-sm"
                 onClick={() => setTaskModalOpen(true)}
               >
                 <Plus size={14} />
                 <span>Add Task</span>
-              </Button>
+              </PermissionAwareButton>
             </div>
 
             <div className="space-y-4">

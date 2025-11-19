@@ -20,6 +20,7 @@ import { DatePicker, Popover, Card } from "antd";
 import { exportToCSV, handleExportCSV } from "../utils/export";
 import { cn } from "../utils/cn";
 import { format } from "date-fns";
+import PermissionAwareButton from "../components/PermissionAwareButton";
 
 const status = ["To Do", "In Progress", "Review", "Done"];
 
@@ -266,13 +267,14 @@ function Portfolio() {
                 </div>
 
                 {/* Add Project Button */}
-                <Button
+                <PermissionAwareButton
+                  permission="project:create"
                   onClick={handleAddPortfolio}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm text-sm"
                 >
                   <Plus size={16} />
                   <span>Add Project</span>
-                </Button>
+                </PermissionAwareButton>
               </div>
 
               {/* Mobile Actions */}
@@ -336,13 +338,14 @@ function Portfolio() {
                     <span>Export</span>
                   </Button>
 
-                  <Button
+                  <PermissionAwareButton
+                    permission="project:create"
                     onClick={handleAddPortfolio}
-                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm text-sm"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm text-sm"
                   >
                     <Plus size={16} />
-                    <span>Add</span>
-                  </Button>
+                    <span>Add </span>
+                  </PermissionAwareButton>
                 </div>
               </div>
             </div>

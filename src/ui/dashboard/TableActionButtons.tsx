@@ -14,7 +14,7 @@ import React from "react";
 import { BiDotsHorizontal } from "react-icons/bi";
 
 interface ITableActionButtonsProps {
-  setShow?: () => void;
+  setShow?: () => void | null;
   id?: string;
   handleEdit?: () => void;
   handleDelete?: () => void;
