@@ -8,12 +8,8 @@ import {
   useLazyGetUserQuery,
   useRegisterUserMutation,
   useUpdateUserMutation,
+  useUpdateUserRoleMutation,
 } from "../../api/authApi";
-import {
-  useAddClientMutation,
-  useLazyGetClientsQuery,
-  useUpdateClientsMutation,
-} from "../../api/clientApi";
 import SelectField from "../../components/input/SelectField";
 import { useLazyGetAllRoleQuery } from "../../api/rolesApi";
 
@@ -38,6 +34,9 @@ function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
   const [addClient, { isLoading: clientLoading }] = useRegisterUserMutation();
   const [updateClients, { isLoading: updateClientLoading }] =
     useUpdateUserMutation();
+
+  const [updateUserRole, { isLoading: updateRoleLoading }] =
+    useUpdateUserRoleMutation();
   const [getClient, { data }] = useLazyGetUserQuery();
 
   useEffect(() => {
@@ -77,6 +76,10 @@ function AddStaff({ open, setShowDrawer, id, callBackAction }: AddStaffProps) {
               })
                 .unwrap()
                 .then((res) => {
+                  updateUserRole({
+                    id,
+                    body: { roleId: values.roleId },
+                  });
                   callBackAction();
                   toast.success("Action successful!");
                   setShowDrawer(false);

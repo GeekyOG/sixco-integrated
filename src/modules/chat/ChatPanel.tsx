@@ -132,7 +132,19 @@ const ChatWindow = () => {
                     {msg?.sender?.firstName} {msg?.sender?.lastName} •{" "}
                     {timeAgo(msg.createdAt)}
                   </div>
-                  <div className="text-gray-800">{msg?.content}</div>
+                  {msg.type == "text" ? (
+                    <div className="text-gray-800">{msg?.content}</div>
+                  ) : (
+                    <div>
+                      <a
+                        target="_blank"
+                        href={msg.content}
+                        className="text-blue-500 text-[0.85rem]"
+                      >
+                        View file
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             );

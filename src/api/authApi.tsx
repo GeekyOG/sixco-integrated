@@ -89,6 +89,14 @@ export const authApi = createApi({
       }),
     }),
 
+    updateUserRole: builder.mutation({
+      query: ({ body, id }) => ({
+        url: `auth/users/${id}/role`,
+        method: "PUT",
+        body: body,
+      }),
+    }),
+
     deleteUser: builder.mutation({
       query: (id) => ({
         url: `auth/users/${id}`,
@@ -111,4 +119,5 @@ export const {
   useGetUserQuery,
   useLazyGetUserQuery,
   useUpdateUserMutation,
+  useUpdateUserRoleMutation,
 } = authApi;

@@ -60,7 +60,7 @@ export const allMenuOptions = [
     text: "Manage HSE Reports",
     url: "/dashboard/hse-management",
     icon: <File size={16} />,
-    permission: "report:read",
+    permission: "hse:read",
   },
   {
     text: "Leave Requests",

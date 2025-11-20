@@ -187,12 +187,15 @@ const EditRole = () => {
                                   )}
                                   onChange={(e) => {
                                     const checked = e.target.checked;
+
                                     if (checked) {
-                                      setFieldValue("permissions", [
+                                      // ADD permission correctly
+                                      setFieldValue("permissionNames", [
                                         ...values.permissionNames,
                                         item.name,
                                       ]);
                                     } else {
+                                      // REMOVE permission correctly
                                       setFieldValue(
                                         "permissionNames",
                                         values.permissionNames.filter(
