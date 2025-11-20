@@ -16,7 +16,7 @@ import {
 import Button from "../ui/Button";
 import { BsPeople } from "react-icons/bs";
 import { GoReport } from "react-icons/go";
-import { hasPermission } from "../utils/permissionUtils";
+import { usePermission } from "../utils/usePermissions";
 
 export const allMenuOptions = [
   { text: "Overview", url: "/dashboard", icon: <LayoutGrid size={16} /> },
@@ -94,32 +94,30 @@ export const allMenuOptions = [
   },
 ];
 
-/**
- * Get filtered menu options based on user permissions
- * Overview is always shown; other items only shown if user has read permission
- */
-export const getVisibleMenuOptions = () => {
-  return allMenuOptions.filter((item) => {
-    // Overview is always visible
-    if (
-      item.text === "Overview" ||
-      item.text === "Audit" ||
-      item.text == "Settings" ||
-      item.text == "Messages"
-    )
-      return true;
-    // Other items require read permission
-    return item.permission ? hasPermission(item.permission) : false;
-  });
-};
-
-export const mainMenuOptions = getVisibleMenuOptions();
-
 interface SidebarProps {
   setHideSideBar: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function Sidebar({ setHideSideBar }: SidebarProps) {
+  const getVisibleMenuOptions = () => {
+    const { hasPermission } = usePermission();
+
+    return allMenuOptions.filter((item) => {
+      if (
+        item.text === "Overview" ||
+        item.text === "Audit" ||
+        item.text === "Settings" ||
+        item.text === "Messages" ||
+        item.text === "Finance"
+      ) {
+        return true;
+      }
+      return item.permission ? hasPermission(item.permission) : false;
+    });
+  };
+
+  const mainMenuOptions = getVisibleMenuOptions();
+
   const location = useLocation();
   const { pathname } = location;
   const [isCollapsed, setIsCollapsed] = useState(false);

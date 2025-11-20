@@ -8,6 +8,7 @@ import { useLoginUserMutation } from "../../api/authApi";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const loginValidation = Yup.object().shape({
   email: emailAddressValidation,
@@ -15,6 +16,7 @@ const loginValidation = Yup.object().shape({
 });
 
 function LoginForm() {
+  const { authLogin } = useAuth();
   const navigate = useNavigate();
   const [loginUser, { isLoading }] = useLoginUserMutation();
   return (
@@ -38,7 +40,7 @@ function LoginForm() {
               secure: true,
             });
 
-            localStorage.setItem("userData", JSON.stringify(response.user));
+            authLogin(response.user);
 
             Cookies.set("refreshToken", refreshToken, {
               sameSite: "Strict",

@@ -6,6 +6,7 @@ import Container from "../ui/Container";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { cn } from "../utils/cn";
+import { AuthProvider } from "../context/AuthContext";
 
 function Applayout() {
   const innerWidth = window.innerWidth;

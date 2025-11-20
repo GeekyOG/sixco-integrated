@@ -1,24 +1,10 @@
-import { useEffect, useState } from "react";
-import { UserData, hasPermission } from "../utils/permissionUtils";
+import { useAuth } from "../context/AuthContext";
 
-export const usePermissions = (resource: string) => {
-  const [permissions, setPermissions] = useState({
-    canCreate: false,
-    canRead: false,
-    canUpdate: false,
-    canDelete: false,
-  });
+export const usePermission = () => {
+  const { userData } = useAuth();
+  const permissions = userData?.permissions || [];
 
-  useEffect(() => {
-    setPermissions({
-      canCreate: hasPermission(`${resource}:create`),
-      canRead: hasPermission(`${resource}:read`),
-      canUpdate: hasPermission(`${resource}:update`),
-      canDelete: hasPermission(`${resource}:delete`),
-    });
-  }, [resource]);
+  const hasPermission = (perm: string) => permissions.includes(perm);
 
-  return permissions;
+  return { hasPermission };
 };
-
-export default usePermissions;

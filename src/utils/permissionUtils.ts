@@ -3,6 +3,8 @@
  * Permissions are stored in localStorage under userData.permissions
  */
 
+import { useAuth } from "../context/AuthContext";
+
 export interface UserData {
   permissions?: string[];
   [key: string]: any;
@@ -20,7 +22,7 @@ export const getUserData = (): UserData | null => {
  * Check if user has a specific permission
  */
 export const hasPermission = (permission: string): boolean => {
-  const userData = getUserData();
+  const { userData } = useAuth();
   if (
     !userData ||
     !userData.permissions ||
@@ -49,7 +51,7 @@ export const hasAllPermissions = (permissions: string[]): boolean => {
  * Get all user permissions
  */
 export const getUserPermissions = (): string[] => {
-  const userData = getUserData();
+  const { userData } = useAuth();
   return userData?.permissions || [];
 };
 
