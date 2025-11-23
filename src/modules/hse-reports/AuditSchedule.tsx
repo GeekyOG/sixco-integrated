@@ -12,47 +12,19 @@ import {
 } from "lucide-react";
 import { getStatusColor } from "../../utils/utils";
 
-const initialAudits = [
-  {
-    id: 1,
-    title: "Fire Safety Inspection",
-    date: "2024-01-25",
-    inspector: "Sarah Williams",
-    status: "Scheduled",
-    area: "Building A",
-  },
-  {
-    id: 2,
-    title: "PPE Compliance Check",
-    date: "2024-01-30",
-    inspector: "Tom Brown",
-    status: "In Progress",
-    area: "Workshop",
-  },
-  {
-    id: 3,
-    title: "Emergency Exit Review",
-    date: "2024-02-05",
-    inspector: "Sarah Williams",
-    status: "Scheduled",
-    area: "All Buildings",
-  },
-];
-
 function AuditSchedule({
   openModal,
+  initialAudits,
 }: {
   openModal: (type: any, data?: any) => void;
+  initialAudits: any[];
 }) {
   const [audits, setAudits] = useState(initialAudits);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
 
-  const handleDelete = (id: number) => {
-    const audit = audits.find((a) => a.id === id);
-    if (window.confirm(`Are you sure you want to delete "${audit?.title}"?`)) {
-      setAudits(audits.filter((audit) => audit.id !== id));
-      setActiveDropdown(null);
-    }
+  const handleDelete = (audit: any) => {
+    openModal("delete-schedule-audit", audit);
+    setActiveDropdown(null);
   };
 
   const handleEdit = (audit: any) => {
@@ -115,7 +87,7 @@ function AuditSchedule({
 
       {/* Audit Cards */}
       <div className="space-y-3">
-        {audits.length === 0 ? (
+        {initialAudits.length === 0 ? (
           <div className="bg-white p-12 rounded-lg shadow-sm border border-gray-200 text-center">
             <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -133,7 +105,7 @@ function AuditSchedule({
             </button>
           </div>
         ) : (
-          audits.map((audit) => (
+          initialAudits.map((audit) => (
             <div
               key={audit.id}
               className="bg-white p-5 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all group"
@@ -181,7 +153,7 @@ function AuditSchedule({
                           Inspector
                         </p>
                         <p className="text-sm font-medium text-gray-900">
-                          {audit.inspector}
+                          {audit.inspectors[0]}
                         </p>
                       </div>
                     </div>
@@ -229,7 +201,7 @@ function AuditSchedule({
                         </button>
                         <div className="border-t border-gray-100 my-1"></div>
                         <button
-                          onClick={() => handleDelete(audit.id)}
+                          onClick={() => handleDelete(audit)}
                           className="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />

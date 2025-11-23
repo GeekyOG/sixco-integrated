@@ -16,6 +16,8 @@ import { chatsApi } from "../api/chatsApi";
 import { directChatApi } from "../api/directChat";
 import { auditApi } from "../api/audit";
 import { auditScheduleApi } from "../api/auditSchedule";
+import { hseTrainingApi } from "../api/hseTraining";
+import { riskApi } from "../api/risksApi";
 
 export const store = configureStore({
   reducer: {
@@ -35,6 +37,8 @@ export const store = configureStore({
     [directChatApi.reducerPath]: directChatApi.reducer,
     [auditApi.reducerPath]: auditApi.reducer,
     [auditScheduleApi.reducerPath]: auditScheduleApi.reducer,
+    [hseTrainingApi.reducerPath]: hseTrainingApi.reducer,
+    [riskApi.reducerPath]: riskApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -54,7 +58,9 @@ export const store = configureStore({
       chatsApi.middleware,
       directChatApi.middleware,
       auditApi.middleware,
-      auditScheduleApi.middleware
+      auditScheduleApi.middleware,
+      hseTrainingApi.middleware,
+      riskApi.middleware
     ),
 });
 

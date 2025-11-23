@@ -9,45 +9,13 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { getRiskColor, getStatusColor } from "../../utils/utils";
-const risks = [
-  {
-    id: 1,
-    hazard: "Electrical Equipment Failure",
-    severity: "High",
-    likelihood: "Medium",
-    riskLevel: "High",
-    mitigation: "Regular maintenance schedule",
-    owner: "John Doe",
-    status: "Active",
-    reviewDate: "2024-02-15",
-  },
-  {
-    id: 2,
-    hazard: "Slip and Fall Hazards",
-    severity: "Medium",
-    likelihood: "High",
-    riskLevel: "Medium",
-    mitigation: "Install warning signs, regular cleaning",
-    owner: "Jane Smith",
-    status: "Mitigated",
-    reviewDate: "2024-01-30",
-  },
-  {
-    id: 3,
-    hazard: "Chemical Spill Risk",
-    severity: "High",
-    likelihood: "Low",
-    riskLevel: "Medium",
-    mitigation: "Spill kits, staff training",
-    owner: "Mike Johnson",
-    status: "Active",
-    reviewDate: "2024-02-20",
-  },
-];
+
 function RiskRegister({
   openModal,
+  risks,
 }: {
   openModal: (type: any, data?: any) => void;
+  risks: any[];
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -67,10 +35,6 @@ function RiskRegister({
             />
           </div>
           <div className="flex gap-2">
-            <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm">
-              <Filter className="w-4 h-4" />
-              <span>Filter</span>
-            </button>
             <button
               onClick={() => openModal("add-risk")}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2 text-sm"
@@ -125,7 +89,9 @@ function RiskRegister({
                   </div>
                   <div>
                     <p className="text-gray-600 text-xs mb-1">Owner</p>
-                    <p className="text-gray-900">{risk.owner}</p>
+                    <p className="text-gray-900">
+                      {risk["owner.firstName"]} {risk["owner.lastName"]}
+                    </p>
                   </div>
                   <div>
                     <p className="text-gray-600 text-xs mb-1">Review Date</p>
@@ -154,7 +120,7 @@ function RiskRegister({
                   <Edit className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => openModal("view-risk", risk)}
+                  onClick={() => openModal("delete-risk", risk)}
                   className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600"
                 >
                   <Trash className="w-4 h-4" />

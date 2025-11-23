@@ -12,52 +12,18 @@ import {
 } from "lucide-react";
 import { getStatusColor } from "../../utils/utils";
 
-const initialTrainings = [
-  {
-    id: 1,
-    course: "Fire Safety Training",
-    attendees: 45,
-    required: 50,
-    completion: 90,
-    nextDate: "2024-02-10",
-    status: "In Progress",
-  },
-  {
-    id: 2,
-    course: "First Aid Certification",
-    attendees: 30,
-    required: 30,
-    completion: 100,
-    nextDate: "2024-03-15",
-    status: "Completed",
-  },
-  {
-    id: 3,
-    course: "Chemical Handling",
-    attendees: 15,
-    required: 25,
-    completion: 60,
-    nextDate: "2024-01-28",
-    status: "Urgent",
-  },
-];
-
 function TrainingTracker({
   openModal,
+  trainings,
 }: {
   openModal: (type: any, data?: any) => void;
+  trainings: any[];
 }) {
-  const [trainings, setTrainings] = useState(initialTrainings);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
 
-  const handleDelete = (id: number) => {
-    const training = trainings.find((t) => t.id === id);
-    if (
-      window.confirm(`Are you sure you want to delete "${training?.course}"?`)
-    ) {
-      setTrainings(trainings.filter((training) => training.id !== id));
-      setActiveDropdown(null);
-    }
+  const handleDelete = (training: any) => {
+    openModal("delete-training", training);
+    setActiveDropdown(null);
   };
 
   const handleEdit = (training: any) => {
@@ -87,7 +53,7 @@ function TrainingTracker({
   };
 
   const handleSendReminders = () => {
-    const totalAttendees = trainings.reduce((sum, t) => sum + t.required, 0);
+    const totalAttendees = trainings?.reduce((sum, t) => sum + t.required, 0);
     alert(`✉️ Reminder emails sent to ${totalAttendees} staff members!`);
   };
 
@@ -101,8 +67,8 @@ function TrainingTracker({
               Training Tracker
             </h2>
             <p className="text-sm text-gray-600 mt-1">
-              {trainings.length} training program
-              {trainings.length !== 1 ? "s" : ""} active
+              {trainings?.length} training program
+              {trainings?.length !== 1 ? "s" : ""} active
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -133,7 +99,7 @@ function TrainingTracker({
 
       {/* Training Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {trainings.length === 0 ? (
+        {trainings?.length === 0 ? (
           <div className="col-span-full bg-white p-12 rounded-lg shadow-sm border border-gray-200 text-center">
             <GraduationCap className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -151,7 +117,7 @@ function TrainingTracker({
             </button>
           </div>
         ) : (
-          trainings.map((training) => (
+          trainings?.map((training) => (
             <div
               key={training.id}
               className="bg-white p-5 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all group relative"
@@ -188,7 +154,7 @@ function TrainingTracker({
                       </button>
                       <div className="border-t border-gray-100 my-1"></div>
                       <button
-                        onClick={() => handleDelete(training.id)}
+                        onClick={() => handleDelete(training)}
                         className="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -205,7 +171,7 @@ function TrainingTracker({
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-gray-900 text-lg mb-2 pr-4">
-                    {training.course}
+                    {training.courseName}
                   </h3>
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
@@ -218,7 +184,7 @@ function TrainingTracker({
               </div>
 
               {/* Progress Bar */}
-              <div className="mb-4">
+              {/* <div className="mb-4">
                 <div className="flex justify-between text-xs mb-2">
                   <span className="text-gray-600 font-medium">
                     Completion Rate
@@ -239,7 +205,7 @@ function TrainingTracker({
                     style={{ width: `${training.completion}%` }}
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="flex items-start gap-2">
@@ -247,9 +213,8 @@ function TrainingTracker({
                   <div>
                     <p className="text-xs text-gray-500 mb-0.5">Attendees</p>
                     <p className="text-sm font-semibold text-gray-900">
-                      {training.attendees}{" "}
                       <span className="text-gray-500 font-normal">
-                        / {training.required}
+                        {training.attendeeCount}
                       </span>
                     </p>
                   </div>
@@ -259,11 +224,14 @@ function TrainingTracker({
                   <div>
                     <p className="text-xs text-gray-500 mb-0.5">Next Date</p>
                     <p className="text-sm font-medium text-gray-900">
-                      {new Date(training.nextDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {new Date(training.nextTrainingDate).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        }
+                      )}
                     </p>
                   </div>
                 </div>

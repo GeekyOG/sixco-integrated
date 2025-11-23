@@ -26,6 +26,12 @@ export const hseReportApi = createApi({
       }),
     }),
 
+    getHSEAnalytics: builder.query({
+      query: (id) => ({
+        url: `hse/reports/analytics`,
+      }),
+    }),
+
     updateHSEReport: builder.mutation({
       query: ({ body, id }) => ({
         url: `hse-reports/${id}`,
@@ -51,4 +57,6 @@ export const {
   useLazyGetAllHSEReportQuery,
   useLazyGetHSEReportQuery,
   useUpdateHSEReportMutation,
+  useGetHSEAnalyticsQuery,
+  useLazyGetHSEAnalyticsQuery,
 } = hseReportApi;

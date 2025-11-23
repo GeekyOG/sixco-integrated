@@ -6,12 +6,12 @@ export const Modal = ({ open, title, children, onClose }: any) => {
       <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg relative">
         <h2 className="text-xl font-semibold mb-4">{title}</h2>
         {children}
-        <button
+        {/* <button
           onClick={onClose}
           className="mt-6 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
         >
           Close
-        </button>
+        </button> */}
       </div>
     </div>
   );

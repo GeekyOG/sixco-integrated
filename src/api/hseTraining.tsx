@@ -5,38 +5,38 @@ export const hseTrainingApi = createApi({
   baseQuery,
   reducerPath: "hseTrainingApi",
   endpoints: (builder) => ({
-    addAuditSchedule: builder.mutation({
+    addTraining: builder.mutation({
       query: (body) => ({
         body,
-        url: "auditor",
+        url: "training",
         method: "POST",
       }),
     }),
 
-    getAllAuditSchedule: builder.query({
+    getAllTraining: builder.query({
       query: (args?: any) => ({
-        url: "auditor",
+        url: "training",
         params: args,
       }),
     }),
 
-    getAuditSchedule: builder.query({
+    getTraining: builder.query({
       query: (id) => ({
-        url: `auditor/${id}`,
+        url: `training/${id}`,
       }),
     }),
 
-    updateAuditSchedule: builder.mutation({
+    updateTraining: builder.mutation({
       query: ({ body, id }) => ({
-        url: `auditor/${id}`,
+        url: `training/${id}`,
         method: "PUT",
         body: body,
       }),
     }),
 
-    deleteAuditSchedule: builder.mutation({
+    deleteTraining: builder.mutation({
       query: (id) => ({
-        url: `auditor/${id}`,
+        url: `training/${id}`,
         method: "DELETE",
       }),
     }),
@@ -44,11 +44,11 @@ export const hseTrainingApi = createApi({
 });
 
 export const {
-  useAddAuditScheduleMutation,
-  useDeleteAuditScheduleMutation,
-  useGetAllAuditScheduleQuery,
-  useGetAuditScheduleQuery,
-  useLazyGetAllAuditScheduleQuery,
-  useLazyGetAuditScheduleQuery,
-  useUpdateAuditScheduleMutation,
+  useAddTrainingMutation,
+  useDeleteTrainingMutation,
+  useGetAllTrainingQuery,
+  useGetTrainingQuery,
+  useLazyGetAllTrainingQuery,
+  useLazyGetTrainingQuery,
+  useUpdateTrainingMutation,
 } = hseTrainingApi;
