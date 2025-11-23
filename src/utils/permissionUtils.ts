@@ -22,7 +22,7 @@ export const getUserData = (): UserData | null => {
  * Check if user has a specific permission
  */
 export const hasPermission = (permission: string): boolean => {
-  const { userData } = useAuth();
+  const { userData } = useAuth() as { userData: UserData | null };
   if (
     !userData ||
     !userData.permissions ||
@@ -51,7 +51,7 @@ export const hasAllPermissions = (permissions: string[]): boolean => {
  * Get all user permissions
  */
 export const getUserPermissions = (): string[] => {
-  const { userData } = useAuth();
+  const { userData } = useAuth() as { userData: UserData | null };
   return userData?.permissions || [];
 };
 
