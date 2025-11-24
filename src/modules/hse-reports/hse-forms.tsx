@@ -624,6 +624,7 @@ export const AddTrainingForm = ({
   }, [searchTerm]);
 
   const users = staffsData?.users ?? [];
+
   return (
     <Formik
       initialValues={
@@ -669,6 +670,7 @@ export const AddTrainingForm = ({
             );
           }
         }, [data?.attendees]);
+
         return (
           <Form className="space-y-6">
             <FormInput
@@ -676,6 +678,25 @@ export const AddTrainingForm = ({
               name="courseName"
               placeholder="Enter course name"
             />
+
+            {initialValues && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Status *
+                </label>
+                <Field
+                  as="select"
+                  name="status"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                >
+                  <option value="">Select status</option>
+                  <option value="ongoing">Ongoing</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </Field>
+                <FormError name="status" />
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -765,7 +786,6 @@ export const AddTrainingForm = ({
     </Formik>
   );
 };
-
 export const DeleteTrainingForm = ({
   callBack,
   onCancel,

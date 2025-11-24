@@ -44,4 +44,11 @@ export const columns: ColumnsType = [
       );
     },
   },
+
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+    render: (value) => <StatusPill status={value} />,
+  },
 ];
