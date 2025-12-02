@@ -269,6 +269,25 @@ export const AddRiskForm = ({
             rows={3}
           />
 
+          {initialValues && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Status *
+              </label>
+              <Field
+                as="select"
+                name="status"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+              >
+                <option value="">Select status</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Mitigated">Mitigated</option>
+                <option value="Closed">Closed</option>
+              </Field>
+              <FormError name="status" />
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-4">
             <FormSelect
               label="Severity Level"

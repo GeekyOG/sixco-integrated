@@ -23,7 +23,12 @@ export const columns: ColumnsType = [
     render(_, value) {
       console.log(value);
 
-      return <p>{value.description}</p>;
+      return (
+        <p>
+          {value.description.slice(0, 30)}{" "}
+          {value.description.length > 30 && "..."}
+        </p>
+      );
     },
   },
 
